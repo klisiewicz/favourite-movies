@@ -6,12 +6,17 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import pl.karollisiewicz.movie.app.MovieApplication;
+import pl.karollisiewicz.movie.app.config.ConfigurationModule;
+import pl.karollisiewicz.movie.app.source.WebModule;
 
 @Singleton
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ApplicationModule.class,
-        ActivityModule.class})
+        ActivityModule.class,
+        ConfigurationModule.class,
+        WebModule.class
+})
 public interface ApplicationComponent {
     void inject(MovieApplication application);
 
