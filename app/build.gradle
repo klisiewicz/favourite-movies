@@ -13,8 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_URL", '"http://api.themoviedb.org/3/"'
-//        buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
-        buildConfigField "String", "API_KEY", '"19691af481159697c9488a6ffb5008b9"'
+        buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
     }
 
     buildTypes {
@@ -58,6 +57,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.0'
     // RX Java
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    // Architecture components
+    implementation "android.arch.lifecycle:extensions:1.1.0"
     // Test dependencies
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
