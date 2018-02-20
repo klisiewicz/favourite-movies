@@ -7,6 +7,7 @@ import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.movie.app.config.ConfigurationModule;
+import pl.karollisiewicz.movie.app.source.SourceModule;
 import pl.karollisiewicz.movie.app.source.WebModule;
 
 @Singleton
@@ -15,6 +16,7 @@ import pl.karollisiewicz.movie.app.source.WebModule;
         ApplicationModule.class,
         ActivityModule.class,
         ConfigurationModule.class,
+        SourceModule.class,
         WebModule.class
 })
 public interface ApplicationComponent {

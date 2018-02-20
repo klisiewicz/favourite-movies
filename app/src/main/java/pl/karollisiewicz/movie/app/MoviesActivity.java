@@ -1,28 +1,28 @@
 package pl.karollisiewicz.movie.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import pl.karollisiewicz.movie.R;
-import pl.karollisiewicz.movie.app.source.MovieService;
+import pl.karollisiewicz.movie.domain.Movie;
+import pl.karollisiewicz.movie.domain.MovieRepository;
+
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 
 public class MoviesActivity extends AppCompatActivity {
 
-    @BindView(R.id.tvHello)
-    TextView textHello;
+    @BindView(R.id.movies_list)
+    ListView listView;
 
     @Inject
-    MovieService movieService;
+    MovieRepository movieRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +32,14 @@ public class MoviesActivity extends AppCompatActivity {
         AndroidInjection.inject(this);
         ButterKnife.bind(this);
 
-        movieService.fetchPopular()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        objects -> Log.v(MoviesActivity.class.getName(), objects.toString()),
-                        throwable -> Log.v(MoviesActivity.class.getName(), "Fetching failed", throwable)
-                );
-
-        textHello.setOnClickListener(v -> startActivity(new Intent(MoviesActivity.this, MovieDetailsActivity.class)));
+        movieRepository.fetchBy(POPULARITY).observe(this, movies ->
+                listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                        io.reactivex.Observable.just(movies)
+                                .flatMapIterable(list -> list)
+                                .map(Movie::getTitle)
+                                .toList()
+                                .blockingGet())
+                )
+        );
     }
 }

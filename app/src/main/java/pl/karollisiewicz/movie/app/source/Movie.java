@@ -22,6 +22,11 @@ public class Movie implements Serializable {
     @SerializedName("poster_path")
     private String posterPath;
 
+    private String overview;
+
+    @SerializedName("vote_average")
+    private double voteAverage;
+
     public long getId() {
         return id;
     }
@@ -60,5 +65,21 @@ public class Movie implements Serializable {
 
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
     }
 }

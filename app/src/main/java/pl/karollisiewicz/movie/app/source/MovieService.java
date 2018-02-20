@@ -9,4 +9,7 @@ import retrofit2.http.GET;
 public interface MovieService {
     @GET("movie/popular")
     Single<Movies> fetchPopular();
+
+    @GET("movie/top_rated")
+    Single<Movies> fetchTopRated();
 }
