@@ -8,5 +8,5 @@ import retrofit2.http.GET;
  */
 public interface MovieService {
     @GET("movie/popular")
-    Single<Object> fetchPopular();
+    Single<Movies> fetchPopular();
 }
