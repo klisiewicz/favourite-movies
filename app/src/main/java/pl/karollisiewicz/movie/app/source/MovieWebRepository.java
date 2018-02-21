@@ -10,6 +10,8 @@ import io.reactivex.Single;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
+import static pl.karollisiewicz.movie.BuildConfig.IMAGE_URL;
+
 /**
  * Repository that utilizes {@link MovieService} web service to fetch movies.
  */
@@ -32,7 +34,7 @@ public final class MovieWebRepository implements MovieRepository {
                         .setOverview(it.getOverview())
                         .setRating(it.getVoteAverage())
                         .setReleaseDate(null)
-                        .setImageUrl("http://image.tmdb.org/t/p/w185/" + it.getPosterPath())
+                        .setImageUrl(String.format("%s%s", IMAGE_URL, it.getPosterPath()))
                         .build()
                 )
                 .toList();
