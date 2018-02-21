@@ -1,13 +1,16 @@
 package pl.karollisiewicz.movie.domain;
 
-import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+
+import java.util.List;
+
+import io.reactivex.Single;
 
 /**
  * A movie repository.
  */
 public interface MovieRepository {
-    LiveData<Iterable<Movie>> fetchBy(@NonNull Criterion criterion);
+    Single<List<Movie>> fetchBy(@NonNull Criterion criterion);
 
     enum Criterion {
         POPULARITY, RATHING
