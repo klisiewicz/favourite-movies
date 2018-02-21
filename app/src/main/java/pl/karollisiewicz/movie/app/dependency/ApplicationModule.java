@@ -1,6 +1,9 @@
 package pl.karollisiewicz.movie.app.dependency;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+
+import java.util.Locale;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,5 +35,10 @@ public class ApplicationModule {
                 return AndroidSchedulers.mainThread();
             }
         };
+    }
+
+    @Provides
+    Locale getLocale(@NonNull final Context context) {
+        return context.getResources().getConfiguration().locale;
     }
 }

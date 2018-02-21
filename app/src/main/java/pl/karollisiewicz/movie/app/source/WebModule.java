@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -57,35 +58,44 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    OkHttpClient getHttpClient(@Named("api-key") @NonNull String apiKey) {
+    OkHttpClient getHttpClient(final @Named("api-key") @NonNull String apiKey, final @NonNull Locale locale) {
         final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(BODY);
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(new HeaderInterceptor());
-        builder.addInterceptor(new ApiKeyInterceptor(apiKey));
+        builder.addInterceptor(new HeaderInterceptor(locale));
+        builder.addInterceptor(new QueryInterceptor(apiKey, locale));
         builder.addInterceptor(loggingInterceptor);
 
         return builder.build();
     }
 
     private static class HeaderInterceptor implements Interceptor {
+        private final Locale locale;
+
+        private HeaderInterceptor(@NonNull final Locale locale) {
+            this.locale = locale;
+        }
+
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             final Request request = chain.request()
                     .newBuilder()
                     .addHeader("Accept", "application/json")
+                    .addHeader("Accept-Language", locale.getLanguage())
                     .build();
 
             return chain.proceed(request);
         }
     }
 
-    private static class ApiKeyInterceptor implements Interceptor {
+    private static class QueryInterceptor implements Interceptor {
         private final String apiKey;
+        private final Locale locale;
 
-        private ApiKeyInterceptor(@NonNull final String apiKey) {
+        private QueryInterceptor(@NonNull final String apiKey, @NonNull final Locale locale) {
             this.apiKey = apiKey;
+            this.locale = locale;
         }
 
         @Override
@@ -94,6 +104,7 @@ public final class WebModule {
                     .url()
                     .newBuilder()
                     .addQueryParameter("api_key", apiKey)
+                    .addQueryParameter("language", locale.getLanguage())
                     .build();
 
             final Request request = chain.request()
