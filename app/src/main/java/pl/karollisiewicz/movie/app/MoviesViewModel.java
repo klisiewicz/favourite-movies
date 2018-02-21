@@ -35,8 +35,7 @@ public final class MoviesViewModel extends ViewModel {
                 .observeOn(schedulers.getObserver())
                 .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
                 .subscribe(movies -> moviesLiveData.setValue(Resource.success(movies)),
-                        throwable -> moviesLiveData.setValue(Resource.error(throwable)))
-        ;
+                        throwable -> moviesLiveData.setValue(Resource.error(throwable)));
     }
 
     @NonNull

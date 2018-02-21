@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.2"
 
     defaultConfig {
         applicationId "pl.karollisiewicz.movie"
@@ -13,7 +13,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_URL", '"http://api.themoviedb.org/3/"'
-        buildConfigField "String", "API_KEY", '"19691af481159697c9488a6ffb5008b9"'
+        buildConfigField "String", "IMAGE_URL", '"http://image.tmdb.org/t/p/w185/"'
+        buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
     }
 
     buildTypes {
