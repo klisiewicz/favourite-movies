@@ -53,6 +53,7 @@ public final class WebModule {
     Gson getGson() {
         return new GsonBuilder()
                 .setLenient()
+                .serializeNulls()
                 .create();
     }
 
@@ -105,6 +106,7 @@ public final class WebModule {
                     .newBuilder()
                     .addQueryParameter("api_key", apiKey)
                     .addQueryParameter("language", locale.getLanguage())
+                    .addQueryParameter("region", locale.getCountry())
                     .build();
 
             final Request request = chain.request()

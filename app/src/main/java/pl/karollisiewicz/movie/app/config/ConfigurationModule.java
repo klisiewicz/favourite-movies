@@ -14,19 +14,25 @@ public final class ConfigurationModule {
 
     @Provides
     @Named("api-url")
-    public String getApiUrl() {
+    String getApiUrl() {
         return BuildConfig.API_URL;
     }
 
     @Provides
     @Named("api-key")
-    public String getApiKey() {
+    String getApiKey() {
         return BuildConfig.API_KEY;
     }
 
     @Provides
+    @Named("image-url")
+    String getImageUrl() {
+        return BuildConfig.IMAGE_URL;
+    }
+
+    @Provides
     @Named("is-debug")
-    public boolean isDebug() {
+    boolean isDebug() {
         return BuildConfig.DEBUG;
     }
 }

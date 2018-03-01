@@ -26,6 +26,10 @@ public final class Resource<T> {
         this.error = error;
     }
 
+    public static <T> Resource<T> success() {
+        return new Resource<>(SUCCESS, null, null);
+    }
+
     public static <T> Resource<T> success(@Nullable T data) {
         return new Resource<>(SUCCESS, data, null);
     }
@@ -50,10 +54,6 @@ public final class Resource<T> {
     @Nullable
     public Throwable getError() {
         return error;
-    }
-
-    public boolean isError() {
-        return error != null;
     }
 
     @Nullable

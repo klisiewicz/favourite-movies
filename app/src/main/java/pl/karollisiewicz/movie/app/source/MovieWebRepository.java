@@ -5,22 +5,28 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Single;
+import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
-
-import static pl.karollisiewicz.movie.BuildConfig.IMAGE_URL;
 
 /**
  * Repository that utilizes {@link MovieService} web service to fetch movies.
  */
 public final class MovieWebRepository implements MovieRepository {
+    private final String imageUrl;
     private final MovieService movieService;
+    private final Schedulers schedulers;
 
     @Inject
-    public MovieWebRepository(@NonNull final MovieService movieService) {
+    MovieWebRepository(@NonNull @Named("image-url") String imageUrl,
+                       @NonNull final MovieService movieService,
+                       @NonNull final Schedulers schedulers) {
+        this.imageUrl = imageUrl;
         this.movieService = movieService;
+        this.schedulers = schedulers;
     }
 
     @Override
@@ -33,10 +39,12 @@ public final class MovieWebRepository implements MovieRepository {
                         .setTitle(it.getTitle())
                         .setOverview(it.getOverview())
                         .setRating(it.getVoteAverage())
-                        .setReleaseDate(null)
-                        .setImageUrl(String.format("%s%s", IMAGE_URL, it.getPosterPath()))
+                        .setReleaseDate(it.getReleaseDate())
+                        .setImageUrl(String.format("%s%s", imageUrl, it.getPosterPath()))
                         .build()
                 )
-                .toList();
+                .toList()
+                .subscribeOn(schedulers.getSubscriber())
+                .observeOn(schedulers.getObserver());
     }
 }

@@ -15,6 +15,14 @@ public class Movies implements Serializable {
     @SerializedName("results")
     private List<Movie> movies = new ArrayList<>();
 
+    public Movies() {
+        // Required for serialization
+    }
+
+    public Movies(List<Movie> movies) {
+        this.movies = movies;
+    }
+
     public List<Movie> getMovies() {
         return movies;
     }
