@@ -1,6 +1,7 @@
 package pl.karollisiewicz.movie.domain;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
 
@@ -16,7 +17,7 @@ public final class Movie {
         imageUrl = builder.imageUrl;
         overview = builder.overview;
         rating = builder.rating;
-        releaseDate = builder.releaseDate;
+        releaseDate = builder.releaseDate != null ? new Date(builder.releaseDate.getTime()) : null;
     }
 
     public String getTitle() {
@@ -35,8 +36,9 @@ public final class Movie {
         return rating;
     }
 
+    @Nullable
     public Date getReleaseDate() {
-        return releaseDate;
+        return releaseDate != null ? new Date(releaseDate.getTime()) : null;
     }
 
     public static final class Builder {
