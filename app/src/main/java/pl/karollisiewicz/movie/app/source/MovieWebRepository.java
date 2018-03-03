@@ -12,6 +12,9 @@ import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATHING;
+
 /**
  * Repository that utilizes {@link MovieService} web service to fetch movies.
  */
@@ -31,7 +34,7 @@ public final class MovieWebRepository implements MovieRepository {
 
     @Override
     public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
-        return movieService.fetchPopular()
+        return getMoviesSingle(criterion)
                 .toObservable()
                 .map(Movies::getMovies)
                 .flatMapIterable(list -> list)
@@ -46,5 +49,11 @@ public final class MovieWebRepository implements MovieRepository {
                 .toList()
                 .subscribeOn(schedulers.getSubscriber())
                 .observeOn(schedulers.getObserver());
+    }
+
+    private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
+        if (POPULARITY == criterion) return movieService.fetchPopular();
+        else if (RATHING == criterion) return movieService.fetchTopRated();
+        else return Single.never();
     }
 }

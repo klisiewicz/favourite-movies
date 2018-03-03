@@ -14,7 +14,7 @@ android {
 
         buildConfigField "String", "API_URL", '"http://api.themoviedb.org/3/"'
         buildConfigField "String", "IMAGE_URL", '"http://image.tmdb.org/t/p/w342/"'
-        buildConfigField "String", "API_KEY", '"19691af481159697c9488a6ffb5008b9"'
+        buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
     }
 
     buildTypes {
@@ -38,6 +38,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:27.1.0"
     implementation "com.android.support:recyclerview-v7:27.1.0"
     implementation "com.android.support:design:27.1.0"
+    implementation 'com.android.support:support-v4:27.1.0'
     implementation "com.android.support.constraint:constraint-layout:1.1.0-beta5"
 
     // Picasso
@@ -48,7 +49,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:2.11"
 
     // Dagger Android
-    implementation ("com.google.dagger:dagger-android-support:2.11") {
+    implementation("com.google.dagger:dagger-android-support:2.11") {
         exclude module: 'support-v4'
     }
     annotationProcessor "com.google.dagger:dagger-android-processor:2.11"
@@ -58,7 +59,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
 
     // Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.3.0") {
+    implementation("com.squareup.retrofit2:retrofit:2.3.0") {
         exclude module: 'okhttp'
     }
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
