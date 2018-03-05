@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cinema</string>
+    <string name="app_name">Movies</string>
     <string name="description_poster">Movie poster</string>
     <string name="category_popular">Popular</string>
     <string name="category_top_rated">Top rated</string>
