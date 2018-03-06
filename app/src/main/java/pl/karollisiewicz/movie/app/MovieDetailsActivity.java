@@ -11,7 +11,7 @@ import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 
 public class MovieDetailsActivity extends AppCompatActivity {
-    private static final String MOVIE_KEY = "pl.karollisiewicz.movie-details";
+    private static final String MOVIE_KEY = "MovieDetailsActivity.Movie";
 
     public static void start(@NonNull final Context context, @NonNull final Movie movie) {
         final Intent intent = new Intent(context, MovieDetailsActivity.class);

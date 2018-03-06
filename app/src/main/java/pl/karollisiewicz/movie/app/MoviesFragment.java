@@ -36,7 +36,7 @@ import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATHING;
 
 public class MoviesFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "MoviesFragment.Type";
+    private static final String CRITERION_KEY = "MoviesFragment.Type";
 
     @BindView(R.id.container_layout)
     ViewGroup container;
@@ -79,7 +79,7 @@ public class MoviesFragment extends Fragment {
     @NonNull
     private static Bundle createBundle(@NonNull Criterion criterion) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_SECTION_NUMBER, criterion);
+        args.putSerializable(CRITERION_KEY, criterion);
         return args;
     }
 
@@ -89,12 +89,12 @@ public class MoviesFragment extends Fragment {
         AndroidSupportInjection.inject(this);
 
         final Bundle args = getArguments();
-        criterion = (Criterion) args.getSerializable(ARG_SECTION_NUMBER);
+        criterion = (Criterion) args.getSerializable(CRITERION_KEY);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this, view);
 
@@ -116,7 +116,6 @@ public class MoviesFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        recyclerView.setAdapter(adapter);
     }
 
     private void setupViewModel() {
@@ -136,14 +135,21 @@ public class MoviesFragment extends Fragment {
         if (resource == null) return;
 
         if (resource.getStatus() != LOADING) hideProgress();
-        if (resource.getStatus() == SUCCESS) adapter.setItems(resource.getData());
-        if (resource.getStatus() == ERROR) {
-            Snackbar.make(container, resource.getError().getMessage(), LENGTH_LONG).show();
-        }
+        if (resource.getStatus() == SUCCESS) populateView(resource.getData());
+        if (resource.getStatus() == ERROR) showError(resource.getError());
     }
 
     private void hideProgress() {
         progressBar.setVisibility(View.GONE);
         refreshLayout.setRefreshing(false);
+    }
+
+    private void populateView(List<Movie> movies) {
+        adapter.setItems(movies);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void showError(Throwable throwable) {
+        Snackbar.make(container, throwable.getMessage(), LENGTH_LONG).show();
     }
 }
