@@ -12,8 +12,7 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
-
-import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
+import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
 
 /**
  * ViewModel providing a list of movies to the {@link MoviesActivity}
@@ -29,8 +28,8 @@ public final class MoviesViewModel extends ViewModel {
     }
 
     @NonNull
-    LiveData<Resource<List<Movie>>> getMovies() {
-        movieRepository.fetchBy(POPULARITY)
+    LiveData<Resource<List<Movie>>> getMovies(Criterion criterion) {
+        movieRepository.fetchBy(criterion)
                 .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
                 .subscribe(movies -> moviesLiveData.setValue(Resource.success(movies)),
                         throwable -> moviesLiveData.setValue(Resource.error(throwable)));

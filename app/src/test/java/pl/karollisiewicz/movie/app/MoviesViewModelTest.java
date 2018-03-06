@@ -92,7 +92,7 @@ public class MoviesViewModelTest {
     }
 
     private void whenFetchingMovies() throws InterruptedException {
-        result = getValue(objectUnderTest.getMovies());
+        result = getValue(objectUnderTest.getMovies(POPULARITY));
     }
 
     private void thenResultIsSuccess() {

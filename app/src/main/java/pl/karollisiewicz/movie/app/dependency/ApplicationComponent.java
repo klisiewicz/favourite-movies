@@ -17,6 +17,7 @@ import pl.karollisiewicz.movie.app.source.WebModule;
         ApplicationModule.class,
         ActivityModule.class,
         ConfigurationModule.class,
+        FragmentModule.class,
         SourceModule.class,
         ViewModelModule.class,
         WebModule.class

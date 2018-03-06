@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Filmy</string>
+    <string name="category_popular">Popularne</string>
+    <string name="category_top_rated">Najwyżej ocenione</string>
+    <string name="description_poster">Plakat filmu</string>
+    <string name="description_favourite">Dodaj do ulubionych</string>
+</resources>
