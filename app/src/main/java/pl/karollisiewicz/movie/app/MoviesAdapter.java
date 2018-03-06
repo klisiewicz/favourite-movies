@@ -54,12 +54,16 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         notifyDataSetChanged();
     }
 
-    @FunctionalInterface
-    public interface MovieItemClickListener {
-        void onMovieClick();
+    void setOnItemClickListener(@Nullable final MovieItemClickListener movieItemClickListener) {
+        this.movieItemClickListener = movieItemClickListener;
     }
 
-    static final class MovieViewHolder extends RecyclerView.ViewHolder {
+    @FunctionalInterface
+    public interface MovieItemClickListener {
+        void onMovieClick(Movie movie);
+    }
+
+    final class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.text_title)
         TextView title;
@@ -70,6 +74,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         MovieViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         void bind(@NonNull final Movie movie) {
@@ -77,6 +82,14 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
             Picasso.with(poster.getContext())
                     .load(movie.getImageUrl())
                     .into(poster);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (movieItemClickListener != null) {
+                final int position = getAdapterPosition();
+                movieItemClickListener.onMovieClick(movies.get(position));
+            }
         }
     }
 }

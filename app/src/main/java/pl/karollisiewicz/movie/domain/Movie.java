@@ -3,9 +3,10 @@ package pl.karollisiewicz.movie.domain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public final class Movie {
+public final class Movie implements Serializable {
     private final String title;
     private final String imageUrl;
     private final String overview;

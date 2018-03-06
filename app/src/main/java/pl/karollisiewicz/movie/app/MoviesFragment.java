@@ -112,6 +112,7 @@ public class MoviesFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new MoviesAdapter();
+        adapter.setOnItemClickListener(movie -> MovieDetailsActivity.start(getActivity(), movie));
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
