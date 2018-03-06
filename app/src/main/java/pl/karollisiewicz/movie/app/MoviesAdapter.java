@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -60,6 +61,9 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
     static final class MovieViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.text_title)
+        TextView title;
+
         @BindView(R.id.image_poster)
         ImageView poster;
 
@@ -69,6 +73,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         }
 
         void bind(@NonNull final Movie movie) {
+            title.setText(movie.getTitle());
             Picasso.with(poster.getContext())
                     .load(movie.getImageUrl())
                     .into(poster);
