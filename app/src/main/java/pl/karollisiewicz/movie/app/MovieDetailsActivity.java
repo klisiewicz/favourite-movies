@@ -38,6 +38,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(title);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
