@@ -1,18 +1,11 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarStyle">@style/AppActionBar</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
-    </style>
-
-    <style name="AppActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <!-- remove shadow below action bar -->
-        <item name="android:elevation">0dp</item>
-        <!-- Support library compatibility -->
-        <item name="elevation">0dp</item>
     </style>
 
     <style name="AppTabLayout" parent="Widget.Design.TabLayout">

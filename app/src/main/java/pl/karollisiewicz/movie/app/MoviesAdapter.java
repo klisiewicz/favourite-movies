@@ -69,7 +69,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         TextView title;
 
         @BindView(R.id.image_poster)
-        ImageView poster;
+        ImageView posterImage;
 
         MovieViewHolder(final View itemView) {
             super(itemView);
@@ -79,9 +79,9 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
         void bind(@NonNull final Movie movie) {
             title.setText(movie.getTitle());
-            Picasso.with(poster.getContext())
+            Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
-                    .into(poster);
+                    .into(posterImage);
         }
 
         @Override
