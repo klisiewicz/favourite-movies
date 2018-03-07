@@ -5,5 +5,5 @@
     <color name="colorAccent">#EEFF41</color>
     <color name="textColorPrimary">#ffffff</color>
     <color name="textColorPrimaryDisabled">#dddddd</color>
-    <color name="tile_details_background">#99000000</color>
+    <color name="tileDetailsBackgroundColor">#77121212</color>
 </resources>

@@ -18,8 +18,9 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static pl.karollisiewicz.movie.app.MovieMatcher.hasImageUrl;
+import static pl.karollisiewicz.movie.app.MovieMatcher.hasBackDropUrl;
 import static pl.karollisiewicz.movie.app.MovieMatcher.hasOverview;
+import static pl.karollisiewicz.movie.app.MovieMatcher.hasPosterUrl;
 import static pl.karollisiewicz.movie.app.MovieMatcher.isRated;
 import static pl.karollisiewicz.movie.app.MovieMatcher.isTitled;
 import static pl.karollisiewicz.movie.app.MovieMatcher.wasReleasedOn;
@@ -40,7 +41,7 @@ public class MovieWebRepositoryTest {
     @Before
     public void beforeEach() {
         initMocks(this);
-        objectUnderTest = new MovieWebRepository(IMAGE_URL, movieService, new TestSchedulers());
+        objectUnderTest = new MovieWebRepository(new MockMovieProvider(), movieService, new TestSchedulers());
         sampleMovie = createMovie();
     }
 
@@ -68,7 +69,8 @@ public class MovieWebRepositoryTest {
                 isTitled("Title"),
                 isRated(6.66),
                 hasOverview("Overview"),
-                hasImageUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getPosterPath())),
+                hasPosterUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getPosterPath())),
+                hasBackDropUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getBackdropPath())),
                 wasReleasedOn(new Date(2017, 1, 27))
         )));
     }
@@ -81,7 +83,19 @@ public class MovieWebRepositoryTest {
         movie.setVoteAverage(6.66);
         movie.setReleaseDate(new Date(2017, 1, 27));
         movie.setPosterPath("poster.jpg");
-
+        movie.setBackdropPath("backdrop.jpg");
         return movie;
+    }
+
+    private class MockMovieProvider implements MovieImageProvider {
+        @Override
+        public String getPosterUrl(String resourceUrl) {
+            return String.format("%s%s", IMAGE_URL, resourceUrl);
+        }
+
+        @Override
+        public String getBackdropUrl(String resourceUrl) {
+            return String.format("%s%s", IMAGE_URL, resourceUrl);
+        }
     }
 }

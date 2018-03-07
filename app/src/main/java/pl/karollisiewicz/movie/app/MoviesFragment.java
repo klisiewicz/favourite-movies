@@ -32,7 +32,7 @@ import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
 import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
-import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATHING;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
 public class MoviesFragment extends Fragment {
 
@@ -67,7 +67,7 @@ public class MoviesFragment extends Fragment {
     }
 
     public static MoviesFragment newTopRatedInstance() {
-        return newInstance(RATHING);
+        return newInstance(RATING);
     }
 
     private static MoviesFragment newInstance(@NonNull final Criterion criterion) {

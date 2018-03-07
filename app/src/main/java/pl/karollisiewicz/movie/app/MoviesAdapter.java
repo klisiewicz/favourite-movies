@@ -80,7 +80,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         void bind(@NonNull final Movie movie) {
             title.setText(movie.getTitle());
             Picasso.with(poster.getContext())
-                    .load(movie.getImageUrl())
+                    .load(movie.getPosterUrl())
                     .into(poster);
         }
 

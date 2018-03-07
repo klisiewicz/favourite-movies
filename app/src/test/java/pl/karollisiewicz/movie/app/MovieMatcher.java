@@ -50,11 +50,20 @@ public final class MovieMatcher {
         };
     }
 
-    public static Matcher<Movie> hasImageUrl(final String imageUrl) {
-        return new FeatureMatcher<Movie, String>(equalTo(imageUrl), "imageUrl", "imageUrl") {
+    public static Matcher<Movie> hasPosterUrl(final String posterUrl) {
+        return new FeatureMatcher<Movie, String>(equalTo(posterUrl), "posterUrl", "posterUrl") {
             @Override
             protected String featureValueOf(final Movie actual) {
-                return actual.getImageUrl();
+                return actual.getPosterUrl();
+            }
+        };
+    }
+
+    public static Matcher<Movie> hasBackDropUrl(final String backdropUrl) {
+        return new FeatureMatcher<Movie, String>(equalTo(backdropUrl), "backdropUrl", "backdropUrl") {
+            @Override
+            protected String featureValueOf(final Movie actual) {
+                return actual.getBackdropUrl();
             }
         };
     }

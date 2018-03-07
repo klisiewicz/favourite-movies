@@ -23,6 +23,9 @@ public class Movie implements Serializable {
     @SerializedName("poster_path")
     private String posterPath;
 
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+
     private String overview;
 
     @SerializedName("vote_average")
@@ -69,6 +72,14 @@ public class Movie implements Serializable {
 
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public String getOverview() {

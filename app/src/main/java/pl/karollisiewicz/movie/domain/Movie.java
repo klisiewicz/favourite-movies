@@ -8,14 +8,16 @@ import java.util.Date;
 
 public final class Movie implements Serializable {
     private final String title;
-    private final String imageUrl;
+    private final String posterUrl;
+    private final String backdropUrl;
     private final String overview;
     private final double rating;
     private final Date releaseDate;
 
     private Movie(@NonNull final Builder builder) {
         title = builder.title;
-        imageUrl = builder.imageUrl;
+        posterUrl = builder.posterUrl;
+        backdropUrl = builder.backdropUrl;
         overview = builder.overview;
         rating = builder.rating;
         releaseDate = builder.releaseDate != null ? new Date(builder.releaseDate.getTime()) : null;
@@ -25,8 +27,12 @@ public final class Movie implements Serializable {
         return title;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public String getBackdropUrl() {
+        return backdropUrl;
     }
 
     public String getOverview() {
@@ -44,7 +50,8 @@ public final class Movie implements Serializable {
 
     public static final class Builder {
         private String title;
-        private String imageUrl;
+        private String posterUrl;
+        private String backdropUrl;
         private String overview;
         private double rating;
         private Date releaseDate;
@@ -54,8 +61,13 @@ public final class Movie implements Serializable {
             return this;
         }
 
-        public Builder setImageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
+        public Builder setPosterUrl(String posterUrl) {
+            this.posterUrl = posterUrl;
+            return this;
+        }
+
+        public Builder setBackdropUrl(String backdropUrl) {
+            this.backdropUrl = backdropUrl;
             return this;
         }
 
