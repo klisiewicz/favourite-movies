@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.karollisiewicz.movie.R;
+import pl.karollisiewicz.movie.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.movie.domain.Movie;
 
 import static java.util.Collections.emptyList;
@@ -60,7 +61,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
     @FunctionalInterface
     public interface MovieItemClickListener {
-        void onMovieClick(Movie movie);
+        void onMovieClick(Movie movie, ImageView image);
     }
 
     final class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -79,6 +80,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
         void bind(@NonNull final Movie movie) {
             title.setText(movie.getTitle());
+            posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
             Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
                     .into(posterImage);
@@ -88,7 +90,7 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         public void onClick(View v) {
             if (movieItemClickListener != null) {
                 final int position = getAdapterPosition();
-                movieItemClickListener.onMovieClick(movies.get(position));
+                movieItemClickListener.onMovieClick(movies.get(position), posterImage);
             }
         }
     }

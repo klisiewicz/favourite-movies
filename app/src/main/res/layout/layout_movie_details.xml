@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/poster_height"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/description_poster"
+            android:contentDescription="@string/poster_description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_launcher_background" />
@@ -24,7 +24,7 @@
             android:id="@+id/average_vote_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_medium"
             app:layout_constraintLeft_toRightOf="@id/poster_image"
             app:layout_constraintRight_toRightOf="parent"
@@ -63,7 +63,7 @@
                 android:gravity="end"
                 android:hint="@string/release_date"
                 android:inputType="date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textAppearance="@style/AppTextAppearance"
                 android:textColor="@color/textColorPrimary"
                 tools:text="27.12.2018" />
         </android.support.design.widget.TextInputLayout>

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/description_poster"
+        android:contentDescription="@string/poster_description"
         android:scaleType="centerCrop"
         tools:src="@drawable/ic_launcher_background" />
 

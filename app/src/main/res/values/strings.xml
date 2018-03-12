@@ -2,11 +2,13 @@
     <string name="app_name">Movies</string>
     <string name="category_popular">Popular</string>
     <string name="category_top_rated">Top rated</string>
-    <string name="description_poster">Movie poster</string>
+    <string name="poster_description">Movie poster</string>
     <string name="description_backdrop">Movie backdrop</string>
     <string name="description_favourite">Add to favourites</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release date</string>
     <string name="share">Share</string>
     <string name="overview">Synopsis</string>
+    <string name="error_net">Network error</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>

@@ -1,13 +1,16 @@
 package pl.karollisiewicz.movie.app;
 
 
+import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +41,7 @@ import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 public class MoviesFragment extends Fragment {
 
     private static final String CRITERION_KEY = "MoviesFragment.Type";
+    private static final int COLUMNS_NUMBER = 2;
 
     @BindView(R.id.container_layout)
     ViewGroup container;
@@ -112,10 +117,15 @@ public class MoviesFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new MoviesAdapter();
-        adapter.setOnItemClickListener(movie -> MovieDetailsActivity.start(getActivity(), movie));
+        adapter.setOnItemClickListener((movie, image) -> {
+            final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                    image, ViewCompat.getTransitionName(image));
+
+            MovieDetailsActivity.start(getActivity(), options, movie);
+        });
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_NUMBER));
     }
 
     private void setupViewModel() {
@@ -150,6 +160,11 @@ public class MoviesFragment extends Fragment {
     }
 
     private void showError(Throwable throwable) {
-        Snackbar.make(container, throwable.getMessage(), LENGTH_LONG).show();
+        if (throwable instanceof UnknownHostException) showMessage(R.string.error_net);
+        else showMessage(R.string.error_unknown);
+    }
+
+    private void showMessage(@StringRes int messageId) {
+        Snackbar.make(container, getString(messageId), LENGTH_LONG).show();
     }
 }

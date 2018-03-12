@@ -1,5 +1,6 @@
 package pl.karollisiewicz.movie.app;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import pl.karollisiewicz.movie.R;
+import pl.karollisiewicz.movie.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.movie.domain.Movie;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -54,10 +57,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Inject
     Locale locale;
 
-    public static void start(@NonNull final Context context, @NonNull final Movie movie) {
+    public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
+                             @NonNull final Movie movie) {
         final Intent intent = new Intent(context, MovieDetailsActivity.class);
         intent.putExtra(MOVIE_KEY, movie);
-        context.startActivity(intent);
+        context.startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -94,6 +98,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void populateViewWith(Movie movie) {
+        final String formattedDate = getFormattedDate(movie.getReleaseDate());
+        releaseDateText.setText(formattedDate);
+        averageRateText.setText(String.valueOf(movie.getRating()));
+        overviewText.setText(movie.getOverview());
+        posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
+
         Picasso.with(this)
                 .load(movie.getBackdropUrl())
                 .into(backdropImage);
@@ -101,11 +111,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(movie.getPosterUrl())
                 .into(posterImage);
-
-        final String formattedDate = getFormattedDate(movie.getReleaseDate());
-        releaseDateText.setText(formattedDate);
-        averageRateText.setText(String.valueOf(movie.getRating()));
-        overviewText.setText(movie.getOverview());
     }
 
     private String getFormattedDate(@Nullable Date date) {
@@ -114,9 +119,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (android.R.id.home == item.getItemId()) {
+            onBackPressed();
+        }
+        return true;
     }
 }

@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,7 +22,7 @@ public final class DateJsonDeserializer implements JsonDeserializer<Date> {
     public Date deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
         try {
             return dateFormat.parse(json.getAsString());
-        } catch (ParseException e) {
+        } catch (Exception e) {
             return null;
         }
     }
