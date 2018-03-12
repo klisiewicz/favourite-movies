@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.app.source.serialization.DateJsonDeserializer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -52,11 +53,11 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    Gson getGson() {
+    Gson getGson(Logger loggger) {
         return new GsonBuilder()
                 .setLenient()
                 .serializeNulls()
-                .registerTypeAdapter(Date.class, new DateJsonDeserializer())
+                .registerTypeAdapter(Date.class, new DateJsonDeserializer(loggger))
                 .create();
     }
 
