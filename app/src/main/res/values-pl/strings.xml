@@ -2,6 +2,13 @@
     <string name="app_name">Filmy</string>
     <string name="category_popular">Popularne</string>
     <string name="category_top_rated">Najwyżej ocenione</string>
-    <string name="description_poster">Plakat filmu</string>
+    <string name="poster_description">Plakat filmu</string>
+    <string name="description_backdrop">Kurtyna filmu</string>
     <string name="description_favourite">Dodaj do ulubionych</string>
+    <string name="rating">Ocena</string>
+    <string name="release_date">Data wydania</string>
+    <string name="share">Udostępnij</string>
+    <string name="overview">Streszczenie</string>
+    <string name="error_net">Błąd sieci</string>
+    <string name="error_unknown">Nieznany błąd</string>
 </resources>

@@ -13,7 +13,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_URL", '"http://api.themoviedb.org/3/"'
-        buildConfigField "String", "IMAGE_URL", '"http://image.tmdb.org/t/p/w342/"'
+        buildConfigField "String", "POSTER_URL", '"http://image.tmdb.org/t/p/w342/"'
+        buildConfigField "String", "BACKDROP_URL", '"http://image.tmdb.org/t/p/w780/"'
         buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
     }
 
@@ -38,7 +39,8 @@ dependencies {
     implementation "com.android.support:appcompat-v7:27.1.0"
     implementation "com.android.support:recyclerview-v7:27.1.0"
     implementation "com.android.support:design:27.1.0"
-    implementation 'com.android.support:support-v4:27.1.0'
+    implementation "com.android.support:support-v4:27.1.0"
+    implementation "com.android.support:cardview-v7:27.1.0"
     implementation "com.android.support.constraint:constraint-layout:1.1.0-beta5"
 
     // Picasso
@@ -72,6 +74,9 @@ dependencies {
 
     // Architecture components
     implementation "android.arch.lifecycle:extensions:1.1.0"
+
+    // Justify text views
+    compile "com.uncopt:android.justified:1.0"
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'

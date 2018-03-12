@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.reactivex.Single;
 import pl.karollisiewicz.movie.app.react.Schedulers;
@@ -13,21 +12,22 @@ import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
-import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATHING;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
 /**
  * Repository that utilizes {@link MovieService} web service to fetch movies.
  */
 public final class MovieWebRepository implements MovieRepository {
-    private final String imageUrl;
+
+    private final MovieImageProvider movieImageProvider;
     private final MovieService movieService;
     private final Schedulers schedulers;
 
     @Inject
-    MovieWebRepository(@NonNull @Named("image-url") String imageUrl,
+    MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
                        @NonNull final MovieService movieService,
                        @NonNull final Schedulers schedulers) {
-        this.imageUrl = imageUrl;
+        this.movieImageProvider = movieImageProvider;
         this.movieService = movieService;
         this.schedulers = schedulers;
     }
@@ -43,7 +43,8 @@ public final class MovieWebRepository implements MovieRepository {
                         .setOverview(it.getOverview())
                         .setRating(it.getVoteAverage())
                         .setReleaseDate(it.getReleaseDate())
-                        .setImageUrl(String.format("%s%s", imageUrl, it.getPosterPath()))
+                        .setBackdropUrl(movieImageProvider.getBackdropUrl(it.getBackdropPath()))
+                        .setPosterUrl(movieImageProvider.getPosterUrl(it.getPosterPath()))
                         .build()
                 )
                 .toList()
@@ -53,7 +54,7 @@ public final class MovieWebRepository implements MovieRepository {
 
     private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
-        else if (RATHING == criterion) return movieService.fetchTopRated();
+        else if (RATING == criterion) return movieService.fetchTopRated();
         else return Single.never();
     }
 }

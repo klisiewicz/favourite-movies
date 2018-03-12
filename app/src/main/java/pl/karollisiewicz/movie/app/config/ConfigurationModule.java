@@ -25,12 +25,6 @@ public final class ConfigurationModule {
     }
 
     @Provides
-    @Named("image-url")
-    String getImageUrl() {
-        return BuildConfig.IMAGE_URL;
-    }
-
-    @Provides
     @Named("is-debug")
     boolean isDebug() {
         return BuildConfig.DEBUG;
