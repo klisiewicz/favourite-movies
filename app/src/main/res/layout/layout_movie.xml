@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/image_poster"
+        android:id="@+id/poster_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
@@ -24,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
-            android:id="@+id/text_title"
+            android:id="@+id/title_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -34,16 +34,16 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/image_favourite"
+            app:layout_constraintRight_toLeftOf="@id/favourite_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sample movie title" />
 
         <ImageView
-            android:id="@+id/image_favourite"
+            android:id="@+id/favourite_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/description_favourite"
-            android:src="@drawable/ic_star_border"
+            android:src="@drawable/ic_favourite_border"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

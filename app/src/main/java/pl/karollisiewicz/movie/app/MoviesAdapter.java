@@ -65,10 +65,10 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
     final class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.text_title)
+        @BindView(R.id.title_text)
         TextView title;
 
-        @BindView(R.id.image_poster)
+        @BindView(R.id.poster_image)
         ImageView posterImage;
 
         MovieViewHolder(final View itemView) {

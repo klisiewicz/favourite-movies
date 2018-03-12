@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#121212</color>
+    <color name="colorPrimaryLight">#000000</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#EEFF41</color>
+    <color name="colorAccent">#FFB300</color>
+    <color name="colorAccentLight">#FFE54C</color>
     <color name="textColorPrimary">#ffffff</color>
     <color name="textColorPrimaryDisabled">#dddddd</color>
-    <color name="tileDetailsBackgroundColor">#77121212</color>
+    <color name="tileDetailsBackgroundColor">#77000000</color>
 </resources>

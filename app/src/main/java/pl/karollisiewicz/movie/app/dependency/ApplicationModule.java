@@ -16,7 +16,7 @@ import pl.karollisiewicz.movie.app.react.Schedulers;
  * Module for application-wide dependencies.
  */
 @Module
-public class ApplicationModule {
+class ApplicationModule {
     @Provides
     Context getContext(MovieApplication application) {
         return application.getApplicationContext();

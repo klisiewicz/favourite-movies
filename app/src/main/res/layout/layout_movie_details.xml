@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/poster_image"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/poster_height"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/description_poster"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/average_vote_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:layout_constraintLeft_toRightOf="@id/poster_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/average_vote_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_star"
+                android:enabled="false"
+                android:focusable="false"
+                android:gravity="end"
+                android:hint="@string/rating"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/textColorPrimary"
+                tools:text="6.66" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/release_date_text_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:layout_constraintLeft_toLeftOf="@id/average_vote_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/average_vote_label">
+
+            <EditText
+                android:id="@+id/release_date_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_calendar"
+                android:enabled="false"
+                android:focusable="false"
+                android:gravity="end"
+                android:hint="@string/release_date"
+                android:inputType="date"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/textColorPrimary"
+                tools:text="27.12.2018" />
+        </android.support.design.widget.TextInputLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
