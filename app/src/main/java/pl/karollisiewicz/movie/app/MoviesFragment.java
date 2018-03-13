@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -144,8 +145,13 @@ public class MoviesFragment extends Fragment {
         if (resource == null) return;
 
         if (resource.getStatus() != LOADING) hideProgress();
-        if (resource.getStatus() == SUCCESS) populateView(resource.getData());
-        if (resource.getStatus() == ERROR) showError(resource.getError());
+
+        if (resource.getStatus() == SUCCESS)
+            populateView(resource.getData());
+        else if (resource.getStatus() == ERROR) {
+            showError(resource.getError());
+            populateView(Collections.emptyList());
+        }
     }
 
     private void hideProgress() {
