@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -91,6 +92,10 @@ public class MoviesFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable(CRITERION_KEY, criterion);
         return args;
+    }
+
+    private static boolean isNetworkError(Throwable throwable) {
+        return throwable instanceof UnknownHostException || throwable instanceof TimeoutException;
     }
 
     @Override
@@ -169,7 +174,7 @@ public class MoviesFragment extends Fragment {
     }
 
     private void showError(Throwable throwable) {
-        if (throwable instanceof UnknownHostException) showMessage(R.string.error_net);
+        if (isNetworkError(throwable)) showMessage(R.string.error_net);
         else showMessage(R.string.error_unknown);
     }
 

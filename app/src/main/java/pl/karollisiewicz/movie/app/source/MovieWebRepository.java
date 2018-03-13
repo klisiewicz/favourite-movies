@@ -11,6 +11,7 @@ import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
@@ -35,6 +36,7 @@ public final class MovieWebRepository implements MovieRepository {
     @Override
     public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
         return getMoviesSingle(criterion)
+                .timeout(3, SECONDS)
                 .toObservable()
                 .map(Movies::getMovies)
                 .flatMapIterable(list -> list)
