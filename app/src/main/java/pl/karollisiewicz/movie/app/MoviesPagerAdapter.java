@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import pl.karollisiewicz.movie.R;
 
 public final class MoviesPagerAdapter extends FragmentStatePagerAdapter {
+    private static final int PAGE_NUMBER = 2;
+
     private final Context context;
 
-    public MoviesPagerAdapter(final Context context, final FragmentManager fm) {
+    MoviesPagerAdapter(final Context context, final FragmentManager fm) {
         super(fm);
         this.context = context;
     }
@@ -25,7 +27,7 @@ public final class MoviesPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return PAGE_NUMBER;
     }
 
     @Nullable

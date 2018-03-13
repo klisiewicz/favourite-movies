@@ -33,11 +33,14 @@ public final class MoviesViewModel extends ViewModel {
 
     @NonNull
     LiveData<Resource<List<Movie>>> getMovies(Criterion criterion) {
-        movieRepository.fetchBy(criterion)
-                .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
-                .doOnError(throwable -> logger.error(MoviesViewModel.class, throwable))
-                .subscribe(movies -> moviesLiveData.setValue(Resource.success(movies)),
-                        throwable -> moviesLiveData.setValue(Resource.error(throwable)));
+        disposables.add(
+                movieRepository.fetchBy(criterion)
+                        .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
+                        .doOnError(throwable -> logger.error(MoviesViewModel.class, throwable))
+                        .subscribe(movies -> moviesLiveData.setValue(Resource.success(movies)),
+                                throwable -> moviesLiveData.setValue(Resource.error(throwable))
+                        )
+        );
 
         return moviesLiveData;
     }

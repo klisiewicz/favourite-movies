@@ -38,18 +38,22 @@ public final class MovieWebRepository implements MovieRepository {
                 .toObservable()
                 .map(Movies::getMovies)
                 .flatMapIterable(list -> list)
-                .map(it -> new Movie.Builder()
-                        .setTitle(it.getTitle())
-                        .setOverview(it.getOverview())
-                        .setRating(it.getVoteAverage())
-                        .setReleaseDate(it.getReleaseDate())
-                        .setBackdropUrl(movieImageProvider.getBackdropUrl(it.getBackdropPath()))
-                        .setPosterUrl(movieImageProvider.getPosterUrl(it.getPosterPath()))
-                        .build()
-                )
+                .map(this::mapMovie)
                 .toList()
                 .subscribeOn(schedulers.getSubscriber())
                 .observeOn(schedulers.getObserver());
+    }
+
+    @NonNull
+    private Movie mapMovie(pl.karollisiewicz.movie.app.source.Movie movie) {
+        return new Movie.Builder()
+                .setTitle(movie.getTitle())
+                .setOverview(movie.getOverview())
+                .setRating(movie.getVoteAverage())
+                .setReleaseDate(movie.getReleaseDate())
+                .setBackdropUrl(movieImageProvider.getBackdropUrl(movie.getBackdropPath()))
+                .setPosterUrl(movieImageProvider.getPosterUrl(movie.getPosterPath()))
+                .build();
     }
 
     private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {

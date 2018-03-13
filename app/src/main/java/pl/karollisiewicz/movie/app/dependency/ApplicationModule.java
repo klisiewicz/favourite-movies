@@ -16,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.movie.app.react.Schedulers;
+import pl.karollisiewicz.snackbar.SnackbarPresenter;
 
 /**
  * Module for application-wide dependencies.
@@ -74,5 +75,11 @@ class ApplicationModule {
     @Singleton
     Locale getLocale(@NonNull final Context context) {
         return context.getResources().getConfiguration().locale;
+    }
+
+    @Provides
+    @Singleton
+    SnackbarPresenter getSnackbarManager() {
+        return SnackbarPresenter.getInstance();
     }
 }

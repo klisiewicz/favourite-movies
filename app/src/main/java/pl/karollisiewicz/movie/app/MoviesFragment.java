@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,8 +30,10 @@ import dagger.android.support.AndroidSupportInjection;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
+import pl.karollisiewicz.snackbar.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
+import static android.support.design.widget.Snackbar.make;
 import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
 import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
@@ -55,6 +56,9 @@ public class MoviesFragment extends Fragment {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+
+    @Inject
+    SnackbarPresenter snackbarPresenter;
 
     @BindView(R.id.movies_list)
     RecyclerView recyclerView;
@@ -170,6 +174,6 @@ public class MoviesFragment extends Fragment {
     }
 
     private void showMessage(@StringRes int messageId) {
-        Snackbar.make(container, getString(messageId), LENGTH_LONG).show();
+        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
     }
 }
