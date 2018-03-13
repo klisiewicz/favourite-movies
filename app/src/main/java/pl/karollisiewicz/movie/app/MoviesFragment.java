@@ -18,10 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -31,7 +29,9 @@ import dagger.android.support.AndroidSupportInjection;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
-import pl.karollisiewicz.ui.snackbar.SnackbarPresenter;
+import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
+import pl.karollisiewicz.movie.domain.exception.CommunicationException;
+import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
@@ -92,10 +92,6 @@ public final class MoviesFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable(CRITERION_KEY, criterion);
         return args;
-    }
-
-    private static boolean isNetworkError(Throwable throwable) {
-        return throwable instanceof UnknownHostException || throwable instanceof TimeoutException;
     }
 
     @Override
@@ -174,7 +170,9 @@ public final class MoviesFragment extends Fragment {
     }
 
     private void showError(Throwable throwable) {
-        if (isNetworkError(throwable)) showMessage(R.string.error_net);
+        if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
+        else if (throwable instanceof AuthorizationException)
+            showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 

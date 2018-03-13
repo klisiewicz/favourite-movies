@@ -1,4 +1,4 @@
-package pl.karollisiewicz.ui.snackbar;
+package pl.karollisiewicz.ui;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

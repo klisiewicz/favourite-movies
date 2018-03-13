@@ -2,14 +2,21 @@ package pl.karollisiewicz.movie.app.source;
 
 import android.support.annotation.NonNull;
 
+import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
+import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
+import pl.karollisiewicz.movie.domain.exception.CommunicationException;
 import pl.karollisiewicz.react.Schedulers;
+import retrofit2.HttpException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
@@ -20,17 +27,22 @@ import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
  */
 public final class MovieWebRepository implements MovieRepository {
 
+    private static final int CODE_UNAUTHORIZED = 401;
+
     private final MovieImageProvider movieImageProvider;
     private final MovieService movieService;
     private final Schedulers schedulers;
+    private final Logger logger;
 
     @Inject
     MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
                        @NonNull final MovieService movieService,
-                       @NonNull final Schedulers schedulers) {
+                       @NonNull final Schedulers schedulers,
+                       @NonNull final Logger logger) {
         this.movieImageProvider = movieImageProvider;
         this.movieService = movieService;
         this.schedulers = schedulers;
+        this.logger = logger;
     }
 
     @Override
@@ -42,8 +54,20 @@ public final class MovieWebRepository implements MovieRepository {
                 .flatMapIterable(list -> list)
                 .map(this::mapMovie)
                 .toList()
+                .doOnError(this::logError)
+                .onErrorResumeNext(this::mapError)
                 .subscribeOn(schedulers.getSubscriber())
                 .observeOn(schedulers.getObserver());
+    }
+
+    private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
+        if (POPULARITY == criterion) return movieService.fetchPopular();
+        else if (RATING == criterion) return movieService.fetchTopRated();
+        else return Single.never();
+    }
+
+    private void logError(Throwable throwable) {
+        logger.error(MovieWebRepository.class, throwable);
     }
 
     @NonNull
@@ -58,9 +82,11 @@ public final class MovieWebRepository implements MovieRepository {
                 .build();
     }
 
-    private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
-        if (POPULARITY == criterion) return movieService.fetchPopular();
-        else if (RATING == criterion) return movieService.fetchTopRated();
-        else return Single.never();
+    private SingleSource<? extends List<Movie>> mapError(Throwable throwable) {
+        if (throwable instanceof UnknownHostException || throwable instanceof TimeoutException)
+            return Single.error(new CommunicationException(throwable));
+        else if (throwable instanceof HttpException && ((HttpException) throwable).code() == CODE_UNAUTHORIZED)
+            return Single.error(new AuthorizationException(throwable));
+        else return Single.error(throwable);
     }
 }

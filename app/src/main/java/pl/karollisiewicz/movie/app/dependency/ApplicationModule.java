@@ -16,7 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.react.Schedulers;
-import pl.karollisiewicz.ui.snackbar.SnackbarPresenter;
+import pl.karollisiewicz.ui.SnackbarPresenter;
 
 /**
  * Module for application-wide dependencies.

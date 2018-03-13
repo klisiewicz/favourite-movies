@@ -45,7 +45,7 @@ public class MoviesViewModelTest {
     public void beforeEach() {
         initMocks(this);
 
-        objectUnderTest = new MoviesViewModel(repository, new ConsoleLogger());
+        objectUnderTest = new MoviesViewModel(repository);
         aMovie = new Movie.Builder().setTitle("A title").build();
     }
 
