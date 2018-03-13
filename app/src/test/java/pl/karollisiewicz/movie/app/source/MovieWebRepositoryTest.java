@@ -1,11 +1,11 @@
 package pl.karollisiewicz.movie.app.source;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -71,7 +71,7 @@ public class MovieWebRepositoryTest {
                 hasOverview("Overview"),
                 hasPosterUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getPosterPath())),
                 hasBackDropUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getBackdropPath())),
-                wasReleasedOn(new Date(2017, 1, 27))
+                wasReleasedOn(new LocalDate(2017, 1, 27))
         )));
     }
 
@@ -81,7 +81,7 @@ public class MovieWebRepositoryTest {
         movie.setTitle("Title");
         movie.setOverview("Overview");
         movie.setVoteAverage(6.66);
-        movie.setReleaseDate(new Date(2017, 1, 27));
+        movie.setReleaseDate(new LocalDate(2017, 1, 27));
         movie.setPosterPath("poster.jpg");
         movie.setBackdropPath("backdrop.jpg");
         return movie;

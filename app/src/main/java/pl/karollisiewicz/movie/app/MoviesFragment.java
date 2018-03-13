@@ -120,7 +120,6 @@ public class MoviesFragment extends Fragment {
         adapter.setOnItemClickListener((movie, image) -> {
             final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                     image, ViewCompat.getTransitionName(image));
-
             MovieDetailsActivity.start(getActivity(), options, movie);
         });
 

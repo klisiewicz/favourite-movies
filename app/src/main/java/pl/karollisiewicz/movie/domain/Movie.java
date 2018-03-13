@@ -3,8 +3,9 @@ package pl.karollisiewicz.movie.domain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.joda.time.LocalDate;
+
 import java.io.Serializable;
-import java.util.Date;
 
 public final class Movie implements Serializable {
     private final String title;
@@ -12,7 +13,7 @@ public final class Movie implements Serializable {
     private final String backdropUrl;
     private final String overview;
     private final double rating;
-    private final Date releaseDate;
+    private final LocalDate releaseDate;
 
     private Movie(@NonNull final Builder builder) {
         title = builder.title;
@@ -20,7 +21,7 @@ public final class Movie implements Serializable {
         backdropUrl = builder.backdropUrl;
         overview = builder.overview;
         rating = builder.rating;
-        releaseDate = builder.releaseDate != null ? new Date(builder.releaseDate.getTime()) : null;
+        releaseDate = builder.releaseDate;
     }
 
     public String getTitle() {
@@ -44,8 +45,8 @@ public final class Movie implements Serializable {
     }
 
     @Nullable
-    public Date getReleaseDate() {
-        return releaseDate != null ? new Date(releaseDate.getTime()) : null;
+    public LocalDate getReleaseDate() {
+        return releaseDate;
     }
 
     public static final class Builder {
@@ -54,7 +55,7 @@ public final class Movie implements Serializable {
         private String backdropUrl;
         private String overview;
         private double rating;
-        private Date releaseDate;
+        private LocalDate releaseDate;
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -81,7 +82,7 @@ public final class Movie implements Serializable {
             return this;
         }
 
-        public Builder setReleaseDate(Date releaseDate) {
+        public Builder setReleaseDate(LocalDate releaseDate) {
             this.releaseDate = releaseDate;
             return this;
         }

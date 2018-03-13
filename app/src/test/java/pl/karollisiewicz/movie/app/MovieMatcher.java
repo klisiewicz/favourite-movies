@@ -2,8 +2,7 @@ package pl.karollisiewicz.movie.app;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-
-import java.util.Date;
+import org.joda.time.LocalDate;
 
 import pl.karollisiewicz.movie.domain.Movie;
 
@@ -32,10 +31,10 @@ public final class MovieMatcher {
         };
     }
 
-    public static Matcher<Movie> wasReleasedOn(final Date date) {
-        return new FeatureMatcher<Movie, Date>(equalTo(date), "releaseDate", "releaseDate") {
+    public static Matcher<Movie> wasReleasedOn(final LocalDate date) {
+        return new FeatureMatcher<Movie, LocalDate>(equalTo(date), "releaseDate", "releaseDate") {
             @Override
-            protected Date featureValueOf(final Movie actual) {
+            protected LocalDate featureValueOf(final Movie actual) {
                 return actual.getReleaseDate();
             }
         };

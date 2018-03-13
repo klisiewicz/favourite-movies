@@ -2,8 +2,9 @@ package pl.karollisiewicz.movie.app.source;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.LocalDate;
+
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Entity that represents a Movie in the themoviedb.org service.
@@ -32,7 +33,7 @@ public class Movie implements Serializable {
     private double voteAverage;
 
     @SerializedName("release_date")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     public long getId() {
         return id;
@@ -98,11 +99,11 @@ public class Movie implements Serializable {
         this.voteAverage = voteAverage;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 }
