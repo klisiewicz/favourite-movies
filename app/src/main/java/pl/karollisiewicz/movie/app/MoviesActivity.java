@@ -1,18 +1,22 @@
 package pl.karollisiewicz.movie.app;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.karollisiewicz.movie.R;
 
-public class MoviesActivity extends AppCompatActivity {
+public final class MoviesActivity extends AppCompatActivity {
 
-    @BindView(R.id.tvHello)
-    TextView textHello;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,12 @@ public class MoviesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movies);
         ButterKnife.bind(this);
 
-        textHello.setOnClickListener(v -> startActivity(new Intent(MoviesActivity.this, MovieDetailsActivity.class)));
+        setupTabs();
+    }
+
+    private void setupTabs() {
+        PagerAdapter adapter = new MoviesPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }
