@@ -7,9 +7,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
+import pl.karollisiewicz.react.Schedulers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;

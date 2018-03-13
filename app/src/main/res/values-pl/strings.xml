@@ -9,6 +9,6 @@
     <string name="release_date">Data wydania</string>
     <string name="share">Udostępnij</string>
     <string name="overview">Streszczenie</string>
-    <string name="error_net">Błąd sieci</string>
+    <string name="error_net">Nieudane pobieranie filmów</string>
     <string name="error_unknown">Nieznany błąd</string>
 </resources>

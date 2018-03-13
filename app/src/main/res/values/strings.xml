@@ -9,6 +9,6 @@
     <string name="release_date">Release date</string>
     <string name="share">Share</string>
     <string name="overview">Synopsis</string>
-    <string name="error_net">Network error</string>
+    <string name="error_net">Failed to fetch movies</string>
     <string name="error_unknown">Unknown error</string>
 </resources>

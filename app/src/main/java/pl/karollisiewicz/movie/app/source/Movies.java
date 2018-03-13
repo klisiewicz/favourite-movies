@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Entity that represents a list of Movies in the themoviedb.org service.
  */
-public class Movies implements Serializable {
+class Movies implements Serializable {
     private static final long serialVersionUID = -7973336155188735327L;
 
     @SerializedName("results")

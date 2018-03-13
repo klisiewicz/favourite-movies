@@ -15,14 +15,14 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.app.MovieApplication;
-import pl.karollisiewicz.movie.app.react.Schedulers;
-import pl.karollisiewicz.snackbar.SnackbarPresenter;
+import pl.karollisiewicz.react.Schedulers;
+import pl.karollisiewicz.ui.snackbar.SnackbarPresenter;
 
 /**
  * Module for application-wide dependencies.
  */
 @Module
-class ApplicationModule {
+final class ApplicationModule {
     @Provides
     Context getContext(MovieApplication application) {
         return application.getApplicationContext();

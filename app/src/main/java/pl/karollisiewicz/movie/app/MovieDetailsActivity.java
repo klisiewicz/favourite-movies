@@ -33,7 +33,7 @@ import pl.karollisiewicz.movie.domain.Movie;
 
 import static android.view.View.GONE;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public final class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "MovieDetailsActivity.Movie";
 
     @BindView(R.id.toolbar)

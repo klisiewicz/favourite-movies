@@ -31,7 +31,7 @@ import dagger.android.support.AndroidSupportInjection;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
-import pl.karollisiewicz.snackbar.SnackbarPresenter;
+import pl.karollisiewicz.ui.snackbar.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
@@ -41,7 +41,7 @@ import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
-public class MoviesFragment extends Fragment {
+public final class MoviesFragment extends Fragment {
 
     private static final String CRITERION_KEY = "MoviesFragment.Type";
     private static final int COLUMNS_NUMBER = 2;

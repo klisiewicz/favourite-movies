@@ -7,8 +7,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import pl.karollisiewicz.movie.BuildConfig;
-import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.MovieRepository;
+import pl.karollisiewicz.react.Schedulers;
 
 /**
  * Dependency module for all data sources related dependencies.

@@ -7,6 +7,9 @@ import org.joda.time.LocalDate;
 
 import java.io.Serializable;
 
+/**
+ * Movie representation.
+ */
 public final class Movie implements Serializable {
     private final String title;
     private final String posterUrl;

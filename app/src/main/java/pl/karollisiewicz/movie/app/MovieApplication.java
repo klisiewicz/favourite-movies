@@ -14,7 +14,7 @@ import dagger.android.HasActivityInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import pl.karollisiewicz.movie.app.dependency.DaggerApplicationComponent;
 
-public class MovieApplication extends Application implements HasActivityInjector, HasSupportFragmentInjector {
+public final class MovieApplication extends Application implements HasActivityInjector, HasSupportFragmentInjector {
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 

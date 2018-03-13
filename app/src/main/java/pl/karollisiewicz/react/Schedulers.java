@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.react;
+package pl.karollisiewicz.react;
 
 import io.reactivex.Scheduler;
 

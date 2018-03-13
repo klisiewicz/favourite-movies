@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import pl.karollisiewicz.log.Logger;
 
 /**
- * Deserializer for {@link java.util.Date} objects
+ * Deserializer for {@link java.util.Date} objects.
  */
 public final class DateJsonDeserializer implements JsonDeserializer<LocalDate> {
     private final Logger logger;
