@@ -10,7 +10,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.karollisiewicz.movie.R;
 
-public class MoviesActivity extends AppCompatActivity {
+public final class MoviesActivity extends AppCompatActivity {
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;

@@ -1,21 +1,29 @@
 package pl.karollisiewicz.movie.app.source;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.net.UnknownHostException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
+import okhttp3.internal.http.RealResponseBody;
+import pl.karollisiewicz.movie.app.ConsoleLogger;
 import pl.karollisiewicz.movie.app.react.TestSchedulers;
 import pl.karollisiewicz.movie.domain.MovieRepository;
+import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
+import pl.karollisiewicz.movie.domain.exception.CommunicationException;
+import retrofit2.HttpException;
+import retrofit2.Response;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static pl.karollisiewicz.movie.app.MovieMatcher.hasBackDropUrl;
@@ -38,10 +46,12 @@ public class MovieWebRepositoryTest {
 
     private Movie sampleMovie;
 
+    private Exception exception;
+
     @Before
     public void beforeEach() {
         initMocks(this);
-        objectUnderTest = new MovieWebRepository(new MockMovieProvider(), movieService, new TestSchedulers());
+        objectUnderTest = new MovieWebRepository(new MockMovieProvider(), movieService, new TestSchedulers(), new ConsoleLogger());
         sampleMovie = createMovie();
     }
 
@@ -54,12 +64,48 @@ public class MovieWebRepositoryTest {
         thenMoviesAreReturned();
     }
 
+    @Test
+    public void whenClientIsNotAuthorized_UnauthorizedErrorIsReturned() {
+        givenUnauthorizedService();
+
+        whenFetchingPopularMovies();
+
+        thenUnauthorizedErrorIsReturned();
+    }
+
+    @Test
+    public void whenHostIsUnreachable_CommunicationErrorIsReturned() {
+        givenUnreachableHost();
+
+        whenFetchingPopularMovies();
+
+        thenCommunicationErrorIsReturned();
+    }
+
     private void givenServiceReturningMovies() {
-        when(movieService.fetchPopular()).thenReturn(Single.just(new Movies(Collections.singletonList(sampleMovie))));
+        when(movieService.fetchPopular()).thenReturn(
+                Single.just(new Movies(Collections.singletonList(sampleMovie))))
+        ;
+    }
+
+    private void givenUnauthorizedService() {
+        when(movieService.fetchPopular()).thenReturn(
+                Single.error(new HttpException(Response.error(401, new RealResponseBody(null, null))))
+        );
+    }
+
+    private void givenUnreachableHost() {
+        when(movieService.fetchPopular()).thenReturn(
+                Single.error(new UnknownHostException())
+        );
     }
 
     private void whenFetchingPopularMovies() {
-        popularMovies = objectUnderTest.fetchBy(POPULARITY).blockingGet();
+        try {
+            popularMovies = objectUnderTest.fetchBy(POPULARITY).blockingGet();
+        } catch (Exception e) {
+            this.exception = e;
+        }
     }
 
     private void thenMoviesAreReturned() {
@@ -71,8 +117,16 @@ public class MovieWebRepositoryTest {
                 hasOverview("Overview"),
                 hasPosterUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getPosterPath())),
                 hasBackDropUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getBackdropPath())),
-                wasReleasedOn(new Date(2017, 1, 27))
+                wasReleasedOn(new LocalDate(2017, 1, 27))
         )));
+    }
+
+    private void thenUnauthorizedErrorIsReturned() {
+        assertThat(exception, instanceOf(AuthorizationException.class));
+    }
+
+    private void thenCommunicationErrorIsReturned() {
+        assertThat(exception, instanceOf(CommunicationException.class));
     }
 
     private Movie createMovie() {
@@ -81,7 +135,7 @@ public class MovieWebRepositoryTest {
         movie.setTitle("Title");
         movie.setOverview("Overview");
         movie.setVoteAverage(6.66);
-        movie.setReleaseDate(new Date(2017, 1, 27));
+        movie.setReleaseDate(new LocalDate(2017, 1, 27));
         movie.setPosterPath("poster.jpg");
         movie.setBackdropPath("backdrop.jpg");
         return movie;

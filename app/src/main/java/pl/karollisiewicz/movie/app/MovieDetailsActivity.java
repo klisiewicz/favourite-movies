@@ -17,8 +17,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.util.Date;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -30,7 +31,9 @@ import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.movie.domain.Movie;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+import static android.view.View.GONE;
+
+public final class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "MovieDetailsActivity.Movie";
 
     @BindView(R.id.toolbar)
@@ -113,9 +116,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .into(posterImage);
     }
 
-    private String getFormattedDate(@Nullable Date date) {
-        final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, locale);
-        return date != null ? dateFormat.format(date) : "";
+    private String getFormattedDate(@Nullable LocalDate date) {
+        return date != null ? date.toString(DateTimeFormat.longDate().withLocale(locale)) : "";
     }
 
     @Override
@@ -131,5 +133,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        floatingActionButton.setVisibility(GONE);
+        super.onBackPressed();
     }
 }

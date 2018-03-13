@@ -5,8 +5,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.joda.time.LocalDate;
+
 import java.io.IOException;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.inject.Named;
@@ -36,7 +37,7 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    public MovieService getMovieService(Retrofit retrofit) {
+    MovieService getMovieService(Retrofit retrofit) {
         return retrofit.create(MovieService.class);
     }
 
@@ -57,7 +58,7 @@ public final class WebModule {
         return new GsonBuilder()
                 .setLenient()
                 .serializeNulls()
-                .registerTypeAdapter(Date.class, new DateJsonDeserializer(loggger))
+                .registerTypeAdapter(LocalDate.class, new DateJsonDeserializer(loggger))
                 .create();
     }
 

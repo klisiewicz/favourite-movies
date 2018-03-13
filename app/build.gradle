@@ -76,7 +76,10 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.0"
 
     // Justify text views
-    compile "com.uncopt:android.justified:1.0"
+    implementation "com.uncopt:android.justified:1.0"
+
+    // Joda Time
+    implementation "net.danlew:android.joda:2.9.9.2"
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'

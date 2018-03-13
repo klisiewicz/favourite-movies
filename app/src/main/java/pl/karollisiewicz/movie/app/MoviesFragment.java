@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,15 +29,19 @@ import dagger.android.support.AndroidSupportInjection;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
+import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
+import pl.karollisiewicz.movie.domain.exception.CommunicationException;
+import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
+import static android.support.design.widget.Snackbar.make;
 import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
 import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
-public class MoviesFragment extends Fragment {
+public final class MoviesFragment extends Fragment {
 
     private static final String CRITERION_KEY = "MoviesFragment.Type";
     private static final int COLUMNS_NUMBER = 2;
@@ -54,6 +57,9 @@ public class MoviesFragment extends Fragment {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+
+    @Inject
+    SnackbarPresenter snackbarPresenter;
 
     @BindView(R.id.movies_list)
     RecyclerView recyclerView;
@@ -120,7 +126,6 @@ public class MoviesFragment extends Fragment {
         adapter.setOnItemClickListener((movie, image) -> {
             final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                     image, ViewCompat.getTransitionName(image));
-
             MovieDetailsActivity.start(getActivity(), options, movie);
         });
 
@@ -145,8 +150,13 @@ public class MoviesFragment extends Fragment {
         if (resource == null) return;
 
         if (resource.getStatus() != LOADING) hideProgress();
-        if (resource.getStatus() == SUCCESS) populateView(resource.getData());
-        if (resource.getStatus() == ERROR) showError(resource.getError());
+
+        if (resource.getStatus() == SUCCESS)
+            populateView(resource.getData());
+        else if (resource.getStatus() == ERROR) {
+            showError(resource.getError());
+            populateView(Collections.emptyList());
+        }
     }
 
     private void hideProgress() {
@@ -160,11 +170,13 @@ public class MoviesFragment extends Fragment {
     }
 
     private void showError(Throwable throwable) {
-        if (throwable instanceof UnknownHostException) showMessage(R.string.error_net);
+        if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
+        else if (throwable instanceof AuthorizationException)
+            showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 
     private void showMessage(@StringRes int messageId) {
-        Snackbar.make(container, getString(messageId), LENGTH_LONG).show();
+        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
     }
 }

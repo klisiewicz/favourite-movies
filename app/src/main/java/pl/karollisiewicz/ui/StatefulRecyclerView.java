@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+/**
+ * Recycler view that is capable of storing and restoring it's state.
+ */
 public final class StatefulRecyclerView extends RecyclerView {
     private static final String SAVED_SUPER_STATE = "StatefulRecyclerView.SuperState";
     private static final String SAVED_LAYOUT_MANAGER = "StatefulRecyclerView.LayoutState";

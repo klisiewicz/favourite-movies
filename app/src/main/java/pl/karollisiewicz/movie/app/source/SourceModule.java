@@ -6,9 +6,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.BuildConfig;
-import pl.karollisiewicz.movie.app.react.Schedulers;
 import pl.karollisiewicz.movie.domain.MovieRepository;
+import pl.karollisiewicz.react.Schedulers;
 
 /**
  * Dependency module for all data sources related dependencies.
@@ -35,7 +36,8 @@ public class SourceModule {
     @Singleton
     MovieRepository getMovieRepository(@NonNull final MovieImageProvider movieImageProvider,
                                        @NonNull final MovieService movieService,
-                                       @NonNull final Schedulers schedulers) {
-        return new MovieWebRepository(movieImageProvider, movieService, schedulers);
+                                       @NonNull final Schedulers schedulers,
+                                       @NonNull final Logger logger) {
+        return new MovieWebRepository(movieImageProvider, movieService, schedulers, logger);
     }
 }
