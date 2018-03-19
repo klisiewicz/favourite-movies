@@ -9,6 +9,7 @@ import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.movie.app.ViewModelModule;
 import pl.karollisiewicz.movie.app.config.ConfigurationModule;
 import pl.karollisiewicz.movie.app.data.SourceModule;
+import pl.karollisiewicz.movie.app.data.source.db.DatabaseModule;
 import pl.karollisiewicz.movie.app.data.source.web.WebModule;
 
 @Singleton
@@ -17,6 +18,7 @@ import pl.karollisiewicz.movie.app.data.source.web.WebModule;
         ApplicationModule.class,
         ActivityModule.class,
         ConfigurationModule.class,
+        DatabaseModule.class,
         FragmentModule.class,
         SourceModule.class,
         ViewModelModule.class,
