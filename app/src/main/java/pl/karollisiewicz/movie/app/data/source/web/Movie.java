@@ -14,12 +14,7 @@ public class Movie implements Serializable {
 
     private long id;
 
-    @SerializedName("vote_count")
-    private int voteCount;
-
     private String title;
-
-    private double popularity;
 
     @SerializedName("poster_path")
     private String posterPath;
@@ -43,28 +38,12 @@ public class Movie implements Serializable {
         this.id = id;
     }
 
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
     }
 
     public String getPosterPath() {
