@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data;
 
 import android.support.annotation.NonNull;
 
@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.BuildConfig;
+import pl.karollisiewicz.movie.app.data.source.web.MovieService;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.react.Schedulers;
 
@@ -18,7 +19,7 @@ import pl.karollisiewicz.react.Schedulers;
 public class SourceModule {
     @Provides
     @Singleton
-    MovieImageProvider getImageProvider() {
+    public MovieImageProvider getImageProvider() {
         return new MovieImageProvider() {
             @Override
             public String getPosterUrl(String resourceUrl) {
@@ -34,10 +35,10 @@ public class SourceModule {
 
     @Provides
     @Singleton
-    MovieRepository getMovieRepository(@NonNull final MovieImageProvider movieImageProvider,
-                                       @NonNull final MovieService movieService,
-                                       @NonNull final Schedulers schedulers,
-                                       @NonNull final Logger logger) {
+    public MovieRepository getMovieRepository(@NonNull final MovieImageProvider movieImageProvider,
+                                              @NonNull final MovieService movieService,
+                                              @NonNull final Schedulers schedulers,
+                                              @NonNull final Logger logger) {
         return new MovieWebRepository(movieImageProvider, movieService, schedulers, logger);
     }
 }

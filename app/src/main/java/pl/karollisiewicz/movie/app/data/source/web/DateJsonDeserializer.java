@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source.serialization;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

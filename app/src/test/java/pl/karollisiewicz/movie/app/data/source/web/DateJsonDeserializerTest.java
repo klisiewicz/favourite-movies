@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source.serialization;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;

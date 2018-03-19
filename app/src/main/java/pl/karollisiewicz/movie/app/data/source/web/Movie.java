@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import com.google.gson.annotations.SerializedName;
 

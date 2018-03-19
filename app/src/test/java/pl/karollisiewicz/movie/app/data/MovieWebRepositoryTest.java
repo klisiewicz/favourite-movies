@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -12,6 +12,9 @@ import java.util.List;
 import io.reactivex.Single;
 import okhttp3.internal.http.RealResponseBody;
 import pl.karollisiewicz.movie.app.ConsoleLogger;
+import pl.karollisiewicz.movie.app.data.source.web.Movie;
+import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.app.react.TestSchedulers;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;

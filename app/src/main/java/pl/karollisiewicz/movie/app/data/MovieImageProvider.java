@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data;
 
 public interface MovieImageProvider {
     String getPosterUrl(String resourceUrl);

@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Entity that represents a list of Movies in the themoviedb.org service.
  */
-class Movies implements Serializable {
+public final class Movies implements Serializable {
     private static final long serialVersionUID = -7973336155188735327L;
 
     @SerializedName("results")

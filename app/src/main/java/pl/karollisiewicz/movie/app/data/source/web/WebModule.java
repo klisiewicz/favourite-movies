@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import android.support.annotation.NonNull;
 
@@ -22,7 +22,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.karollisiewicz.log.Logger;
-import pl.karollisiewicz.movie.app.source.serialization.DateJsonDeserializer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -37,13 +36,13 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    MovieService getMovieService(Retrofit retrofit) {
+    public MovieService getMovieService(Retrofit retrofit) {
         return retrofit.create(MovieService.class);
     }
 
     @Provides
     @Singleton
-    Retrofit getRetrofit(@Named("api-url") String apiUrl, final Gson gson, OkHttpClient httpClient) {
+    public Retrofit getRetrofit(@Named("api-url") String apiUrl, final Gson gson, OkHttpClient httpClient) {
         return new Retrofit.Builder()
                 .baseUrl(apiUrl)
                 .client(httpClient)
@@ -64,7 +63,7 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    OkHttpClient getHttpClient(final @Named("api-key") @NonNull String apiKey, final @NonNull Locale locale) {
+    public OkHttpClient getHttpClient(final @Named("api-key") @NonNull String apiKey, final @NonNull Locale locale) {
         final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(BODY);
 

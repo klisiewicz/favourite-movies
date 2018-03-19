@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data;
 
 import android.support.annotation.NonNull;
 
@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
@@ -35,10 +37,10 @@ public final class MovieWebRepository implements MovieRepository {
     private final Logger logger;
 
     @Inject
-    MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
-                       @NonNull final MovieService movieService,
-                       @NonNull final Schedulers schedulers,
-                       @NonNull final Logger logger) {
+    public MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
+                              @NonNull final MovieService movieService,
+                              @NonNull final Schedulers schedulers,
+                              @NonNull final Logger logger) {
         this.movieImageProvider = movieImageProvider;
         this.movieService = movieService;
         this.schedulers = schedulers;
@@ -71,7 +73,7 @@ public final class MovieWebRepository implements MovieRepository {
     }
 
     @NonNull
-    private Movie mapMovie(pl.karollisiewicz.movie.app.source.Movie movie) {
+    private Movie mapMovie(pl.karollisiewicz.movie.app.data.source.web.Movie movie) {
         return new Movie.Builder()
                 .setTitle(movie.getTitle())
                 .setOverview(movie.getOverview())

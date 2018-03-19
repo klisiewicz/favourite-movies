@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.source;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
