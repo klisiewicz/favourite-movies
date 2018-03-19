@@ -8,14 +8,16 @@ import dagger.Module;
 import dagger.Provides;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.BuildConfig;
+import pl.karollisiewicz.movie.app.data.source.db.DatabaseModule;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.WebModule;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.react.Schedulers;
 
 /**
  * Dependency module for all data sources related dependencies.
  */
-@Module
+@Module(includes = {WebModule.class, DatabaseModule.class})
 public class SourceModule {
     @Provides
     @Singleton

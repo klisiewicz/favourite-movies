@@ -17,12 +17,36 @@ public final class MovieContract {
         throw new UnsupportedOperationException("No instances of this class should be created.");
     }
 
-    public static final class MovieEntry implements BaseColumns {
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).appendPath(FAVOURITES_PATH).build();
-        public static final String TABLE_NAME = "favourite_movies";
-        public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_POSTER_PATH = "poster_path";
-        public static final String COLUMN_VOTE_AVERAGE = "vote_average";
-        public static final String RELEASE_DATE = "release_date";
+    static final class MovieEntry implements BaseColumns {
+        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).appendPath(FAVOURITES_PATH).build();
+        static final String TABLE_NAME = "favourite_movies";
+
+        enum Column {
+            ID(MovieEntry._ID, "INTEGER PRIMARY KEY"),
+            TITLE("title", "TEXT", "NOT NULL"),
+            POSTER_PATH("poster_path", "TEXT"),
+            RELEASE_DATE("release_date", "TEXT"),
+            VOTE_AVERAGE("vote_average", "REAL");
+
+            private final String name;
+            private final String type;
+            private final String properties;
+
+            Column(String name, String type) {
+                this(name, type, "");
+            }
+
+            Column(String name, String type, String properties) {
+                this.name = name;
+                this.type = type;
+                this.properties = properties;
+            }
+
+
+            @Override
+            public String toString() {
+                return String.format("%s %s %s", name, type, properties);
+            }
+        }
     }
 }
