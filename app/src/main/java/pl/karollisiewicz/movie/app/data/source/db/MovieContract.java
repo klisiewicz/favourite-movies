@@ -8,17 +8,16 @@ import android.provider.BaseColumns;
  * Favourite movies database contract.
  */
 public final class MovieContract {
-    static final String AUTHORITY = "pl.karollisiewicz.movie";
-    static final Uri BASE_CONTENT_URI = Uri.parse(String.format("%s%s", "content://", AUTHORITY));
-    static final String MOVIES_PATH = "movies";
-    static final String FAVOURITES_PATH = "favourites";
+    public static final String AUTHORITY = "pl.karollisiewicz.movie";
+    public static final Uri BASE_CONTENT_URI = Uri.parse(String.format("%s%s", "content://", AUTHORITY));
+    public static final String MOVIES_PATH = "movies";
 
     private MovieContract() {
         throw new UnsupportedOperationException("No instances of this class should be created.");
     }
 
-    static final class MovieEntry implements BaseColumns {
-        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).appendPath(FAVOURITES_PATH).build();
+    public static final class MovieEntry implements BaseColumns {
+        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
         static final String TABLE_NAME = "favourite_movies";
 
         enum Column {
