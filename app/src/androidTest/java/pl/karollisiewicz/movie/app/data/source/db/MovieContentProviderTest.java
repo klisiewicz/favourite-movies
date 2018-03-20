@@ -1,43 +1,41 @@
 package pl.karollisiewicz.movie.app.data.source.db;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
+import android.database.SQLException;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.ProviderTestCase2;
+import android.test.mock.MockContentResolver;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.TABLE_NAME;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.ID;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.TITLE;
 
 @RunWith(AndroidJUnit4.class)
-public class MovieContentProviderTest {
-    private SQLiteDatabase database;
-    private Context context;
+public class MovieContentProviderTest extends ProviderTestCase2 {
+    private MockContentResolver mockContentResolver;
+//    private SQLiteDatabase database;
+//    private Context context;
 
-    @Before
-    public void beforeEach() {
-        context = InstrumentationRegistry.getTargetContext();
-        final MovieDatabase movieDatabase = new MovieDatabase(context);
-        database = movieDatabase.getWritableDatabase();
+    public MovieContentProviderTest() {
+        super(MovieContentProvider.class, MovieContract.AUTHORITY);
     }
 
-    @Test
-    public void authorityShouldBeEqualToPackageName() throws Exception {
-        final String packageName = context.getPackageName();
-        final ComponentName componentName = new ComponentName(packageName, MovieContentProvider.class.getName());
-        final PackageManager packageManager = context.getPackageManager();
-        final ProviderInfo providerInfo = packageManager.getProviderInfo(componentName, 0);
-
-        assertThat(providerInfo.authority, is(packageName));
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        setContext(InstrumentationRegistry.getTargetContext());
+        super.setUp();
     }
 
     @Test
@@ -64,8 +62,42 @@ public class MovieContentProviderTest {
         assertThat(actualMatchCode, is(MovieContentProvider.MOVIE_WITH_ID));
     }
 
-    @After
-    public void afterEach() {
-        database.delete(TABLE_NAME, null, null);
+    @Test
+    public void whenMovieContentValuesAreValid_ItIsInserted() {
+        final ContentValues validMovie = validMovie();
+
+        final Uri uri = getMockContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, validMovie);
+
+        assertThat(uri, is(not(nullValue())));
+    }
+
+    @Test
+    public void whenMovieContentValuesAreInvalid_AnExceptionIsThrown() {
+        final ContentValues invalidMovie = invalidMovie();
+
+        try {
+            final Uri uri = getMockContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, invalidMovie);
+            fail("No exception thrown.");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(SQLException.class)));
+        }
+    }
+
+    @NonNull
+    private ContentValues validMovie() {
+        return getContentValues(6, "A Title");
+    }
+
+    @NonNull
+    private ContentValues invalidMovie() {
+        return getContentValues(9, null);
+    }
+
+    @NonNull
+    private ContentValues getContentValues(int id, String title) {
+        final ContentValues contentValues = new ContentValues();
+        contentValues.put(ID.getName(), id);
+        contentValues.put(TITLE.getName(), title);
+        return contentValues;
     }
 }

@@ -24,6 +24,7 @@ public final class MovieContract {
             ID(MovieEntry._ID, "INTEGER PRIMARY KEY"),
             TITLE("title", "TEXT", "NOT NULL"),
             POSTER_PATH("poster_path", "TEXT"),
+            BACKDROP_PATH("backdrop_path", "TEXT"),
             RELEASE_DATE("release_date", "TEXT"),
             VOTE_AVERAGE("vote_average", "REAL");
 
@@ -41,6 +42,9 @@ public final class MovieContract {
                 this.properties = properties;
             }
 
+            public String getName() {
+                return name;
+            }
 
             @Override
             public String toString() {
