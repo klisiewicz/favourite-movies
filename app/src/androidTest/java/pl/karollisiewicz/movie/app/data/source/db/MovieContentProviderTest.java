@@ -9,6 +9,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ProviderTestCase2;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,8 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     private static final int INVALID_ID = Integer.MAX_VALUE;
     private static final String TITLE = "Title";
 
+    private Cursor cursor;
+
     public MovieContentProviderTest() {
         super(MovieContentProvider.class, MovieContract.AUTHORITY);
     }
@@ -40,11 +43,8 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
 
     @Test
     public void shouldMatchMoviesUri() {
-        // Given: Movies Uri
-        final Uri moviesUri = CONTENT_URI;
-
         // When: Matching movies code
-        int actualMatchCode = MovieContentProvider.URI_MATCHER.match(moviesUri);
+        int actualMatchCode = MovieContentProvider.URI_MATCHER.match(CONTENT_URI);
 
         // Then: Code is equal to Movies constant
         assertThat(actualMatchCode, is(MovieContentProvider.MOVIES));
@@ -103,69 +103,82 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
 
     @Test
     public void whenNoRecordsInDatabase_EmptyCursorIsReturned() {
-        // Given: Empty database
+        givenEmptyDatabase();
 
-        // When: Querying movies
-        try (final Cursor cursor = getMockContentResolver().query(CONTENT_URI,
-                null, null, null, null)) {
+        whenFetchingAllMovies();
 
-            // Then: Cursor is empty
-            assertThat(cursor, is(not(nullValue())));
-            assertThat(cursor.getCount(), is(0));
-        }
+        thenCursorIsEmpty();
     }
 
     @Test
     public void whenThereAreRecordsInTheDatabase_CursorContainsAllOfThem() {
-        // Given:
-        getMockContentResolver().insert(CONTENT_URI, validMovie());
+        givenDatabaseWithMovie();
 
-        // When:
-        try (final Cursor cursor = getMockContentResolver().query(CONTENT_URI,
-                null, null, null, null)) {
+        whenFetchingAllMovies();
 
-            // Then: Cursor contains records
-            assertThat(cursor, is(not(nullValue())));
-            assertThat(cursor.getCount(), is(1));
-            cursor.moveToFirst();
-            assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(6));
-            assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(TITLE));
-        }
+        thenCursorIsNotEmpty();
+        thenFirstRecordHasIdAndTitle(ID, TITLE);
     }
 
     @Test
     public void whenThereIsNoRecordWithGivenId_CursorIsEmpty() {
-        // Given:
-        getMockContentResolver().insert(CONTENT_URI, validMovie());
+        givenDatabaseWithMovie(ID, TITLE);
 
-        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(INVALID_ID)).build();
+        whenFetchingMovieWithId(INVALID_ID);
 
-        // When:
-        try (final Cursor cursor = getMockContentResolver().query(movieUri,
-                null, null, null, null)) {
-            // Then: Cursor is empty
-            assertThat(cursor, is(not(nullValue())));
-            assertThat(cursor.getCount(), is(0));
-        }
+        thenCursorIsEmpty();
     }
 
     @Test
     public void whenThereIARecordWithGivenId_CursorContainsIt() {
-        // Given:
-        getMockContentResolver().insert(CONTENT_URI, validMovie());
+        givenDatabaseWithMovie(ID, TITLE);
 
-        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(ID)).build();
+        whenFetchingMovieWithId(ID);
 
-        // When:
-        try (final Cursor cursor = getMockContentResolver().query(movieUri,
-                null, null, null, null)) {
-            // Then: Cursor is empty
-            assertThat(cursor, is(not(nullValue())));
-            assertThat(cursor.getCount(), is(1));
-            cursor.moveToFirst();
-            assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(6));
-            assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(TITLE));
-        }
+        thenCursorIsNotEmpty();
+        thenFirstRecordHasIdAndTitle(ID, TITLE);
+    }
 
+    private void givenEmptyDatabase() {
+        // Do nothing - database should be empty
+    }
+
+    private void givenDatabaseWithMovie() {
+        givenDatabaseWithMovie(ID, TITLE);
+    }
+
+    private void givenDatabaseWithMovie(int id, String title) {
+        getMockContentResolver().insert(CONTENT_URI, getContentValues(id, title));
+    }
+
+    private void whenFetchingAllMovies() {
+        cursor = getMockContentResolver().query(CONTENT_URI, null, null, null, null);
+    }
+
+    private void whenFetchingMovieWithId(int id) {
+        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
+        cursor = getMockContentResolver().query(movieUri, null, null, null, null);
+    }
+
+    private void thenCursorIsEmpty() {
+        assertThat(cursor, is(not(nullValue())));
+        assertThat(cursor.getCount(), is(0));
+    }
+
+    private void thenCursorIsNotEmpty() {
+        assertThat(cursor, is(not(nullValue())));
+        assertThat(cursor.getCount(), is(1));
+    }
+
+    private void thenFirstRecordHasIdAndTitle(int id, String title) {
+        cursor.moveToFirst();
+        assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(id));
+        assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(title));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        if (cursor != null) cursor.close();
     }
 }
