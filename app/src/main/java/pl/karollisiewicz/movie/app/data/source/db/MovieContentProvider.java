@@ -43,7 +43,7 @@ public class MovieContentProvider extends ContentProvider {
         int match = URI_MATCHER.match(uri);
 
         if (match == MOVIES) return fetchAll(uri, projection, selection, selectionArgs, sortOrder);
-        if (match == MOVIE_WITH_ID)
+        else if (match == MOVIE_WITH_ID)
             return fetchById(uri, projection, selection, selectionArgs, sortOrder);
         else throw new IllegalArgumentException("Unknown uri: " + uri);
     }
@@ -68,7 +68,7 @@ public class MovieContentProvider extends ContentProvider {
     }
 
     private static String getIdFrom(@NonNull Uri uri) {
-        return uri.getPathSegments().get(1);
+        return uri.getLastPathSegment();
     }
 
     @NonNull
@@ -98,7 +98,15 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        int match = URI_MATCHER.match(uri);
+
+        if (match == MOVIE_WITH_ID) return deleteById(getIdFrom(uri));
+        else throw new IllegalArgumentException("Unknown uri: " + uri);
+    }
+
+    private int deleteById(String id) {
+        final SQLiteDatabase database = movieDatabase.getWritableDatabase();
+        return database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
     }
 
     @Override

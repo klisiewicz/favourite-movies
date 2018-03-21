@@ -139,6 +139,24 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         thenFirstRecordHasIdAndTitle(ID, TITLE);
     }
 
+    @Test
+    public void whenRemovingRecordExists_ItShouldBeDeleted() {
+        givenDatabaseWithMovie(ID, TITLE);
+
+        whenDeletingMovieWithId(ID);
+
+        thenMovieWithIdDoesNotExist(ID);
+    }
+
+    @Test
+    public void whenRemovingDoesNotRecordExist_ItShouldNotBeDeleted() {
+        givenDatabaseWithMovie(ID, TITLE);
+
+        whenDeletingMovieWithId(INVALID_ID);
+
+        thenMovieWithIdExists(ID);
+    }
+
     private void givenEmptyDatabase() {
         // Do nothing - database should be empty
     }
@@ -160,6 +178,11 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         cursor = getMockContentResolver().query(movieUri, null, null, null, null);
     }
 
+    private void whenDeletingMovieWithId(int id) {
+        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
+        getMockContentResolver().delete(movieUri, null, null);
+    }
+
     private void thenCursorIsEmpty() {
         assertThat(cursor, is(not(nullValue())));
         assertThat(cursor.getCount(), is(0));
@@ -174,6 +197,16 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         cursor.moveToFirst();
         assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(id));
         assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(title));
+    }
+
+    private void thenMovieWithIdDoesNotExist(int id) {
+        whenFetchingMovieWithId(id);
+        thenCursorIsEmpty();
+    }
+
+    private void thenMovieWithIdExists(int id) {
+        whenFetchingMovieWithId(id);
+        thenCursorIsNotEmpty();
     }
 
     @After
