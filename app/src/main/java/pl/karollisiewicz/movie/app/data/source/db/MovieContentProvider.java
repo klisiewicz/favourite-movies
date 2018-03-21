@@ -7,11 +7,13 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static android.content.UriMatcher.NO_MATCH;
+import static android.provider.BaseColumns._ID;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.AUTHORITY;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.TABLE_NAME;
 
@@ -38,7 +40,43 @@ public class MovieContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        int match = URI_MATCHER.match(uri);
+
+        if (match == MOVIES) return fetchAll(uri, projection, selection, selectionArgs, sortOrder);
+        if (match == MOVIE_WITH_ID)
+            return fetchById(uri, projection, selection, selectionArgs, sortOrder);
+        else throw new IllegalArgumentException("Unknown uri: " + uri);
+    }
+
+    private Cursor fetchAll(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+                            @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        final SQLiteDatabase database = movieDatabase.getReadableDatabase();
+
+        final Cursor cursor = database.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
+    }
+
+    private Cursor fetchById(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+                             @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        final SQLiteDatabase database = movieDatabase.getReadableDatabase();
+        final SQLiteQueryBuilder queryBuilder = createQueryBuilder(getIdFrom(uri));
+
+        final Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
+    }
+
+    private static String getIdFrom(@NonNull Uri uri) {
+        return uri.getPathSegments().get(1);
+    }
+
+    @NonNull
+    private SQLiteQueryBuilder createQueryBuilder(final String movieId) {
+        final SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(TABLE_NAME);
+        queryBuilder.appendWhere(_ID + "=" + movieId);
+        return queryBuilder;
     }
 
     @Nullable
@@ -47,7 +85,7 @@ public class MovieContentProvider extends ContentProvider {
         int match = URI_MATCHER.match(uri);
 
         if (match == MOVIES) return insert(values);
-        else throw new UnsupportedOperationException("Unknown uri: " + uri);
+        else throw new IllegalArgumentException("Unknown uri: " + uri);
     }
 
     private Uri insert(@Nullable ContentValues values) {
