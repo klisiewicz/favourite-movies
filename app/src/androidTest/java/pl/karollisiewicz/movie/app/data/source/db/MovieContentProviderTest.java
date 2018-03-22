@@ -63,6 +63,25 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     }
 
     @Test
+    public void shouldReturnMIMETypeForASingleMovieUri() {
+        // Given:
+        final Uri movieUri = CONTENT_URI.buildUpon().appendPath("1").build();
+
+        // When: obtaining mine type
+        final String type = getMockContentResolver().getType(movieUri);
+
+        assertThat(type, is("vnd.android.cursor.item" + "/" + MovieContract.AUTHORITY + "/" + MovieContract.MOVIES_PATH));
+    }
+
+    @Test
+    public void shouldReturnMIMETypeForAllMoviesUri() {
+        // When: obtaining mine type
+        final String type = getMockContentResolver().getType(CONTENT_URI);
+
+        assertThat(type, is("vnd.android.cursor.dir" + "/" + MovieContract.AUTHORITY + "/" + MovieContract.MOVIES_PATH));
+    }
+
+    @Test
     public void whenMovieContentValuesAreValid_ItIsInserted() {
         final ContentValues validMovie = validMovie();
 
@@ -77,7 +96,7 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
 
         try {
             final Uri uri = getMockContentResolver().insert(CONTENT_URI, invalidMovie);
-            fail("No exception thrown.");
+            fail("No exception raised.");
         } catch (Exception e) {
             assertThat(e, is(instanceOf(SQLException.class)));
         }

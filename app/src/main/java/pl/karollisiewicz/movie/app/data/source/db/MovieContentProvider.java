@@ -15,16 +15,19 @@ import android.support.annotation.Nullable;
 import static android.content.UriMatcher.NO_MATCH;
 import static android.provider.BaseColumns._ID;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.AUTHORITY;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MOVIES_PATH;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.TABLE_NAME;
 
 public class MovieContentProvider extends ContentProvider {
     static final int MOVIES = 100;
     static final int MOVIE_WITH_ID = 101;
     static final UriMatcher URI_MATCHER = new UriMatcher(NO_MATCH);
+    private static final String MOVIES_CONTENT_TYPE = "vnd.android.cursor.dir";
+    private static final String MOVIE_CONTENT_TYPE = "vnd.android.cursor.item";
 
     static {
-        URI_MATCHER.addURI(AUTHORITY, MovieContract.MOVIES_PATH, MOVIES);
-        URI_MATCHER.addURI(AUTHORITY, MovieContract.MOVIES_PATH + "/#", MOVIE_WITH_ID);
+        URI_MATCHER.addURI(AUTHORITY, MOVIES_PATH, MOVIES);
+        URI_MATCHER.addURI(AUTHORITY, MOVIES_PATH + "/#", MOVIE_WITH_ID);
     }
 
     private MovieDatabase movieDatabase;
@@ -40,7 +43,7 @@ public class MovieContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        int match = URI_MATCHER.match(uri);
+        int match = getMatch(uri);
 
         if (match == MOVIES) return fetchAll(uri, projection, selection, selectionArgs, sortOrder);
         else if (match == MOVIE_WITH_ID)
@@ -82,7 +85,7 @@ public class MovieContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        int match = URI_MATCHER.match(uri);
+        int match = getMatch(uri);
 
         if (match == MOVIES) return insert(values);
         else throw new IllegalArgumentException("Unknown uri: " + uri);
@@ -98,7 +101,7 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        int match = URI_MATCHER.match(uri);
+        int match = getMatch(uri);
 
         if (match == MOVIE_WITH_ID) return deleteById(getIdFrom(uri));
         else throw new IllegalArgumentException("Unknown uri: " + uri);
@@ -118,6 +121,16 @@ public class MovieContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = getMatch(uri);
+
+        if (match == MOVIES)
+            return String.format("%s/%s/%s", MOVIES_CONTENT_TYPE, AUTHORITY, MOVIES_PATH);
+        else if (match == MOVIE_WITH_ID)
+            return String.format("%s/%s/%s", MOVIE_CONTENT_TYPE, AUTHORITY, MOVIES_PATH);
+        else throw new IllegalArgumentException("Unknown uri: " + uri);
+    }
+
+    private static int getMatch(@NonNull Uri uri) {
+        return URI_MATCHER.match(uri);
     }
 }
