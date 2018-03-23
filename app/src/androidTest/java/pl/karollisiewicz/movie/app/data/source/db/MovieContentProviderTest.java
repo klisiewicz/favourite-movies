@@ -27,6 +27,7 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     private static final int ID = 6;
     private static final int INVALID_ID = Integer.MAX_VALUE;
     private static final String TITLE = "Title";
+    private static final String NEW_TITLE = "New title";
 
     private Cursor cursor;
 
@@ -176,6 +177,15 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         thenMovieWithIdExists(ID);
     }
 
+    @Test
+    public void whenUpdatingExistingItem_ValuesAreChanged() {
+        givenDatabaseWithMovie(ID, TITLE);
+
+        whenUpdatingMovieWithId(ID, NEW_TITLE);
+
+        thenMovieWithIdHasTitle(ID, NEW_TITLE);
+    }
+
     private void givenEmptyDatabase() {
         // Do nothing - database should be empty
     }
@@ -193,13 +203,22 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     }
 
     private void whenFetchingMovieWithId(int id) {
-        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
+        final Uri movieUri = getUriForId(id);
         cursor = getMockContentResolver().query(movieUri, null, null, null, null);
     }
 
     private void whenDeletingMovieWithId(int id) {
-        final Uri movieUri = CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
+        final Uri movieUri = getUriForId(id);
         getMockContentResolver().delete(movieUri, null, null);
+    }
+
+    private void whenUpdatingMovieWithId(int id, String newTitle) {
+        final Uri movieUri = getUriForId(id);
+        getMockContentResolver().update(movieUri, getContentValues(id, newTitle), null, null);
+    }
+
+    private Uri getUriForId(int id) {
+        return CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
     }
 
     private void thenCursorIsEmpty() {
@@ -216,6 +235,12 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         cursor.moveToFirst();
         assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(id));
         assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(title));
+    }
+
+    private void thenMovieWithIdHasTitle(int id, String title) {
+        whenFetchingMovieWithId(id);
+        thenCursorIsNotEmpty();
+        thenFirstRecordHasIdAndTitle(id, title);
     }
 
     private void thenMovieWithIdDoesNotExist(int id) {

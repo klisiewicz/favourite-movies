@@ -3,6 +3,7 @@ package pl.karollisiewicz.movie.app.data.source.db;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -24,6 +25,7 @@ public class MovieContentProvider extends ContentProvider {
     static final UriMatcher URI_MATCHER = new UriMatcher(NO_MATCH);
     private static final String MOVIES_CONTENT_TYPE = "vnd.android.cursor.dir";
     private static final String MOVIE_CONTENT_TYPE = "vnd.android.cursor.item";
+    public static final String UNKNOWN_URI = "Unknown uri: ";
 
     static {
         URI_MATCHER.addURI(AUTHORITY, MOVIES_PATH, MOVIES);
@@ -35,7 +37,6 @@ public class MovieContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         movieDatabase = new MovieDatabase(getContext());
-
         return true;
     }
 
@@ -46,9 +47,8 @@ public class MovieContentProvider extends ContentProvider {
         int match = getMatch(uri);
 
         if (match == MOVIES) return fetchAll(uri, projection, selection, selectionArgs, sortOrder);
-        else if (match == MOVIE_WITH_ID)
-            return fetchById(uri, projection, selection, selectionArgs, sortOrder);
-        else throw new IllegalArgumentException("Unknown uri: " + uri);
+        else if (match == MOVIE_WITH_ID) return fetchById(uri, projection, selection, selectionArgs, sortOrder);
+        else throw new IllegalArgumentException(UNKNOWN_URI + uri);
     }
 
     private Cursor fetchAll(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
@@ -88,7 +88,7 @@ public class MovieContentProvider extends ContentProvider {
         int match = getMatch(uri);
 
         if (match == MOVIES) return insert(values);
-        else throw new IllegalArgumentException("Unknown uri: " + uri);
+        else throw new IllegalArgumentException(UNKNOWN_URI + uri);
     }
 
     private Uri insert(@Nullable ContentValues values) {
@@ -99,9 +99,8 @@ public class MovieContentProvider extends ContentProvider {
         if (id < 0) throw new SQLException("Failed to insert row");
 
         final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-        getContext().getContentResolver().notifyChange(uri, null);
+        notifyChange(uri);
         return uri;
-
     }
 
     @Override
@@ -109,21 +108,37 @@ public class MovieContentProvider extends ContentProvider {
         int match = getMatch(uri);
 
         if (match == MOVIE_WITH_ID) return deleteSingle(uri);
-        else throw new IllegalArgumentException("Unknown uri: " + uri);
+        else throw new IllegalArgumentException(UNKNOWN_URI + uri);
     }
 
     private int deleteSingle(@NonNull final Uri uri) {
         final String id = getIdFrom(uri);
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
         final int itemsDeleted = database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
-        if (itemsDeleted > 0) getContext().getContentResolver().notifyChange(uri, null);
+        if (itemsDeleted > 0) notifyChange(uri);
         return itemsDeleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
-        return 0;
+        final int match = getMatch(uri);
+        if (match == MOVIE_WITH_ID) return updateSingle(uri, values, selection, selectionArgs);
+        else throw new IllegalArgumentException(UNKNOWN_URI + uri);
+    }
+
+    private int updateSingle(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
+                             @Nullable String[] selectionArgs) {
+        final String id = getIdFrom(uri);
+        final SQLiteDatabase database = movieDatabase.getWritableDatabase();
+        final int recordsUpdated = database.update(TABLE_NAME, values, "_id=?", new String[]{id});
+        if (recordsUpdated > 0) notifyChange(uri);
+        return recordsUpdated;
+    }
+
+    private void notifyChange(@NonNull Uri uri) {
+        final Context context = getContext();
+        if (context != null) context.getContentResolver().notifyChange(uri, null);
     }
 
     @Nullable
@@ -135,7 +150,7 @@ public class MovieContentProvider extends ContentProvider {
             return String.format("%s/%s/%s", MOVIES_CONTENT_TYPE, AUTHORITY, MOVIES_PATH);
         else if (match == MOVIE_WITH_ID)
             return String.format("%s/%s/%s", MOVIE_CONTENT_TYPE, AUTHORITY, MOVIES_PATH);
-        else throw new IllegalArgumentException("Unknown uri: " + uri);
+        else throw new IllegalArgumentException(UNKNOWN_URI + uri);
     }
 
     private static int getMatch(@NonNull Uri uri) {
