@@ -95,21 +95,29 @@ public class MovieContentProvider extends ContentProvider {
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
 
         long id = database.insert(TABLE_NAME, null, values);
-        if (id > 0) return ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-        else throw new SQLException("Failed to insert row");
+
+        if (id < 0) throw new SQLException("Failed to insert row");
+
+        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return uri;
+
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         int match = getMatch(uri);
 
-        if (match == MOVIE_WITH_ID) return deleteById(getIdFrom(uri));
+        if (match == MOVIE_WITH_ID) return deleteSingle(uri);
         else throw new IllegalArgumentException("Unknown uri: " + uri);
     }
 
-    private int deleteById(String id) {
+    private int deleteSingle(@NonNull final Uri uri) {
+        final String id = getIdFrom(uri);
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
-        return database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
+        final int itemsDeleted = database.delete(TABLE_NAME, _ID + "=?", new String[]{id});
+        if (itemsDeleted > 0) getContext().getContentResolver().notifyChange(uri, null);
+        return itemsDeleted;
     }
 
     @Override
