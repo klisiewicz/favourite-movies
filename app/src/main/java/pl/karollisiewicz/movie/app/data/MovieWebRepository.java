@@ -21,6 +21,7 @@ import pl.karollisiewicz.react.Schedulers;
 import retrofit2.HttpException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.FAVOURITE;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
@@ -65,6 +66,7 @@ public final class MovieWebRepository implements MovieRepository {
     private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
         else if (RATING == criterion) return movieService.fetchTopRated();
+        else if (FAVOURITE == criterion) return Single.just(new Movies());
         else return Single.never();
     }
 

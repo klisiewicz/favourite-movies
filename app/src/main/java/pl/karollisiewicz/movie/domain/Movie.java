@@ -67,6 +67,10 @@ public final class Movie implements Serializable {
         private double rating;
         private LocalDate releaseDate;
 
+        public Builder() {
+            this(-1);
+        }
+
         public Builder(long id) {
             this.id = id;
         }

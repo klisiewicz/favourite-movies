@@ -13,6 +13,6 @@ public interface MovieRepository {
     Single<List<Movie>> fetchBy(@NonNull Criterion criterion);
 
     enum Criterion {
-        POPULARITY, RATING
+        POPULARITY, RATING, FAVOURITE
     }
 }

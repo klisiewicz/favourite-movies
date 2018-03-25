@@ -38,6 +38,7 @@ import static android.support.design.widget.Snackbar.make;
 import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
 import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.FAVOURITE;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
@@ -71,27 +72,6 @@ public final class MoviesFragment extends Fragment {
 
     public MoviesFragment() {
         // Required empty public constructor
-    }
-
-    public static MoviesFragment newPopularInstance() {
-        return newInstance(POPULARITY);
-    }
-
-    public static MoviesFragment newTopRatedInstance() {
-        return newInstance(RATING);
-    }
-
-    private static MoviesFragment newInstance(@NonNull final Criterion criterion) {
-        final MoviesFragment fragment = new MoviesFragment();
-        fragment.setArguments(createBundle(criterion));
-        return fragment;
-    }
-
-    @NonNull
-    private static Bundle createBundle(@NonNull Criterion criterion) {
-        Bundle args = new Bundle();
-        args.putSerializable(CRITERION_KEY, criterion);
-        return args;
     }
 
     @Override
@@ -178,5 +158,30 @@ public final class MoviesFragment extends Fragment {
 
     private void showMessage(@StringRes int messageId) {
         snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
+    }
+
+    public static MoviesFragment newPopularInstance() {
+        return newInstance(POPULARITY);
+    }
+
+    public static MoviesFragment newTopRatedInstance() {
+        return newInstance(RATING);
+    }
+
+    public static Fragment newFavouriteInstance() {
+        return newInstance(FAVOURITE);
+    }
+
+    private static MoviesFragment newInstance(@NonNull final Criterion criterion) {
+        final MoviesFragment fragment = new MoviesFragment();
+        fragment.setArguments(createBundle(criterion));
+        return fragment;
+    }
+
+    @NonNull
+    private static Bundle createBundle(@NonNull Criterion criterion) {
+        Bundle args = new Bundle();
+        args.putSerializable(CRITERION_KEY, criterion);
+        return args;
     }
 }
