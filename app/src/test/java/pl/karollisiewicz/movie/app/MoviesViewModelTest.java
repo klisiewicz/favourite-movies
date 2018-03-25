@@ -46,7 +46,7 @@ public class MoviesViewModelTest {
         initMocks(this);
 
         objectUnderTest = new MoviesViewModel(repository);
-        aMovie = new Movie.Builder().setTitle("A title").build();
+        aMovie = new Movie.Builder(1L).setTitle("A title").build();
     }
 
     @Test

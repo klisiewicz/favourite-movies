@@ -25,7 +25,7 @@ public class MovieContentProvider extends ContentProvider {
     static final UriMatcher URI_MATCHER = new UriMatcher(NO_MATCH);
     private static final String MOVIES_CONTENT_TYPE = "vnd.android.cursor.dir";
     private static final String MOVIE_CONTENT_TYPE = "vnd.android.cursor.item";
-    public static final String UNKNOWN_URI = "Unknown uri: ";
+    private static final String UNKNOWN_URI = "Unknown uri: ";
 
     static {
         URI_MATCHER.addURI(AUTHORITY, MOVIES_PATH, MOVIES);
@@ -129,11 +129,14 @@ public class MovieContentProvider extends ContentProvider {
 
     private int updateSingle(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                              @Nullable String[] selectionArgs) {
-        final String id = getIdFrom(uri);
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
-        final int recordsUpdated = database.update(TABLE_NAME, values, "_id=?", new String[]{id});
+        final int recordsUpdated = database.update(TABLE_NAME, values, getWhereClause(uri, selection), selectionArgs);
         if (recordsUpdated > 0) notifyChange(uri);
         return recordsUpdated;
+    }
+
+    private String getWhereClause(@NonNull Uri uri, @Nullable String selection) {
+        return _ID + "=?";
     }
 
     private void notifyChange(@NonNull Uri uri) {

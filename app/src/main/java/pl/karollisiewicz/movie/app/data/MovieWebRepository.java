@@ -74,7 +74,7 @@ public final class MovieWebRepository implements MovieRepository {
 
     @NonNull
     private Movie mapMovie(pl.karollisiewicz.movie.app.data.source.web.Movie movie) {
-        return new Movie.Builder()
+        return new Movie.Builder(movie.getId())
                 .setTitle(movie.getTitle())
                 .setOverview(movie.getOverview())
                 .setRating(movie.getVoteAverage())

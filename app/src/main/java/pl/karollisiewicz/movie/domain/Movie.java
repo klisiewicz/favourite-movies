@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Movie representation.
  */
 public final class Movie implements Serializable {
+    private final MovieId id;
     private final String title;
     private final String posterUrl;
     private final String backdropUrl;
@@ -19,12 +20,17 @@ public final class Movie implements Serializable {
     private final LocalDate releaseDate;
 
     private Movie(@NonNull final Builder builder) {
+        id = MovieId.of(builder.id);
         title = builder.title;
         posterUrl = builder.posterUrl;
         backdropUrl = builder.backdropUrl;
         overview = builder.overview;
         rating = builder.rating;
         releaseDate = builder.releaseDate;
+    }
+
+    public MovieId getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -53,12 +59,17 @@ public final class Movie implements Serializable {
     }
 
     public static final class Builder {
+        private final long id;
         private String title;
         private String posterUrl;
         private String backdropUrl;
         private String overview;
         private double rating;
         private LocalDate releaseDate;
+
+        public Builder(long id) {
+            this.id = id;
+        }
 
         public Builder setTitle(String title) {
             this.title = title;
