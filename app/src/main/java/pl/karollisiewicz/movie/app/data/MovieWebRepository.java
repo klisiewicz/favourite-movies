@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
 import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.domain.Movie;
@@ -34,16 +35,19 @@ public final class MovieWebRepository implements MovieRepository {
 
     private final MovieImageProvider movieImageProvider;
     private final MovieService movieService;
+    private final MovieDao movieDao;
     private final Schedulers schedulers;
     private final Logger logger;
 
     @Inject
     public MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
                               @NonNull final MovieService movieService,
+                              @NonNull final MovieDao movieDao,
                               @NonNull final Schedulers schedulers,
                               @NonNull final Logger logger) {
         this.movieImageProvider = movieImageProvider;
         this.movieService = movieService;
+        this.movieDao = movieDao;
         this.schedulers = schedulers;
         this.logger = logger;
     }
@@ -66,7 +70,7 @@ public final class MovieWebRepository implements MovieRepository {
     private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
         else if (RATING == criterion) return movieService.fetchTopRated();
-        else if (FAVOURITE == criterion) return Single.just(new Movies());
+        else if (FAVOURITE == criterion) return Single.never();
         else return Single.never();
     }
 
