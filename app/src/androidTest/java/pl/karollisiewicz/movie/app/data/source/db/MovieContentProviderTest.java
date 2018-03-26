@@ -1,7 +1,6 @@
 package pl.karollisiewicz.movie.app.data.source.db;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -20,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
-import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.CONTENT_URI;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContentProvider.CONTENT_URI;
 
 @RunWith(AndroidJUnit4.class)
 public class MovieContentProviderTest extends ProviderTestCase2 {
@@ -29,7 +28,7 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     private static final String TITLE = "Title";
     private static final String NEW_TITLE = "New title";
 
-    private Cursor cursor;
+    private MovieCursor cursor;
 
     public MovieContentProviderTest() {
         super(MovieContentProvider.class, MovieContract.AUTHORITY);
@@ -199,12 +198,12 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     }
 
     private void whenFetchingAllMovies() {
-        cursor = getMockContentResolver().query(CONTENT_URI, null, null, null, null);
+        cursor = new MovieCursor(getMockContentResolver().query(CONTENT_URI, null, null, null, null));
     }
 
     private void whenFetchingMovieWithId(int id) {
         final Uri movieUri = getUriForId(id);
-        cursor = getMockContentResolver().query(movieUri, null, null, null, null);
+        cursor = new MovieCursor(getMockContentResolver().query(movieUri, null, null, null, null));
     }
 
     private void whenDeletingMovieWithId(int id) {
@@ -233,8 +232,8 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
 
     private void thenFirstRecordHasIdAndTitle(int id, String title) {
         cursor.moveToFirst();
-        assertThat(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.Column.ID.getName())), is(id));
-        assertThat(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.Column.TITLE.getName())), is(title));
+        assertThat(cursor.getId(), is(id));
+        assertThat(cursor.getTitle(), is(title));
     }
 
     private void thenMovieWithIdHasTitle(int id, String title) {

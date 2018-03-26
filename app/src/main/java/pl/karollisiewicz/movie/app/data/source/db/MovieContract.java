@@ -17,15 +17,15 @@ public final class MovieContract {
     }
 
     public static final class MovieEntry implements BaseColumns {
-        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
         static final String TABLE_NAME = "favourite_movies";
 
         enum Column {
             ID(MovieEntry._ID, "INTEGER PRIMARY KEY"),
             TITLE("title", "TEXT", "NOT NULL"),
+            OVERVIEW("overview", "TEXT", "NOT NULL"),
             POSTER_PATH("poster_path", "TEXT"),
             BACKDROP_PATH("backdrop_path", "TEXT"),
-            RELEASE_DATE("release_date", "TEXT"),
+            RELEASE_DATE("release_date", "INTEGER"),
             VOTE_AVERAGE("vote_average", "REAL");
 
             private final String name;

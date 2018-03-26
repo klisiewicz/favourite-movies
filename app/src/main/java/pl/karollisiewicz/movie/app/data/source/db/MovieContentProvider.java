@@ -20,6 +20,7 @@ import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MOVIES_PA
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.TABLE_NAME;
 
 public class MovieContentProvider extends ContentProvider {
+    public static final Uri CONTENT_URI = MovieContract.BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
     static final int MOVIES = 100;
     static final int MOVIE_WITH_ID = 101;
     static final UriMatcher URI_MATCHER = new UriMatcher(NO_MATCH);
@@ -98,7 +99,7 @@ public class MovieContentProvider extends ContentProvider {
 
         if (id < 0) throw new SQLException("Failed to insert row");
 
-        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+        final Uri uri = ContentUris.withAppendedId(CONTENT_URI, id);
         notifyChange(uri);
         return uri;
     }

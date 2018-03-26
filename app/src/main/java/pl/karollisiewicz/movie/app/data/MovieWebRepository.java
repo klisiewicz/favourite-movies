@@ -3,6 +3,7 @@ package pl.karollisiewicz.movie.app.data;
 import android.support.annotation.NonNull;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -40,7 +41,7 @@ public final class MovieWebRepository implements MovieRepository {
     private final Logger logger;
 
     @Inject
-    public MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
+    MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
                               @NonNull final MovieService movieService,
                               @NonNull final MovieDao movieDao,
                               @NonNull final Schedulers schedulers,
@@ -70,7 +71,7 @@ public final class MovieWebRepository implements MovieRepository {
     private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
         else if (RATING == criterion) return movieService.fetchTopRated();
-        else if (FAVOURITE == criterion) return Single.never();
+        else if (FAVOURITE == criterion) return movieDao.fetchAll().map(movies -> new Movies(new ArrayList<>(movies)));
         else return Single.never();
     }
 
