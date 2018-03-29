@@ -2,6 +2,8 @@
 
 Application allowing users to discover the most popular movies playing. It was made as a part of [Udacity Nanodegree](https://eu.udacity.com/course/android-developer-nanodegree-by-google--nd801) program.
 
+Code quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/55ff05d2d70f465b973c2c91de37ef27)](https://www.codacy.com/app/klisiewicz/popular-movies?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=klisiewicz/popular-movies&amp;utm_campaign=Badge_Grade)
+
 ### Prerequisites
 
 Application utilizes [The Movie DB](https://www.themoviedb.org) API. You must provide your own API key in the `build.gradle` `file:
