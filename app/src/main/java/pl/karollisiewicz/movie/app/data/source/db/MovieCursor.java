@@ -1,8 +1,13 @@
 package pl.karollisiewicz.movie.app.data.source.db;
 
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.support.annotation.NonNull;
+
+import org.joda.time.LocalDate;
+
+import java.util.Date;
+
+import pl.karollisiewicz.movie.app.data.source.web.Movie;
 
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.ID;
@@ -15,37 +20,67 @@ import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntr
 /**
  * Cursor which provides methods allowing direct access to the database column values.
  */
-final class MovieCursor extends CursorWrapper {
+final class MovieCursor {
+    private final Cursor cursor;
 
     MovieCursor(@NonNull final Cursor cursor) {
-        super(cursor);
+        this.cursor = cursor;
     }
 
-    long getId() {
-        return getWrappedCursor().getInt(getWrappedCursor().getColumnIndex(ID.getName()));
+    @NonNull
+    Movie getMovie() {
+        final Movie movie = new Movie();
+        movie.setId(getId());
+        movie.setTitle(getTitle());
+        movie.setOverview(getOverview());
+        movie.setPosterPath(getPosterPath());
+        movie.setBackdropPath(getBackdropPath());
+        movie.setVoteAverage(getVoteAverage());
+        movie.setReleaseDate(LocalDate.fromDateFields(new Date(getReleaseTimestamp())));
+        return movie;
     }
 
-    String getTitle() {
-        return getWrappedCursor().getString(getWrappedCursor().getColumnIndex(TITLE.getName()));
+    private long getId() {
+        return cursor.getInt(cursor.getColumnIndex(ID.getName()));
     }
 
-    String getOverview() {
-        return getWrappedCursor().getString(getWrappedCursor().getColumnIndex(OVERVIEW.getName()));
+    private String getTitle() {
+        return cursor.getString(cursor.getColumnIndex(TITLE.getName()));
     }
 
-    String getPosterPath() {
-        return getWrappedCursor().getString(getWrappedCursor().getColumnIndex(POSTER_PATH.getName()));
+    private String getOverview() {
+        return cursor.getString(cursor.getColumnIndex(OVERVIEW.getName()));
     }
 
-    String getBackdropPath() {
-        return getWrappedCursor().getString(getWrappedCursor().getColumnIndex(BACKDROP_PATH.getName()));
+    private String getPosterPath() {
+        return cursor.getString(cursor.getColumnIndex(POSTER_PATH.getName()));
     }
 
-    double getVoteAverage() {
-        return getWrappedCursor().getDouble(getWrappedCursor().getColumnIndex(VOTE_AVERAGE.getName()));
+    private String getBackdropPath() {
+        return cursor.getString(cursor.getColumnIndex(BACKDROP_PATH.getName()));
     }
 
-    int getReleaseTimestamp() {
-        return getWrappedCursor().getInt(getWrappedCursor().getColumnIndex(RELEASE_DATE.getName()));
+    private double getVoteAverage() {
+        return cursor.getDouble(cursor.getColumnIndex(VOTE_AVERAGE.getName()));
+    }
+
+    private long getReleaseTimestamp() {
+        return cursor.getLong(cursor.getColumnIndex(RELEASE_DATE.getName()));
+    }
+
+    public boolean moveToFirst() {
+        return cursor.moveToFirst();
+    }
+
+    public boolean moveToNext() {
+        return cursor.moveToNext();
+    }
+
+    public int getCount() {
+        return cursor.getCount();
+    }
+
+    public void close() {
+        cursor.close();
     }
 }

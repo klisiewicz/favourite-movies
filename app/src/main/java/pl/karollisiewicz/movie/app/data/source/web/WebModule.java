@@ -22,6 +22,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.movie.BuildConfig;
+import pl.karollisiewicz.movie.app.data.MovieImageProvider;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -36,8 +38,30 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    public MovieService getMovieService(Retrofit retrofit) {
-        return retrofit.create(MovieService.class);
+    public MovieService getMovieService(MovieWebService movieWebService, MovieImageProvider imageProvider) {
+        return new MovieImageDecoratorService(movieWebService, imageProvider);
+    }
+
+    @Provides
+    @Singleton
+    MovieImageProvider getImageProvider() {
+        return new MovieImageProvider() {
+            @Override
+            public String getPosterUrl(String resourceUrl) {
+                return String.format("%s%s", BuildConfig.POSTER_URL, resourceUrl);
+            }
+
+            @Override
+            public String getBackdropUrl(String resourceUrl) {
+                return String.format("%s%s", BuildConfig.BACKDROP_URL, resourceUrl);
+            }
+        };
+    }
+
+    @Provides
+    @Singleton
+    public MovieWebService getMovieWebService(Retrofit retrofit) {
+        return retrofit.create(MovieWebService.class);
     }
 
     @Provides

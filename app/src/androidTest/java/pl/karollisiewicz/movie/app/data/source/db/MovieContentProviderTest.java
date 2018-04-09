@@ -23,7 +23,7 @@ import static pl.karollisiewicz.movie.app.data.source.db.MovieContentProvider.CO
 
 @RunWith(AndroidJUnit4.class)
 public class MovieContentProviderTest extends ProviderTestCase2 {
-    private static final int ID = 6;
+    private static final long ID = 6;
     private static final int INVALID_ID = Integer.MAX_VALUE;
     private static final String TITLE = "Title";
     private static final String NEW_TITLE = "New title";
@@ -113,7 +113,7 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
     }
 
     @NonNull
-    private ContentValues getContentValues(int id, String title) {
+    private ContentValues getContentValues(long id, String title) {
         final ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.Column.ID.getName(), id);
         contentValues.put(MovieContract.MovieEntry.Column.TITLE.getName(), title);
@@ -193,7 +193,7 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         givenDatabaseWithMovie(ID, TITLE);
     }
 
-    private void givenDatabaseWithMovie(int id, String title) {
+    private void givenDatabaseWithMovie(long id, String title) {
         getMockContentResolver().insert(CONTENT_URI, getContentValues(id, title));
     }
 
@@ -201,22 +201,22 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         cursor = new MovieCursor(getMockContentResolver().query(CONTENT_URI, null, null, null, null));
     }
 
-    private void whenFetchingMovieWithId(int id) {
+    private void whenFetchingMovieWithId(long id) {
         final Uri movieUri = getUriForId(id);
         cursor = new MovieCursor(getMockContentResolver().query(movieUri, null, null, null, null));
     }
 
-    private void whenDeletingMovieWithId(int id) {
+    private void whenDeletingMovieWithId(long id) {
         final Uri movieUri = getUriForId(id);
         getMockContentResolver().delete(movieUri, null, null);
     }
 
-    private void whenUpdatingMovieWithId(int id, String newTitle) {
+    private void whenUpdatingMovieWithId(long id, String newTitle) {
         final Uri movieUri = getUriForId(id);
         getMockContentResolver().update(movieUri, getContentValues(id, newTitle), null, null);
     }
 
-    private Uri getUriForId(int id) {
+    private Uri getUriForId(long id) {
         return CONTENT_URI.buildUpon().appendPath(valueOf(id)).build();
     }
 
@@ -230,24 +230,24 @@ public class MovieContentProviderTest extends ProviderTestCase2 {
         assertThat(cursor.getCount(), is(1));
     }
 
-    private void thenFirstRecordHasIdAndTitle(int id, String title) {
+    private void thenFirstRecordHasIdAndTitle(long id, String title) {
         cursor.moveToFirst();
-        assertThat(cursor.getId(), is(id));
-        assertThat(cursor.getTitle(), is(title));
+        assertThat(cursor.getMovie().getId(), is(id));
+        assertThat(cursor.getMovie().getTitle(), is(title));
     }
 
-    private void thenMovieWithIdHasTitle(int id, String title) {
+    private void thenMovieWithIdHasTitle(long id, String title) {
         whenFetchingMovieWithId(id);
         thenCursorIsNotEmpty();
         thenFirstRecordHasIdAndTitle(id, title);
     }
 
-    private void thenMovieWithIdDoesNotExist(int id) {
+    private void thenMovieWithIdDoesNotExist(long id) {
         whenFetchingMovieWithId(id);
         thenCursorIsEmpty();
     }
 
-    private void thenMovieWithIdExists(int id) {
+    private void thenMovieWithIdExists(long id) {
         whenFetchingMovieWithId(id);
         thenCursorIsNotEmpty();
     }

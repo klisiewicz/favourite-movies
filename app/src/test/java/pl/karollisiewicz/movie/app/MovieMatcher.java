@@ -13,6 +13,15 @@ public final class MovieMatcher {
         // No instances should be created
     }
 
+    public static Matcher<Movie> withId(final String id) {
+        return new FeatureMatcher<Movie, String>(equalTo(id), "id", "id") {
+            @Override
+            protected String featureValueOf(final Movie actual) {
+                return actual.getId().getValue();
+            }
+        };
+    }
+
     public static Matcher<Movie> isTitled(final String title) {
         return new FeatureMatcher<Movie, String>(equalTo(title), "title", "title") {
             @Override
@@ -63,6 +72,15 @@ public final class MovieMatcher {
             @Override
             protected String featureValueOf(final Movie actual) {
                 return actual.getBackdropUrl();
+            }
+        };
+    }
+
+    public static Matcher<Movie> favourite() {
+        return new FeatureMatcher<Movie, Boolean>(equalTo(true), "favourite", "favourite") {
+            @Override
+            protected Boolean featureValueOf(final Movie actual) {
+                return actual.isFavourite();
             }
         };
     }

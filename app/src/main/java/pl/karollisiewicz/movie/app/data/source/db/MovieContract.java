@@ -22,10 +22,10 @@ public final class MovieContract {
         enum Column {
             ID(MovieEntry._ID, "INTEGER PRIMARY KEY"),
             TITLE("title", "TEXT", "NOT NULL"),
-            OVERVIEW("overview", "TEXT", "NOT NULL"),
+            OVERVIEW("overview", "TEXT"),
             POSTER_PATH("poster_path", "TEXT"),
             BACKDROP_PATH("backdrop_path", "TEXT"),
-            RELEASE_DATE("release_date", "INTEGER"),
+            RELEASE_DATE("release_date", "LONG"),
             VOTE_AVERAGE("vote_average", "REAL");
 
             private final String name;

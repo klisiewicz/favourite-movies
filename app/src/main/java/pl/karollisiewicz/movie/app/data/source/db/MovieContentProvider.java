@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -19,11 +18,13 @@ import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.AUTHORITY
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MOVIES_PATH;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.TABLE_NAME;
 
-public class MovieContentProvider extends ContentProvider {
+public final class MovieContentProvider extends ContentProvider {
     public static final Uri CONTENT_URI = MovieContract.BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
+
     static final int MOVIES = 100;
     static final int MOVIE_WITH_ID = 101;
     static final UriMatcher URI_MATCHER = new UriMatcher(NO_MATCH);
+
     private static final String MOVIES_CONTENT_TYPE = "vnd.android.cursor.dir";
     private static final String MOVIE_CONTENT_TYPE = "vnd.android.cursor.item";
     private static final String UNKNOWN_URI = "Unknown uri: ";
@@ -94,10 +95,7 @@ public class MovieContentProvider extends ContentProvider {
 
     private Uri insert(@Nullable ContentValues values) {
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
-
-        long id = database.insert(TABLE_NAME, null, values);
-
-        if (id < 0) throw new SQLException("Failed to insert row");
+        long id = database.insertOrThrow(TABLE_NAME, null, values);
 
         final Uri uri = ContentUris.withAppendedId(CONTENT_URI, id);
         notifyChange(uri);
@@ -130,14 +128,11 @@ public class MovieContentProvider extends ContentProvider {
 
     private int updateSingle(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                              @Nullable String[] selectionArgs) {
+        final String id = getIdFrom(uri);
         final SQLiteDatabase database = movieDatabase.getWritableDatabase();
-        final int recordsUpdated = database.update(TABLE_NAME, values, getWhereClause(uri, selection), selectionArgs);
+        final int recordsUpdated = database.update(TABLE_NAME, values, "_id=?", new String[]{id});
         if (recordsUpdated > 0) notifyChange(uri);
         return recordsUpdated;
-    }
-
-    private String getWhereClause(@NonNull Uri uri, @Nullable String selection) {
-        return _ID + "=?";
     }
 
     private void notifyChange(@NonNull Uri uri) {

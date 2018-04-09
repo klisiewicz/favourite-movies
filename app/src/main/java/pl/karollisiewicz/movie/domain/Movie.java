@@ -18,6 +18,7 @@ public final class Movie implements Serializable {
     private final String overview;
     private final double rating;
     private final LocalDate releaseDate;
+    private boolean isFavourite;
 
     private Movie(@NonNull final Builder builder) {
         id = MovieId.of(builder.id);
@@ -27,6 +28,7 @@ public final class Movie implements Serializable {
         overview = builder.overview;
         rating = builder.rating;
         releaseDate = builder.releaseDate;
+        isFavourite = builder.isFavourite;
     }
 
     public MovieId getId() {
@@ -58,6 +60,18 @@ public final class Movie implements Serializable {
         return releaseDate;
     }
 
+    public void favourite() {
+        isFavourite = true;
+    }
+
+    public void unfavourite() {
+        isFavourite = false;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
     public static final class Builder {
         private final long id;
         private String title;
@@ -66,6 +80,7 @@ public final class Movie implements Serializable {
         private String overview;
         private double rating;
         private LocalDate releaseDate;
+        private boolean isFavourite;
 
         public Builder() {
             this(-1);
@@ -102,6 +117,11 @@ public final class Movie implements Serializable {
 
         public Builder setReleaseDate(LocalDate releaseDate) {
             this.releaseDate = releaseDate;
+            return this;
+        }
+
+        public Builder setFavourite(boolean isFavourite) {
+            this.isFavourite = isFavourite;
             return this;
         }
 

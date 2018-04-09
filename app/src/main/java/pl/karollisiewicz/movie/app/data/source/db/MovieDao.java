@@ -1,16 +1,21 @@
 package pl.karollisiewicz.movie.app.data.source.db;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.Collection;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import pl.karollisiewicz.movie.app.data.source.web.Movie;
 
 public interface MovieDao {
     Single<Collection<Movie>> fetchAll();
 
-    Single<Movie> save(Movie movie);
+    Maybe<Movie> fetchById(long movieId);
 
-    Completable delete(Movie movie);
+    Single<Movie> save(@NonNull Movie movie);
+
+    Completable delete(@NonNull Movie movie);
 }

@@ -2,7 +2,9 @@ package pl.karollisiewicz.movie.domain;
 
 import android.support.annotation.NonNull;
 
-public final class MovieId {
+import java.io.Serializable;
+
+public final class MovieId implements Serializable {
     private final String value;
 
     private MovieId(final String value) {

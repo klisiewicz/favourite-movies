@@ -12,6 +12,7 @@ import java.util.List;
 import io.reactivex.Single;
 import okhttp3.internal.http.RealResponseBody;
 import pl.karollisiewicz.movie.app.ConsoleLogger;
+import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.Movie;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
 import pl.karollisiewicz.movie.app.data.source.web.Movies;
@@ -35,27 +36,28 @@ import static pl.karollisiewicz.movie.app.MovieMatcher.hasPosterUrl;
 import static pl.karollisiewicz.movie.app.MovieMatcher.isRated;
 import static pl.karollisiewicz.movie.app.MovieMatcher.isTitled;
 import static pl.karollisiewicz.movie.app.MovieMatcher.wasReleasedOn;
+import static pl.karollisiewicz.movie.app.data.source.MovieFactory.aMovie;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 
 public class MovieWebRepositoryTest {
-    private static final String IMAGE_URL = "http://google.com/";
-
     private MovieRepository objectUnderTest;
 
     @Mock
     private MovieService movieService;
 
+    @Mock
+    private MovieDao movieDao;
+
     private List<pl.karollisiewicz.movie.domain.Movie> popularMovies;
 
-    private Movie sampleMovie;
+    private Movie aMovie = aMovie();
 
     private Exception exception;
 
     @Before
     public void beforeEach() {
         initMocks(this);
-        objectUnderTest = new MovieWebRepository(new MockMovieProvider(), movieService, new TestSchedulers(), new ConsoleLogger());
-        sampleMovie = createMovie();
+        objectUnderTest = new MovieWebRepository(movieService, movieDao, new TestSchedulers(), new ConsoleLogger());
     }
 
     @Test
@@ -87,8 +89,8 @@ public class MovieWebRepositoryTest {
 
     private void givenServiceReturningMovies() {
         when(movieService.fetchPopular()).thenReturn(
-                Single.just(new Movies(Collections.singletonList(sampleMovie))))
-        ;
+                Single.just(new Movies(Collections.singletonList(aMovie)))
+        );
     }
 
     private void givenUnauthorizedService() {
@@ -118,8 +120,8 @@ public class MovieWebRepositoryTest {
                 isTitled("Title"),
                 isRated(6.66),
                 hasOverview("Overview"),
-                hasPosterUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getPosterPath())),
-                hasBackDropUrl(String.format("%s%s", IMAGE_URL, sampleMovie.getBackdropPath())),
+                hasPosterUrl(aMovie.getPosterPath()),
+                hasBackDropUrl(aMovie.getBackdropPath()),
                 wasReleasedOn(new LocalDate(2017, 1, 27))
         )));
     }
@@ -130,29 +132,5 @@ public class MovieWebRepositoryTest {
 
     private void thenCommunicationErrorIsReturned() {
         assertThat(exception, instanceOf(CommunicationException.class));
-    }
-
-    private Movie createMovie() {
-        final Movie movie = new Movie();
-        movie.setId(1L);
-        movie.setTitle("Title");
-        movie.setOverview("Overview");
-        movie.setVoteAverage(6.66);
-        movie.setReleaseDate(new LocalDate(2017, 1, 27));
-        movie.setPosterPath("poster.jpg");
-        movie.setBackdropPath("backdrop.jpg");
-        return movie;
-    }
-
-    private class MockMovieProvider implements MovieImageProvider {
-        @Override
-        public String getPosterUrl(String resourceUrl) {
-            return String.format("%s%s", IMAGE_URL, resourceUrl);
-        }
-
-        @Override
-        public String getBackdropUrl(String resourceUrl) {
-            return String.format("%s%s", IMAGE_URL, resourceUrl);
-        }
     }
 }

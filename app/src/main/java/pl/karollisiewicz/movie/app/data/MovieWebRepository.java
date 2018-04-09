@@ -14,6 +14,7 @@ import io.reactivex.SingleSource;
 import pl.karollisiewicz.log.Logger;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.MovieWebService;
 import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
@@ -28,25 +29,24 @@ import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARIT
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
 /**
- * Repository that utilizes {@link MovieService} web service to fetch movies.
+ * Repository that utilizes {@link MovieWebService} web service to fetch movies.
  */
 public final class MovieWebRepository implements MovieRepository {
 
     private static final int CODE_UNAUTHORIZED = 401;
 
-    private final MovieImageProvider movieImageProvider;
     private final MovieService movieService;
     private final MovieDao movieDao;
     private final Schedulers schedulers;
     private final Logger logger;
+    private final MovieMapper movieMapper;
 
     @Inject
-    MovieWebRepository(@NonNull final MovieImageProvider movieImageProvider,
-                              @NonNull final MovieService movieService,
-                              @NonNull final MovieDao movieDao,
-                              @NonNull final Schedulers schedulers,
-                              @NonNull final Logger logger) {
-        this.movieImageProvider = movieImageProvider;
+    MovieWebRepository(@NonNull final MovieService movieService,
+                       @NonNull final MovieDao movieDao,
+                       @NonNull final Schedulers schedulers,
+                       @NonNull final Logger logger) {
+        this.movieMapper = new MovieMapper();
         this.movieService = movieService;
         this.movieDao = movieDao;
         this.schedulers = schedulers;
@@ -55,12 +55,12 @@ public final class MovieWebRepository implements MovieRepository {
 
     @Override
     public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
-        return getMoviesSingle(criterion)
+        return getMoviesMatchingCriterion(criterion)
                 .timeout(3, SECONDS)
                 .toObservable()
                 .map(Movies::getMovies)
                 .flatMapIterable(list -> list)
-                .map(this::mapMovie)
+                .map(movieMapper::toDomain)
                 .toList()
                 .doOnError(this::logError)
                 .onErrorResumeNext(this::mapError)
@@ -68,27 +68,16 @@ public final class MovieWebRepository implements MovieRepository {
                 .observeOn(schedulers.getObserver());
     }
 
-    private Single<Movies> getMoviesSingle(@NonNull final Criterion criterion) {
+    private Single<Movies> getMoviesMatchingCriterion(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
         else if (RATING == criterion) return movieService.fetchTopRated();
-        else if (FAVOURITE == criterion) return movieDao.fetchAll().map(movies -> new Movies(new ArrayList<>(movies)));
+        else if (FAVOURITE == criterion)
+            return movieDao.fetchAll().map(movies -> new Movies(new ArrayList<>(movies)));
         else return Single.never();
     }
 
     private void logError(Throwable throwable) {
         logger.error(MovieWebRepository.class, throwable);
-    }
-
-    @NonNull
-    private Movie mapMovie(pl.karollisiewicz.movie.app.data.source.web.Movie movie) {
-        return new Movie.Builder(movie.getId())
-                .setTitle(movie.getTitle())
-                .setOverview(movie.getOverview())
-                .setRating(movie.getVoteAverage())
-                .setReleaseDate(movie.getReleaseDate())
-                .setBackdropUrl(movieImageProvider.getBackdropUrl(movie.getBackdropPath()))
-                .setPosterUrl(movieImageProvider.getPosterUrl(movie.getPosterPath()))
-                .build();
     }
 
     private SingleSource<? extends List<Movie>> mapError(Throwable throwable) {
@@ -97,5 +86,58 @@ public final class MovieWebRepository implements MovieRepository {
         else if (throwable instanceof HttpException && ((HttpException) throwable).code() == CODE_UNAUTHORIZED)
             return Single.error(new AuthorizationException(throwable));
         else return Single.error(throwable);
+    }
+
+    @Override
+    public Single<Movie> save(@NonNull Movie movie) {
+//        movieDao.fetchById(valueOf(movie.getId()))
+//                .subscribeOn(schedulers.getSubscriber())
+//                .observeOn(schedulers.getObserver())
+//                .flatMapSingle(new Function<pl.karollisiewicz.movie.app.data.source.web.Movie, SingleSource<?>>() {
+//                    @Override
+//                    public SingleSource<?> apply(pl.karollisiewicz.movie.app.data.source.web.Movie movie) throws Exception {
+//                        return movieDao.save(movie).map(movieMapper::toDomain);
+//                    }
+//                })
+//                .doOnError(this::logError)
+//                .subscribe(
+//                );
+//
+//        return Single.never();
+
+        return movieDao.save(movieMapper.toDto(movie))
+                .doOnError(this::logError)
+                .map(movieMapper::toDomain)
+                .subscribeOn(schedulers.getSubscriber())
+                .observeOn(schedulers.getObserver());
+    }
+
+    private static final class MovieMapper {
+
+        @NonNull
+        Movie toDomain(@NonNull final pl.karollisiewicz.movie.app.data.source.web.Movie movie) {
+            return new Movie.Builder(movie.getId())
+                    .setTitle(movie.getTitle())
+                    .setOverview(movie.getOverview())
+                    .setRating(movie.getVoteAverage())
+                    .setReleaseDate(movie.getReleaseDate())
+                    .setBackdropUrl(movie.getBackdropPath())
+                    .setPosterUrl(movie.getPosterPath())
+                    .build();
+        }
+
+        @NonNull
+        pl.karollisiewicz.movie.app.data.source.web.Movie toDto(@NonNull final Movie movie) {
+            final pl.karollisiewicz.movie.app.data.source.web.Movie webMovie = new pl.karollisiewicz.movie.app.data.source.web.Movie();
+            webMovie.setBackdropPath(movie.getBackdropUrl());
+            webMovie.setId(Long.valueOf(movie.getId().getValue()));
+            webMovie.setOverview(movie.getOverview());
+            webMovie.setPosterPath(movie.getPosterUrl());
+            webMovie.setReleaseDate(movie.getReleaseDate());
+            webMovie.setTitle(movie.getTitle());
+            webMovie.setVoteAverage(movie.getRating());
+
+            return webMovie;
+        }
     }
 }
