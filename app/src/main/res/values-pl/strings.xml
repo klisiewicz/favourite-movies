@@ -10,6 +10,8 @@
     <string name="release_date">Data wydania</string>
     <string name="share">Udostępnij</string>
     <string name="overview">Streszczenie</string>
+    <string name="favourite_added">Dodano do ulubionych</string>
+    <string name="favourite_removed">Usunięto z ulubionych</string>
     <string name="error_communication">Nieudane pobieranie filmów</string>
     <string name="error_authorization">Nieudane uwierzytelnianie</string>
     <string name="error_unknown">Nieznany błąd</string>

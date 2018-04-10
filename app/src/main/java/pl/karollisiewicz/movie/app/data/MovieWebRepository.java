@@ -55,13 +55,23 @@ public final class MovieWebRepository implements MovieRepository {
 
     @Override
     public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
-        return getMoviesMatchingCriterion(criterion)
+        return Single.zip(
+                movieDao.fetchAll(),
+                getMoviesMatchingCriterion(criterion)
+                        .toObservable()
+                        .map(Movies::getMovies)
+                        .flatMapIterable(list -> list)
+                        .map(movieMapper::toDomain)
+                        .toList(),
+                (favourites, movies) -> {
+                    for (Movie movie : movies)
+                        for (pl.karollisiewicz.movie.app.data.source.web.Movie favourite : favourites)
+                            if (movie.getId().getValue().equals(String.valueOf(favourite.getId())))
+                                movie.favourite();
+                    return movies;
+                }
+        )
                 .timeout(3, SECONDS)
-                .toObservable()
-                .map(Movies::getMovies)
-                .flatMapIterable(list -> list)
-                .map(movieMapper::toDomain)
-                .toList()
                 .doOnError(this::logError)
                 .onErrorResumeNext(this::mapError)
                 .subscribeOn(schedulers.getSubscriber())
@@ -90,21 +100,6 @@ public final class MovieWebRepository implements MovieRepository {
 
     @Override
     public Single<Movie> save(@NonNull Movie movie) {
-//        movieDao.fetchById(valueOf(movie.getId()))
-//                .subscribeOn(schedulers.getSubscriber())
-//                .observeOn(schedulers.getObserver())
-//                .flatMapSingle(new Function<pl.karollisiewicz.movie.app.data.source.web.Movie, SingleSource<?>>() {
-//                    @Override
-//                    public SingleSource<?> apply(pl.karollisiewicz.movie.app.data.source.web.Movie movie) throws Exception {
-//                        return movieDao.save(movie).map(movieMapper::toDomain);
-//                    }
-//                })
-//                .doOnError(this::logError)
-//                .subscribe(
-//                );
-//
-//        return Single.never();
-
         return movieDao.save(movieMapper.toDto(movie))
                 .doOnError(this::logError)
                 .map(movieMapper::toDomain)

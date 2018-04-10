@@ -2,25 +2,23 @@ package pl.karollisiewicz.movie.app;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.CompositeDisposable;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
+import pl.karollisiewicz.react.RxViewModel;
 
 /**
  * ViewModel providing a list of movies to the {@link MoviesActivity}
  */
-public final class MoviesViewModel extends ViewModel {
+public final class MoviesViewModel extends RxViewModel {
     private final MovieRepository movieRepository;
     private final MutableLiveData<Resource<List<Movie>>> moviesLiveData = new MutableLiveData<>();
-    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
     MoviesViewModel(@NonNull final MovieRepository movieRepository) {
@@ -29,19 +27,14 @@ public final class MoviesViewModel extends ViewModel {
 
     @NonNull
     LiveData<Resource<List<Movie>>> getMovies(Criterion criterion) {
-        disposables.add(
-                movieRepository.fetchBy(criterion)
-                        .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
-                        .subscribe(movies -> moviesLiveData.setValue(Resource.success(movies)),
-                                throwable -> moviesLiveData.setValue(Resource.error(throwable))
-                        )
+        add(movieRepository.fetchBy(criterion)
+                .doOnSubscribe(it -> moviesLiveData.setValue(Resource.loading()))
+                .subscribe(
+                        movies -> moviesLiveData.setValue(Resource.success(movies)),
+                        throwable -> moviesLiveData.setValue(Resource.error(throwable))
+                )
         );
 
         return moviesLiveData;
-    }
-
-    @Override
-    protected void onCleared() {
-        disposables.clear();
     }
 }

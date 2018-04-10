@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 
 /**
- * This class is responsible for displaying {@link Snackbar} and guards that only one instance is displayed at given time.
+ * This class is responsible for displaying {@link Snackbar} and preventing from displaying multiple instances.
  */
 public final class SnackbarPresenter {
     private static final SnackbarPresenter INSTANCE = new SnackbarPresenter();

@@ -24,6 +24,11 @@ public interface ViewModelModule {
     @ViewModelKey(MoviesViewModel.class)
     ViewModel moviesViewModel(MoviesViewModel viewModel);
 
+    @IntoMap
+    @Binds
+    @ViewModelKey(MovieDetailsViewModel.class)
+    ViewModel movieDetailsViewModel(MovieDetailsViewModel viewModel);
+
     @Binds
     ViewModelProvider.Factory viewModelFactory(ViewModelFactory factory);
 

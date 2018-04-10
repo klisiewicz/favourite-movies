@@ -10,6 +10,8 @@
     <string name="release_date">Release date</string>
     <string name="share">Share</string>
     <string name="overview">Synopsis</string>
+    <string name="favourite_added">Added to favorites</string>
+    <string name="favourite_removed">Removed from favorites</string>
     <string name="error_communication">Failed to fetch movies</string>
     <string name="error_authorization">Unable to authorize</string>
     <string name="error_unknown">Unknown error</string>

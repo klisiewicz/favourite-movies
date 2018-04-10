@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import okhttp3.internal.http.RealResponseBody;
 import pl.karollisiewicz.movie.app.ConsoleLogger;
@@ -27,9 +28,11 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static pl.karollisiewicz.movie.app.MovieMatcher.favourite;
 import static pl.karollisiewicz.movie.app.MovieMatcher.hasBackDropUrl;
 import static pl.karollisiewicz.movie.app.MovieMatcher.hasOverview;
 import static pl.karollisiewicz.movie.app.MovieMatcher.hasPosterUrl;
@@ -61,17 +64,19 @@ public class MovieWebRepositoryTest {
     }
 
     @Test
-    public void whenMoviesAreFetched_TheyShouldBeReturned() {
+    public void whenFetchingMovies_TheyShouldBeReturned() {
         givenServiceReturningMovies();
+        givenNoFavouriteMovies();
 
         whenFetchingPopularMovies();
 
-        thenMoviesAreReturned();
+        thenMovieIsReturned();
     }
 
     @Test
     public void whenClientIsNotAuthorized_UnauthorizedErrorIsReturned() {
         givenUnauthorizedService();
+        givenNoFavouriteMovies();
 
         whenFetchingPopularMovies();
 
@@ -81,16 +86,42 @@ public class MovieWebRepositoryTest {
     @Test
     public void whenHostIsUnreachable_CommunicationErrorIsReturned() {
         givenUnreachableHost();
+        givenNoFavouriteMovies();
 
         whenFetchingPopularMovies();
 
         thenCommunicationErrorIsReturned();
     }
 
+    @Test
+    public void whenFetchingMoviesThatAreFavourite_ThenItShouldBeMarkedAsFavourite() {
+        givenServiceReturningMovies();
+        givenFavouriteMovies();
+
+        whenFetchingPopularMovies();
+
+        thenMovieIsReturned();
+        andIsFavourite();
+    }
+
     private void givenServiceReturningMovies() {
         when(movieService.fetchPopular()).thenReturn(
                 Single.just(new Movies(Collections.singletonList(aMovie)))
         );
+    }
+
+    private void givenFavouriteMovies() {
+        when(movieDao.fetchAll()).thenReturn(
+            Single.just(Collections.singletonList(aMovie))
+        );
+        when(movieDao.fetchById(aMovie.getId())).thenReturn(
+                Maybe.just(aMovie)
+        );
+    }
+
+    private void givenNoFavouriteMovies() {
+        when(movieDao.fetchAll()).thenReturn(Single.just(Collections.emptyList()));
+        when(movieDao.fetchById(aMovie.getId())).thenReturn(Maybe.empty());
     }
 
     private void givenUnauthorizedService() {
@@ -113,17 +144,21 @@ public class MovieWebRepositoryTest {
         }
     }
 
-    private void thenMoviesAreReturned() {
+    private void thenMovieIsReturned() {
         assertThat(popularMovies, hasSize(1));
         final pl.karollisiewicz.movie.domain.Movie popularMovie = popularMovies.get(0);
         assertThat(popularMovie, allOf(asList(
-                isTitled("Title"),
-                isRated(6.66),
-                hasOverview("Overview"),
+                isTitled(aMovie.getTitle()),
+                isRated(aMovie.getVoteAverage()),
+                hasOverview(aMovie.getOverview()),
                 hasPosterUrl(aMovie.getPosterPath()),
                 hasBackDropUrl(aMovie.getBackdropPath()),
                 wasReleasedOn(new LocalDate(2017, 1, 27))
         )));
+    }
+
+    private void andIsFavourite() {
+        assertThat(popularMovies.get(0), is(favourite()));
     }
 
     private void thenUnauthorizedErrorIsReturned() {
