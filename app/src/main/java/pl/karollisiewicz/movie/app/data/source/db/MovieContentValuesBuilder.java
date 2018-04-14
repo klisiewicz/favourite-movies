@@ -5,6 +5,16 @@ import android.support.annotation.NonNull;
 
 import pl.karollisiewicz.movie.app.data.source.web.Movie;
 
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.FAVOURITE;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.ID;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.OVERVIEW;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.POSTER_PATH;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.RELEASE_DATE;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.TITLE;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.VOTE_AVERAGE;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.getName;
+
 final class MovieContentValuesBuilder {
     private final Movie movie;
 
@@ -15,13 +25,14 @@ final class MovieContentValuesBuilder {
     @NonNull
     ContentValues build() {
         final ContentValues contentValues = new ContentValues();
-        contentValues.put(MovieContract.MovieEntry.Column.ID.getName(), movie.getId());
-        contentValues.put(MovieContract.MovieEntry.Column.TITLE.getName(), movie.getTitle());
-        contentValues.put(MovieContract.MovieEntry.Column.OVERVIEW.getName(), movie.getOverview());
-        contentValues.put(MovieContract.MovieEntry.Column.POSTER_PATH.getName(), movie.getPosterPath());
-        contentValues.put(MovieContract.MovieEntry.Column.BACKDROP_PATH.getName(), movie.getBackdropPath());
-        contentValues.put(MovieContract.MovieEntry.Column.VOTE_AVERAGE.getName(), movie.getVoteAverage());
-        contentValues.put(MovieContract.MovieEntry.Column.RELEASE_DATE.getName(), movie.getReleaseDate().toDate().getTime());
+        contentValues.put(getName(ID), movie.getId());
+        contentValues.put(getName(TITLE), movie.getTitle());
+        contentValues.put(getName(OVERVIEW), movie.getOverview());
+        contentValues.put(getName(POSTER_PATH), movie.getPosterPath());
+        contentValues.put(getName(BACKDROP_PATH), movie.getBackdropPath());
+        contentValues.put(getName(VOTE_AVERAGE), movie.getVoteAverage());
+        contentValues.put(getName(RELEASE_DATE), movie.getReleaseDate().toDate().getTime());
+        contentValues.put(getName(FAVOURITE), movie.isFavourite() ? 1 : 0);
         return contentValues;
     }
 

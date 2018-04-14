@@ -10,6 +10,7 @@ import java.util.Date;
 import pl.karollisiewicz.movie.app.data.source.web.Movie;
 
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
+import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.FAVOURITE;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.ID;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.OVERVIEW;
 import static pl.karollisiewicz.movie.app.data.source.db.MovieContract.MovieEntry.Column.POSTER_PATH;
@@ -37,6 +38,7 @@ final class MovieCursor {
         movie.setBackdropPath(getBackdropPath());
         movie.setVoteAverage(getVoteAverage());
         movie.setReleaseDate(LocalDate.fromDateFields(new Date(getReleaseTimestamp())));
+        movie.setFavourite(isFavourite());
         return movie;
     }
 
@@ -66,6 +68,10 @@ final class MovieCursor {
 
     private long getReleaseTimestamp() {
         return cursor.getLong(cursor.getColumnIndex(RELEASE_DATE.getName()));
+    }
+
+    private boolean isFavourite() {
+        return cursor.getInt(cursor.getColumnIndex(FAVOURITE.getName())) == 1;
     }
 
     public boolean moveToFirst() {

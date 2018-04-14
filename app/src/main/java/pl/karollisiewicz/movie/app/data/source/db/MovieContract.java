@@ -3,6 +3,7 @@ package pl.karollisiewicz.movie.app.data.source.db;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
 /**
  * Favourite movies database contract.
@@ -26,7 +27,8 @@ public final class MovieContract {
             POSTER_PATH("poster_path", "TEXT"),
             BACKDROP_PATH("backdrop_path", "TEXT"),
             RELEASE_DATE("release_date", "LONG"),
-            VOTE_AVERAGE("vote_average", "REAL");
+            VOTE_AVERAGE("vote_average", "REAL"),
+            FAVOURITE("favourite", "INTEGER DEFAULT 0");
 
             private final String name;
             private final String type;
@@ -44,6 +46,10 @@ public final class MovieContract {
 
             public String getName() {
                 return name;
+            }
+
+            public static String getName(@NonNull final Column column) {
+                return column.getName();
             }
 
             @Override

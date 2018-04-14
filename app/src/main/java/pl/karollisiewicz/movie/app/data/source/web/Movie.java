@@ -30,6 +30,8 @@ public class Movie implements Serializable {
     @SerializedName("release_date")
     private LocalDate releaseDate;
 
+    private boolean isFavourite;
+
     public long getId() {
         return id;
     }
@@ -84,5 +86,13 @@ public class Movie implements Serializable {
 
     public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 }

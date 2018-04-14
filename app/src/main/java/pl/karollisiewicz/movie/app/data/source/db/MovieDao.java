@@ -13,6 +13,8 @@ import pl.karollisiewicz.movie.app.data.source.web.Movie;
 public interface MovieDao {
     Single<Collection<Movie>> fetchAll();
 
+    Single<Collection<Movie>> fetchFavourites();
+
     Maybe<Movie> fetchById(long movieId);
 
     Single<Movie> save(@NonNull Movie movie);

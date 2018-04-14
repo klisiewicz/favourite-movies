@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,9 +34,9 @@ import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
+import static java.util.Collections.emptyList;
 import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
-import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.FAVOURITE;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
@@ -66,7 +65,7 @@ public final class MoviesFragment extends Fragment {
     RecyclerView recyclerView;
 
     private MoviesAdapter adapter;
-    private MoviesViewModel viewModel;
+    private MoviesViewModel moviesViewModel;
 
     private Criterion criterion;
 
@@ -88,7 +87,6 @@ public final class MoviesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -103,10 +101,20 @@ public final class MoviesFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new MoviesAdapter();
-        adapter.setOnItemClickListener((movie, image) -> {
+        adapter.setMovieClickListener((movie, image) -> {
             final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                     image, ViewCompat.getTransitionName(image));
             MovieDetailsActivity.start(getActivity(), options, movie);
+        });
+
+        final MovieDetailsViewModel movieViewModel = ViewModelProviders.of(this, viewModelFactory).get(MovieDetailsViewModel.class);
+
+        adapter.setFavouriteMovieClickListener(movie -> {
+            if (movie.isFavourite()) {
+                movieViewModel.removeFromFavourites(movie);
+            } else {
+                movieViewModel.addToFavourites(movie);
+            }
         });
 
         recyclerView.setHasFixedSize(true);
@@ -114,28 +122,25 @@ public final class MoviesFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        viewModel = ViewModelProviders
+        moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
 
-        viewModel.getMovies(criterion).observe(this, this::show);
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
-                viewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
+                moviesViewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {
         if (resource == null) return;
 
-        if (resource.getStatus() != LOADING) hideProgress();
-
-        if (resource.getStatus() == SUCCESS)
+        if (resource.getStatus() == ERROR) showError(resource.getError());
+        if (resource.getStatus() != LOADING) {
+            hideProgress();
             populateView(resource.getData());
-        else if (resource.getStatus() == ERROR) {
-            showError(resource.getError());
-            populateView(Collections.emptyList());
         }
     }
 
@@ -144,8 +149,8 @@ public final class MoviesFragment extends Fragment {
         refreshLayout.setRefreshing(false);
     }
 
-    private void populateView(List<Movie> movies) {
-        adapter.setItems(movies);
+    private void populateView(@Nullable List<Movie> movies) {
+        adapter.setItems(movies != null ? movies : emptyList());
         recyclerView.setAdapter(adapter);
     }
 

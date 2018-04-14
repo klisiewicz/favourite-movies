@@ -56,7 +56,7 @@ public final class MovieWebRepository implements MovieRepository {
     @Override
     public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
         return Single.zip(
-                movieDao.fetchAll(),
+                movieDao.fetchFavourites(),
                 getMoviesMatchingCriterion(criterion)
                         .toObservable()
                         .map(Movies::getMovies)
@@ -81,8 +81,7 @@ public final class MovieWebRepository implements MovieRepository {
     private Single<Movies> getMoviesMatchingCriterion(@NonNull final Criterion criterion) {
         if (POPULARITY == criterion) return movieService.fetchPopular();
         else if (RATING == criterion) return movieService.fetchTopRated();
-        else if (FAVOURITE == criterion)
-            return movieDao.fetchAll().map(movies -> new Movies(new ArrayList<>(movies)));
+        else if (FAVOURITE == criterion) return movieDao.fetchFavourites().map(movies -> new Movies(new ArrayList<>(movies)));
         else return Single.never();
     }
 
@@ -118,6 +117,7 @@ public final class MovieWebRepository implements MovieRepository {
                     .setReleaseDate(movie.getReleaseDate())
                     .setBackdropUrl(movie.getBackdropPath())
                     .setPosterUrl(movie.getPosterPath())
+                    .setFavourite(movie.isFavourite())
                     .build();
         }
 
@@ -131,6 +131,7 @@ public final class MovieWebRepository implements MovieRepository {
             webMovie.setReleaseDate(movie.getReleaseDate());
             webMovie.setTitle(movie.getTitle());
             webMovie.setVoteAverage(movie.getRating());
+            webMovie.setFavourite(movie.isFavourite());
 
             return webMovie;
         }
