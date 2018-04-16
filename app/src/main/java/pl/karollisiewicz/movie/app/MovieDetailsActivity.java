@@ -109,7 +109,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     private void addToFavourites(@NonNull final Movie movie) {
         viewModel.addToFavourites(movie);
         snackbarPresenter.show(
-                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
+                make(container, getString(R.string.favourite_added), LENGTH_LONG)
                         .setAction(R.string.action_undo, v -> viewModel.removeFromFavourites(movie))
         );
     }
@@ -117,7 +117,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     private void removeFromFavourites(@NonNull final Movie movie) {
         viewModel.removeFromFavourites(movie);
         snackbarPresenter.show(
-                make(container, getString(R.string.favourite_added), LENGTH_LONG)
+                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
                         .setAction(R.string.action_undo, v -> viewModel.addToFavourites(movie))
         );
     }

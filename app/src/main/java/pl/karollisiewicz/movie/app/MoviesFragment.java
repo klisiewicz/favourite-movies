@@ -124,7 +124,7 @@ public final class MoviesFragment extends Fragment {
     private void addToFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
         viewModel.addToFavourites(movie);
         snackbarPresenter.show(
-                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
+                make(container, getString(R.string.favourite_added), LENGTH_LONG)
                         .setAction(R.string.action_undo, v -> {
                             viewModel.removeFromFavourites(movie);
                             adapter.notifyDataSetChanged();
@@ -135,7 +135,7 @@ public final class MoviesFragment extends Fragment {
     private void removeFromFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
         viewModel.removeFromFavourites(movie);
         snackbarPresenter.show(
-                make(container, getString(R.string.favourite_added), LENGTH_LONG)
+                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
                         .setAction(R.string.action_undo, v -> {
                             viewModel.addToFavourites(movie);
                             adapter.notifyDataSetChanged();
