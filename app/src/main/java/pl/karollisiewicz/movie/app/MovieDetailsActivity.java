@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -75,6 +74,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     @Inject
     SnackbarPresenter snackbarPresenter;
+    private MovieDetailsViewModel viewModel;
 
     public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
                              @NonNull final Movie movie) {
@@ -94,25 +94,32 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         setupActionBar(movie.getTitle());
         populateViewWith(movie);
 
-        final MovieDetailsViewModel viewModel = ViewModelProviders
+        viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MovieDetailsViewModel.class);
 
-        viewModel.getMovie().observe(this, movieResource -> {
-            if (movie.isFavourite()) showMessage(R.string.favourite_added);
-            else showMessage(R.string.favourite_removed);
-
-            populateViewWith(movie);
-        });
+        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
 
         floatingActionButton.setOnClickListener(v -> {
-            if (movie.isFavourite()) viewModel.removeFromFavourites(movie);
-            else viewModel.addToFavourites(movie);
+            if (movie.isFavourite()) removeFromFavourites(movie);
+            else addToFavourites(movie);
         });
     }
 
-    private void showMessage(@StringRes int messageId) {
-        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
+    private void addToFavourites(@NonNull final Movie movie) {
+        viewModel.addToFavourites(movie);
+        snackbarPresenter.show(
+                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.removeFromFavourites(movie))
+        );
+    }
+
+    private void removeFromFavourites(@NonNull final Movie movie) {
+        viewModel.removeFromFavourites(movie);
+        snackbarPresenter.show(
+                make(container, getString(R.string.favourite_added), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.addToFavourites(movie))
+        );
     }
 
     private Movie getMovie() {

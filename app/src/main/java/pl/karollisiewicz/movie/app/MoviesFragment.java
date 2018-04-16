@@ -107,18 +107,40 @@ public final class MoviesFragment extends Fragment {
             MovieDetailsActivity.start(getActivity(), options, movie);
         });
 
-        final MovieDetailsViewModel movieViewModel = ViewModelProviders.of(this, viewModelFactory).get(MovieDetailsViewModel.class);
+        final MovieDetailsViewModel movieViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(MovieDetailsViewModel.class);
 
         adapter.setFavouriteMovieClickListener(movie -> {
-            if (movie.isFavourite()) {
-                movieViewModel.removeFromFavourites(movie);
-            } else {
-                movieViewModel.addToFavourites(movie);
-            }
+            if (movie.isFavourite()) removeFromFavourites(movie, movieViewModel);
+            else addToFavourites(movie, movieViewModel);
+
+            adapter.notifyDataSetChanged();
         });
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_NUMBER));
+    }
+
+    private void addToFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
+        viewModel.addToFavourites(movie);
+        snackbarPresenter.show(
+                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> {
+                            viewModel.removeFromFavourites(movie);
+                            adapter.notifyDataSetChanged();
+                        })
+        );
+    }
+
+    private void removeFromFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
+        viewModel.removeFromFavourites(movie);
+        snackbarPresenter.show(
+                make(container, getString(R.string.favourite_added), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> {
+                            viewModel.addToFavourites(movie);
+                            adapter.notifyDataSetChanged();
+                        })
+        );
     }
 
     private void setupViewModel() {
