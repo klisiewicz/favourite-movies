@@ -107,53 +107,25 @@ public final class MoviesFragment extends Fragment {
             MovieDetailsActivity.start(getActivity(), options, movie);
         });
 
-        final MovieDetailsViewModel movieViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(MovieDetailsViewModel.class);
-
-        adapter.setFavouriteMovieClickListener(movie -> {
-            if (movie.isFavourite()) removeFromFavourites(movie, movieViewModel);
-            else addToFavourites(movie, movieViewModel);
-
-            adapter.notifyDataSetChanged();
-        });
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_NUMBER));
-    }
-
-    private void addToFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
-        viewModel.addToFavourites(movie);
-        snackbarPresenter.show(
-                make(container, getString(R.string.favourite_added), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> {
-                            viewModel.removeFromFavourites(movie);
-                            adapter.notifyDataSetChanged();
-                        })
-        );
-    }
-
-    private void removeFromFavourites(@NonNull final Movie movie, MovieDetailsViewModel viewModel) {
-        viewModel.removeFromFavourites(movie);
-        snackbarPresenter.show(
-                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> {
-                            viewModel.addToFavourites(movie);
-                            adapter.notifyDataSetChanged();
-                        })
-        );
     }
 
     private void setupViewModel() {
         moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
-
-        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
                 moviesViewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {
@@ -178,8 +150,7 @@ public final class MoviesFragment extends Fragment {
 
     private void showError(Throwable throwable) {
         if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
-        else if (throwable instanceof AuthorizationException)
-            showMessage(R.string.error_authorization);
+        else if (throwable instanceof AuthorizationException) showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 

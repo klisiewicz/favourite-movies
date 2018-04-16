@@ -31,9 +31,6 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
     @Nullable
     private MovieClickListener movieClickListener;
 
-    @Nullable
-    private FavouriteMovieClickListener favouriteMovieClickListener;
-
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -61,18 +58,9 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         this.movieClickListener = movieClickListener;
     }
 
-    public void setFavouriteMovieClickListener(@Nullable FavouriteMovieClickListener favouriteMovieClickListener) {
-        this.favouriteMovieClickListener = favouriteMovieClickListener;
-    }
-
     @FunctionalInterface
     interface MovieClickListener {
         void onMovieClick(Movie movie, ImageView image);
-    }
-
-    @FunctionalInterface
-    interface FavouriteMovieClickListener {
-        void onFavouriteClick(Movie movie);
     }
 
     final class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -83,9 +71,6 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         @BindView(R.id.poster_image)
         ImageView posterImage;
 
-        @BindView(R.id.favourite_image)
-        ImageView favouriteImage;
-
         MovieViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -94,17 +79,11 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
                 if (movieClickListener != null)
                     movieClickListener.onMovieClick(movies.get(getAdapterPosition()), posterImage);
             });
-
-            favouriteImage.setOnClickListener(v -> {
-                if (favouriteMovieClickListener != null)
-                    favouriteMovieClickListener.onFavouriteClick(movies.get(getAdapterPosition()));
-            });
         }
 
         void bind(@NonNull final Movie movie) {
             title.setText(movie.getTitle());
             posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
-            favouriteImage.setImageResource(movie.isFavourite() ? R.drawable.ic_favourite : R.drawable.ic_favourite_border);
 
             Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
