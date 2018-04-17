@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
+import pl.karollisiewicz.common.react.RxViewModel;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
-import pl.karollisiewicz.react.RxViewModel;
 
 public final class MovieDetailsViewModel extends RxViewModel {
     private final MovieRepository movieRepository;

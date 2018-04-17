@@ -1,4 +1,4 @@
-package pl.karollisiewicz.log;
+package pl.karollisiewicz.common.log;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

@@ -11,7 +11,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.common.log.Logger;
+import pl.karollisiewicz.common.react.Schedulers;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
 import pl.karollisiewicz.movie.app.data.source.web.MovieWebService;
@@ -20,7 +21,6 @@ import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
 import pl.karollisiewicz.movie.domain.exception.CommunicationException;
-import pl.karollisiewicz.react.Schedulers;
 import retrofit2.HttpException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;

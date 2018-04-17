@@ -1,4 +1,4 @@
-package pl.karollisiewicz.ui;
+package pl.karollisiewicz.common.ui;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

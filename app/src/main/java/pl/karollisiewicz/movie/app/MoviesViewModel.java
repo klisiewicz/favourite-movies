@@ -8,10 +8,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import pl.karollisiewicz.common.react.RxViewModel;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
-import pl.karollisiewicz.react.RxViewModel;
 
 /**
  * ViewModel providing a list of movies to the {@link MoviesActivity}

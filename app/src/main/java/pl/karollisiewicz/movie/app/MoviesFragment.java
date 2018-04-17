@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
+import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
 import pl.karollisiewicz.movie.domain.exception.CommunicationException;
-import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
@@ -115,17 +115,13 @@ public final class MoviesFragment extends Fragment {
         moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
+
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
                 moviesViewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {

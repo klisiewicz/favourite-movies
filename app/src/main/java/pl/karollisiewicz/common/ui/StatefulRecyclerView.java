@@ -1,4 +1,4 @@
-package pl.karollisiewicz.ui;
+package pl.karollisiewicz.common.ui;
 
 import android.content.Context;
 import android.os.Bundle;

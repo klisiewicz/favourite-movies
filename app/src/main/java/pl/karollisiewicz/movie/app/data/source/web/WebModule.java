@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.movie.BuildConfig;
 import pl.karollisiewicz.movie.app.data.MovieImageProvider;
 import retrofit2.Retrofit;

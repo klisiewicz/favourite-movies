@@ -3,10 +3,10 @@ package pl.karollisiewicz.movie.app;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.common.log.Logger;
 
 /**
- * Mock of the {@link pl.karollisiewicz.log.Logger} interface used for tests.
+ * Mock of the {@link pl.karollisiewicz.common.log.Logger} interface used for tests.
  */
 public final class ConsoleLogger implements Logger {
     @Override

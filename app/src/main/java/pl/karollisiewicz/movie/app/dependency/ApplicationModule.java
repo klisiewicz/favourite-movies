@@ -13,10 +13,10 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.common.log.Logger;
+import pl.karollisiewicz.common.react.Schedulers;
+import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import pl.karollisiewicz.movie.app.MovieApplication;
-import pl.karollisiewicz.react.Schedulers;
-import pl.karollisiewicz.ui.SnackbarPresenter;
 
 /**
  * Module for application-wide dependencies.

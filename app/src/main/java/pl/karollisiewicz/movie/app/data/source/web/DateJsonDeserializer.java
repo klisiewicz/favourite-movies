@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 
 import javax.inject.Inject;
 
-import pl.karollisiewicz.log.Logger;
+import pl.karollisiewicz.common.log.Logger;
 
 /**
  * Deserializer for {@link org.joda.time.LocalDate} objects.

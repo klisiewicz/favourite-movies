@@ -30,10 +30,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
+import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.movie.domain.Movie;
-import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
