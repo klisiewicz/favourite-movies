@@ -8,7 +8,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.movie.app.ViewModelModule;
 import pl.karollisiewicz.movie.app.config.ConfigurationModule;
-import pl.karollisiewicz.movie.app.data.SourceModule;
+import pl.karollisiewicz.movie.app.data.source.SourceModule;
 
 @Singleton
 @Component(modules = {

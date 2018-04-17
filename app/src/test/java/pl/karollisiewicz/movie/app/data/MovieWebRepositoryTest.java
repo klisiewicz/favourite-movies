@@ -16,6 +16,7 @@ import pl.karollisiewicz.movie.app.ConsoleLogger;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.Movie;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.MovieWebRepository;
 import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.app.react.TestSchedulers;
 import pl.karollisiewicz.movie.domain.MovieRepository;

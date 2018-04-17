@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.data;
+package pl.karollisiewicz.movie.app.data.source;
 
 import android.support.annotation.NonNull;
 
@@ -11,6 +11,7 @@ import pl.karollisiewicz.common.react.Schedulers;
 import pl.karollisiewicz.movie.app.data.source.db.DatabaseModule;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
+import pl.karollisiewicz.movie.app.data.source.web.MovieWebRepository;
 import pl.karollisiewicz.movie.app.data.source.web.WebModule;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 

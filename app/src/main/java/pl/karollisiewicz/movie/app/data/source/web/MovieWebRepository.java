@@ -1,4 +1,4 @@
-package pl.karollisiewicz.movie.app.data;
+package pl.karollisiewicz.movie.app.data.source.web;
 
 import android.support.annotation.NonNull;
 
@@ -14,9 +14,6 @@ import io.reactivex.SingleSource;
 import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.common.react.Schedulers;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
-import pl.karollisiewicz.movie.app.data.source.web.MovieService;
-import pl.karollisiewicz.movie.app.data.source.web.MovieWebService;
-import pl.karollisiewicz.movie.app.data.source.web.Movies;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
@@ -43,10 +40,10 @@ public final class MovieWebRepository implements MovieRepository {
     private final MovieMapper movieMapper;
 
     @Inject
-    MovieWebRepository(@NonNull final MovieService movieService,
-                       @NonNull final MovieDao movieDao,
-                       @NonNull final Schedulers schedulers,
-                       @NonNull final Logger logger) {
+    public MovieWebRepository(@NonNull final MovieService movieService,
+                              @NonNull final MovieDao movieDao,
+                              @NonNull final Schedulers schedulers,
+                              @NonNull final Logger logger) {
         this.movieMapper = new MovieMapper();
         this.movieService = movieService;
         this.movieDao = movieDao;

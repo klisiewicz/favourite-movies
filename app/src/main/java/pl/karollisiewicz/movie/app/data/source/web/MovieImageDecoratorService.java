@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import pl.karollisiewicz.movie.app.data.MovieImageProvider;
 
 /**
  * Movie service responsible for updating values of {@link Movie#backdropPath} and {@link Movie#posterPath} with the values given by the

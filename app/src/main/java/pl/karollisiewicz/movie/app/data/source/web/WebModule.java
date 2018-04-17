@@ -23,7 +23,6 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.movie.BuildConfig;
-import pl.karollisiewicz.movie.app.data.MovieImageProvider;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
