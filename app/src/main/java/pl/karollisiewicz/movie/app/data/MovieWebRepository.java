@@ -24,6 +24,7 @@ import pl.karollisiewicz.movie.domain.exception.CommunicationException;
 import retrofit2.HttpException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pl.karollisiewicz.common.react.Transformers.applySchedulers;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.FAVOURITE;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
@@ -74,8 +75,7 @@ public final class MovieWebRepository implements MovieRepository {
                 .timeout(3, SECONDS)
                 .doOnError(this::logError)
                 .onErrorResumeNext(this::mapError)
-                .subscribeOn(schedulers.getSubscriber())
-                .observeOn(schedulers.getObserver());
+                .compose(applySchedulers(schedulers));
     }
 
     private Single<Movies> getMoviesMatchingCriterion(@NonNull final Criterion criterion) {
@@ -102,8 +102,7 @@ public final class MovieWebRepository implements MovieRepository {
         return movieDao.save(movieMapper.toDto(movie))
                 .doOnError(this::logError)
                 .map(movieMapper::toDomain)
-                .subscribeOn(schedulers.getSubscriber())
-                .observeOn(schedulers.getObserver());
+                .compose(applySchedulers(schedulers));
     }
 
     private static final class MovieMapper {
