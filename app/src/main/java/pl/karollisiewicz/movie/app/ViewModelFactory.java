@@ -24,7 +24,7 @@ public final class ViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        Provider<? extends ViewModel> creator = this.creators.get(modelClass);
+        Provider<? extends ViewModel> creator = creators.get(modelClass);
         if (creator == null) {
             creator = getCreatorFromCreatorSet(modelClass);
         }

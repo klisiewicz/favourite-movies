@@ -98,20 +98,14 @@ public final class MovieDetailsActivity extends AppCompatActivity {
                 .of(this, viewModelFactory)
                 .get(MovieDetailsViewModel.class);
 
-        viewModel.getMovie().observe(this, movieResource -> {
-            populateViewWith(movie);
-            showSummaryMessage(movie);
-        });
+        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
+        viewModel.getMessage().observe(this, messageResourceId ->
+                snackbarPresenter.show(make(container, getString(messageResourceId), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
+                )
+        );
 
         floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite(movie));
-    }
-
-    private void showSummaryMessage(@NonNull final Movie movie) {
-        int messageId = movie.isFavourite() ? R.string.favourite_added : R.string.favourite_removed;
-        snackbarPresenter.show(
-                make(container, getString(messageId), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
-        );
     }
 
     private Movie getMovieFromIntent() {

@@ -7,12 +7,14 @@ import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import pl.karollisiewicz.common.react.RxViewModel;
+import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
 public final class MovieDetailsViewModel extends RxViewModel {
     private final MovieRepository movieRepository;
     private final MutableLiveData<Resource<Movie>> movieLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Integer> messageLiveData = new MutableLiveData<>();
 
     @Inject
     MovieDetailsViewModel(@NonNull final MovieRepository movieRepository) {
@@ -29,12 +31,19 @@ public final class MovieDetailsViewModel extends RxViewModel {
     private void save(@NonNull Movie movie) {
         add(movieRepository.save(movie)
                 .subscribe(
-                        savedMovie -> movieLiveData.setValue(Resource.success(savedMovie)),
+                        savedMovie -> {
+                            movieLiveData.setValue(Resource.success(savedMovie));
+                            messageLiveData.setValue(savedMovie.isFavourite() ? R.string.favourite_added : R.string.favourite_removed);
+                        },
                         throwable -> movieLiveData.setValue(Resource.error(throwable)))
         );
     }
 
     public LiveData<Resource<Movie>> getMovie() {
         return movieLiveData;
+    }
+
+    public MutableLiveData<Integer> getMessage() {
+        return messageLiveData;
     }
 }
