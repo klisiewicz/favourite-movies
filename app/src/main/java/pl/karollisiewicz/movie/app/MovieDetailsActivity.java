@@ -90,7 +90,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         AndroidInjection.inject(this);
 
-        final Movie movie = getMovie();
+        final Movie movie = getMovieFromIntent();
         setupActionBar(movie.getTitle());
         populateViewWith(movie);
 
@@ -98,31 +98,23 @@ public final class MovieDetailsActivity extends AppCompatActivity {
                 .of(this, viewModelFactory)
                 .get(MovieDetailsViewModel.class);
 
-        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
-
-        floatingActionButton.setOnClickListener(v -> {
-            if (movie.isFavourite()) removeFromFavourites(movie);
-            else addToFavourites(movie);
+        viewModel.getMovie().observe(this, movieResource -> {
+            populateViewWith(movie);
+            showSummaryMessage(movie);
         });
+
+        floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite(movie));
     }
 
-    private void addToFavourites(@NonNull final Movie movie) {
-        viewModel.addToFavourites(movie);
+    private void showSummaryMessage(@NonNull final Movie movie) {
+        int messageId = movie.isFavourite() ? R.string.favourite_added : R.string.favourite_removed;
         snackbarPresenter.show(
-                make(container, getString(R.string.favourite_added), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> viewModel.removeFromFavourites(movie))
+                make(container, getString(messageId), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
         );
     }
 
-    private void removeFromFavourites(@NonNull final Movie movie) {
-        viewModel.removeFromFavourites(movie);
-        snackbarPresenter.show(
-                make(container, getString(R.string.favourite_removed), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> viewModel.addToFavourites(movie))
-        );
-    }
-
-    private Movie getMovie() {
+    private Movie getMovieFromIntent() {
         final Intent intent = getIntent();
         if (intent == null) return new Movie.Builder().build();
 

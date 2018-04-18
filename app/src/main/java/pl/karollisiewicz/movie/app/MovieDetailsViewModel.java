@@ -19,13 +19,10 @@ public final class MovieDetailsViewModel extends RxViewModel {
         this.movieRepository = movieRepository;
     }
 
-    public void addToFavourites(@NonNull Movie movie) {
-        movie.favourite();
-        save(movie);
-    }
+    public void toggleFavourite(@NonNull Movie movie) {
+        if (movie.isFavourite()) movie.unfavourite();
+        else movie.favourite();
 
-    public void removeFromFavourites(@NonNull Movie movie) {
-        movie.unfavourite();
         save(movie);
     }
 
