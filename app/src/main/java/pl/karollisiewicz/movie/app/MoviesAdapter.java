@@ -87,6 +87,8 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
             Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
+                    .placeholder(R.drawable.ic_videocam)
+                    .error(R.drawable.ic_videocam)
                     .into(posterImage);
         }
     }

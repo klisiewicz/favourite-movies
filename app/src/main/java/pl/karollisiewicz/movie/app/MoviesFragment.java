@@ -4,6 +4,7 @@ package pl.karollisiewicz.movie.app;
 import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +45,6 @@ import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 public final class MoviesFragment extends Fragment {
 
     private static final String CRITERION_KEY = "MoviesFragment.Type";
-    private static final int COLUMNS_NUMBER = 2;
 
     @BindView(R.id.container_layout)
     ViewGroup container;
@@ -108,20 +108,29 @@ public final class MoviesFragment extends Fragment {
         });
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_NUMBER));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getColumnNumbers()));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private int getColumnNumbers() {
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 4;
     }
 
     private void setupViewModel() {
         moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
-
-        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
-                moviesViewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
+                moviesViewModel.getMovies(criterion));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {
@@ -141,7 +150,6 @@ public final class MoviesFragment extends Fragment {
 
     private void populateView(@Nullable List<Movie> movies) {
         adapter.setItems(movies != null ? movies : emptyList());
-        recyclerView.setAdapter(adapter);
     }
 
     private void showError(Throwable throwable) {
