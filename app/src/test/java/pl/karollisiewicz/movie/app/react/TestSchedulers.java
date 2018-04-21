@@ -1,7 +1,7 @@
 package pl.karollisiewicz.movie.app.react;
 
 import io.reactivex.Scheduler;
-import pl.karollisiewicz.react.Schedulers;
+import pl.karollisiewicz.common.react.Schedulers;
 
 public final class TestSchedulers implements Schedulers {
     @Override

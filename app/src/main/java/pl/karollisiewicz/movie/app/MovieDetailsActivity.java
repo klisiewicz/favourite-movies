@@ -1,6 +1,8 @@
 package pl.karollisiewicz.movie.app;
 
 import android.app.ActivityOptions;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,14 +30,20 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
+import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.movie.domain.Movie;
 
+import static android.support.design.widget.Snackbar.LENGTH_LONG;
+import static android.support.design.widget.Snackbar.make;
 import static android.view.View.GONE;
 
 public final class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "MovieDetailsActivity.Movie";
+
+    @BindView(R.id.container_layout)
+    ViewGroup container;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -58,7 +67,14 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton;
 
     @Inject
+    ViewModelProvider.Factory viewModelFactory;
+
+    @Inject
     Locale locale;
+
+    @Inject
+    SnackbarPresenter snackbarPresenter;
+    private MovieDetailsViewModel viewModel;
 
     public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
                              @NonNull final Movie movie) {
@@ -74,16 +90,25 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         AndroidInjection.inject(this);
 
-        final Movie movie = getMovie();
+        final Movie movie = getMovieFromIntent();
         setupActionBar(movie.getTitle());
         populateViewWith(movie);
 
-        floatingActionButton.setOnClickListener(v -> {
-            // Phase 2 - Add to favourites.
-        });
+        viewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(MovieDetailsViewModel.class);
+
+        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
+        viewModel.getMessage().observe(this, messageResourceId ->
+                snackbarPresenter.show(make(container, getString(messageResourceId), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
+                )
+        );
+
+        floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite(movie));
     }
 
-    private Movie getMovie() {
+    private Movie getMovieFromIntent() {
         final Intent intent = getIntent();
         if (intent == null) return new Movie.Builder().build();
 
@@ -106,6 +131,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         averageRateText.setText(String.valueOf(movie.getRating()));
         overviewText.setText(movie.getOverview());
         posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
+        floatingActionButton.setImageResource(movie.isFavourite() ? R.drawable.ic_favourite : R.drawable.ic_favourite_border);
 
         Picasso.with(this)
                 .load(movie.getBackdropUrl())

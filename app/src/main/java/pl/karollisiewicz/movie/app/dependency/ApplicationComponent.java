@@ -8,8 +8,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import pl.karollisiewicz.movie.app.MovieApplication;
 import pl.karollisiewicz.movie.app.ViewModelModule;
 import pl.karollisiewicz.movie.app.config.ConfigurationModule;
-import pl.karollisiewicz.movie.app.source.SourceModule;
-import pl.karollisiewicz.movie.app.source.WebModule;
+import pl.karollisiewicz.movie.app.data.source.SourceModule;
 
 @Singleton
 @Component(modules = {
@@ -20,7 +19,6 @@ import pl.karollisiewicz.movie.app.source.WebModule;
         FragmentModule.class,
         SourceModule.class,
         ViewModelModule.class,
-        WebModule.class
 })
 public interface ApplicationComponent {
     void inject(MovieApplication application);

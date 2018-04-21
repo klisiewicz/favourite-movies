@@ -4,6 +4,7 @@ package pl.karollisiewicz.movie.app;
 import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,25 +26,25 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
+import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import pl.karollisiewicz.movie.R;
 import pl.karollisiewicz.movie.domain.Movie;
 import pl.karollisiewicz.movie.domain.MovieRepository.Criterion;
 import pl.karollisiewicz.movie.domain.exception.AuthorizationException;
 import pl.karollisiewicz.movie.domain.exception.CommunicationException;
-import pl.karollisiewicz.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
+import static java.util.Collections.emptyList;
 import static pl.karollisiewicz.movie.app.Resource.Status.ERROR;
 import static pl.karollisiewicz.movie.app.Resource.Status.LOADING;
-import static pl.karollisiewicz.movie.app.Resource.Status.SUCCESS;
+import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.FAVOURITE;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.movie.domain.MovieRepository.Criterion.RATING;
 
 public final class MoviesFragment extends Fragment {
 
     private static final String CRITERION_KEY = "MoviesFragment.Type";
-    private static final int COLUMNS_NUMBER = 2;
 
     @BindView(R.id.container_layout)
     ViewGroup container;
@@ -65,33 +65,12 @@ public final class MoviesFragment extends Fragment {
     RecyclerView recyclerView;
 
     private MoviesAdapter adapter;
-    private MoviesViewModel viewModel;
+    private MoviesViewModel moviesViewModel;
 
     private Criterion criterion;
 
     public MoviesFragment() {
         // Required empty public constructor
-    }
-
-    public static MoviesFragment newPopularInstance() {
-        return newInstance(POPULARITY);
-    }
-
-    public static MoviesFragment newTopRatedInstance() {
-        return newInstance(RATING);
-    }
-
-    private static MoviesFragment newInstance(@NonNull final Criterion criterion) {
-        final MoviesFragment fragment = new MoviesFragment();
-        fragment.setArguments(createBundle(criterion));
-        return fragment;
-    }
-
-    @NonNull
-    private static Bundle createBundle(@NonNull Criterion criterion) {
-        Bundle args = new Bundle();
-        args.putSerializable(CRITERION_KEY, criterion);
-        return args;
     }
 
     @Override
@@ -108,7 +87,6 @@ public final class MoviesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -123,39 +101,45 @@ public final class MoviesFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new MoviesAdapter();
-        adapter.setOnItemClickListener((movie, image) -> {
+        adapter.setMovieClickListener((movie, image) -> {
             final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                     image, ViewCompat.getTransitionName(image));
             MovieDetailsActivity.start(getActivity(), options, movie);
         });
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_NUMBER));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getColumnNumbers()));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private int getColumnNumbers() {
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 4;
     }
 
     private void setupViewModel() {
-        viewModel = ViewModelProviders
+        moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
-
-        viewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
-                viewModel.getMovies(criterion).observe(MoviesFragment.this, MoviesFragment.this::show));
+                moviesViewModel.getMovies(criterion));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {
         if (resource == null) return;
 
-        if (resource.getStatus() != LOADING) hideProgress();
-
-        if (resource.getStatus() == SUCCESS)
+        if (resource.getStatus() == ERROR) showError(resource.getError());
+        if (resource.getStatus() != LOADING) {
+            hideProgress();
             populateView(resource.getData());
-        else if (resource.getStatus() == ERROR) {
-            showError(resource.getError());
-            populateView(Collections.emptyList());
         }
     }
 
@@ -164,19 +148,42 @@ public final class MoviesFragment extends Fragment {
         refreshLayout.setRefreshing(false);
     }
 
-    private void populateView(List<Movie> movies) {
-        adapter.setItems(movies);
-        recyclerView.setAdapter(adapter);
+    private void populateView(@Nullable List<Movie> movies) {
+        adapter.setItems(movies != null ? movies : emptyList());
     }
 
     private void showError(Throwable throwable) {
         if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
-        else if (throwable instanceof AuthorizationException)
-            showMessage(R.string.error_authorization);
+        else if (throwable instanceof AuthorizationException) showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 
     private void showMessage(@StringRes int messageId) {
         snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
+    }
+
+    public static MoviesFragment newPopularInstance() {
+        return newInstance(POPULARITY);
+    }
+
+    public static MoviesFragment newTopRatedInstance() {
+        return newInstance(RATING);
+    }
+
+    public static Fragment newFavouriteInstance() {
+        return newInstance(FAVOURITE);
+    }
+
+    private static MoviesFragment newInstance(@NonNull final Criterion criterion) {
+        final MoviesFragment fragment = new MoviesFragment();
+        fragment.setArguments(createBundle(criterion));
+        return fragment;
+    }
+
+    @NonNull
+    private static Bundle createBundle(@NonNull Criterion criterion) {
+        Bundle args = new Bundle();
+        args.putSerializable(CRITERION_KEY, criterion);
+        return args;
     }
 }

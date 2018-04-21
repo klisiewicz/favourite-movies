@@ -12,7 +12,9 @@ import io.reactivex.Single;
 public interface MovieRepository {
     Single<List<Movie>> fetchBy(@NonNull Criterion criterion);
 
+    Single<Movie> save(@NonNull Movie movie);
+
     enum Criterion {
-        POPULARITY, RATING
+        POPULARITY, RATING, FAVOURITE
     }
 }

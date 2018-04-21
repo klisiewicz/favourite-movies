@@ -29,14 +29,13 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
     private List<Movie> movies = new ArrayList<>();
 
     @Nullable
-    private MovieItemClickListener movieItemClickListener;
+    private MovieClickListener movieClickListener;
 
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_movie, parent, false);
-
         return new MovieViewHolder(view);
     }
 
@@ -55,16 +54,16 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         notifyDataSetChanged();
     }
 
-    void setOnItemClickListener(@Nullable final MovieItemClickListener movieItemClickListener) {
-        this.movieItemClickListener = movieItemClickListener;
+    void setMovieClickListener(@Nullable final MovieClickListener movieClickListener) {
+        this.movieClickListener = movieClickListener;
     }
 
     @FunctionalInterface
-    public interface MovieItemClickListener {
+    interface MovieClickListener {
         void onMovieClick(Movie movie, ImageView image);
     }
 
-    final class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    final class MovieViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.title_text)
         TextView title;
@@ -75,23 +74,22 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         MovieViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
+
+            itemView.setOnClickListener(v -> {
+                if (movieClickListener != null)
+                    movieClickListener.onMovieClick(movies.get(getAdapterPosition()), posterImage);
+            });
         }
 
         void bind(@NonNull final Movie movie) {
             title.setText(movie.getTitle());
             posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
+
             Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
+                    .placeholder(R.drawable.ic_videocam)
+                    .error(R.drawable.ic_videocam)
                     .into(posterImage);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (movieItemClickListener != null) {
-                final int position = getAdapterPosition();
-                movieItemClickListener.onMovieClick(movies.get(position), posterImage);
-            }
         }
     }
 }

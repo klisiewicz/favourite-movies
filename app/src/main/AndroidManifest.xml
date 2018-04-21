@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".app.MoviesActivity"
             android:launchMode="singleTop">
@@ -24,5 +25,11 @@
         <activity
             android:name=".app.MovieDetailsActivity"
             android:parentActivityName=".app.MoviesActivity" />
+
+        <provider
+            android:name="pl.karollisiewicz.movie.app.data.source.db.MovieContentProvider"
+            android:authorities="pl.karollisiewicz.movie"
+            android:exported="false" />
+
     </application>
 </manifest>

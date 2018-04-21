@@ -11,20 +11,28 @@ import java.io.Serializable;
  * Movie representation.
  */
 public final class Movie implements Serializable {
+    private final MovieId id;
     private final String title;
     private final String posterUrl;
     private final String backdropUrl;
     private final String overview;
     private final double rating;
     private final LocalDate releaseDate;
+    private boolean isFavourite;
 
     private Movie(@NonNull final Builder builder) {
+        id = MovieId.of(builder.id);
         title = builder.title;
         posterUrl = builder.posterUrl;
         backdropUrl = builder.backdropUrl;
         overview = builder.overview;
         rating = builder.rating;
         releaseDate = builder.releaseDate;
+        isFavourite = builder.isFavourite;
+    }
+
+    public MovieId getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -52,13 +60,35 @@ public final class Movie implements Serializable {
         return releaseDate;
     }
 
+    public void favourite() {
+        isFavourite = true;
+    }
+
+    public void unfavourite() {
+        isFavourite = false;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
     public static final class Builder {
+        private final long id;
         private String title;
         private String posterUrl;
         private String backdropUrl;
         private String overview;
         private double rating;
         private LocalDate releaseDate;
+        private boolean isFavourite;
+
+        public Builder() {
+            this(-1);
+        }
+
+        public Builder(long id) {
+            this.id = id;
+        }
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -87,6 +117,11 @@ public final class Movie implements Serializable {
 
         public Builder setReleaseDate(LocalDate releaseDate) {
             this.releaseDate = releaseDate;
+            return this;
+        }
+
+        public Builder setFavourite(boolean isFavourite) {
+            this.isFavourite = isFavourite;
             return this;
         }
 
