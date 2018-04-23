@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Movie representation.
  */
 public final class Movie implements Serializable {
+    private static final long serialVersionUID = 8414027612683642476L;
     private final MovieId id;
     private final String title;
     private final String posterUrl;
