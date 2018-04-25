@@ -6,6 +6,10 @@ import android.support.annotation.Nullable;
 import org.joda.time.LocalDate;
 
 import java.io.Serializable;
+import java.util.Collection;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * Movie representation.
@@ -19,6 +23,7 @@ public final class Movie implements Serializable {
     private final String overview;
     private final double rating;
     private final LocalDate releaseDate;
+    private final Iterable<Video> videos;
     private boolean isFavourite;
 
     private Movie(@NonNull final Builder builder) {
@@ -29,6 +34,7 @@ public final class Movie implements Serializable {
         overview = builder.overview;
         rating = builder.rating;
         releaseDate = builder.releaseDate;
+        videos = builder.videos != null ? unmodifiableCollection(builder.videos) : emptyList();
         isFavourite = builder.isFavourite;
     }
 
@@ -61,6 +67,10 @@ public final class Movie implements Serializable {
         return releaseDate;
     }
 
+    public Iterable<Video> getVideos() {
+        return videos;
+    }
+
     public void favourite() {
         isFavourite = true;
     }
@@ -81,6 +91,7 @@ public final class Movie implements Serializable {
         private String overview;
         private double rating;
         private LocalDate releaseDate;
+        private Collection<Video> videos;
         private boolean isFavourite;
 
         public Builder() {
@@ -123,6 +134,11 @@ public final class Movie implements Serializable {
 
         public Builder setFavourite(boolean isFavourite) {
             this.isFavourite = isFavourite;
+            return this;
+        }
+
+        public Builder setVideos(Collection<Video> videos) {
+            this.videos = videos;
             return this;
         }
 

@@ -12,6 +12,7 @@ import pl.karollisiewicz.movie.app.data.source.db.DatabaseModule;
 import pl.karollisiewicz.movie.app.data.source.db.MovieDao;
 import pl.karollisiewicz.movie.app.data.source.web.MovieService;
 import pl.karollisiewicz.movie.app.data.source.web.MovieWebRepository;
+import pl.karollisiewicz.movie.app.data.source.web.VideoWebService;
 import pl.karollisiewicz.movie.app.data.source.web.WebModule;
 import pl.karollisiewicz.movie.domain.MovieRepository;
 
@@ -26,8 +27,9 @@ public final class SourceModule {
     MovieRepository getMovieRepository(
             @NonNull final MovieService movieService,
             @NonNull final MovieDao movieDao,
+            @NonNull final VideoWebService videoService,
             @NonNull final Schedulers schedulers,
             @NonNull final Logger logger) {
-        return new MovieWebRepository(movieService, movieDao, schedulers, logger);
+        return new MovieWebRepository(movieService, movieDao, videoService, schedulers, logger);
     }
 }

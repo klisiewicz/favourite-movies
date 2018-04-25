@@ -1,6 +1,7 @@
 package pl.karollisiewicz.movie.domain;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 
@@ -22,6 +23,7 @@ public final class Video implements Serializable {
         type = builder.type;
     }
 
+    @NonNull
     public VideoId getId() {
         return id;
     }
@@ -38,10 +40,12 @@ public final class Video implements Serializable {
         return site;
     }
 
+    @Nullable
     public Quality getQuality() {
         return quality;
     }
 
+    @Nullable
     public Type getType() {
         return type;
     }

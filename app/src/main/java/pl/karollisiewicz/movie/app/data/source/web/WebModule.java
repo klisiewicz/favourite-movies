@@ -59,6 +59,12 @@ public final class WebModule {
 
     @Provides
     @Singleton
+    public VideoWebService getVideoService(Retrofit retrofit) {
+        return retrofit.create(VideoWebService.class);
+    }
+
+    @Provides
+    @Singleton
     public MovieWebService getMovieWebService(Retrofit retrofit) {
         return retrofit.create(MovieWebService.class);
     }

@@ -85,11 +85,11 @@ public class MovieDetailsViewModelTest {
     }
 
     private void whenAddingToFavourites() {
-        objectUnderTest.addToFavourites(aMovie);
+        objectUnderTest.toggleFavourite(aMovie);
     }
 
     private void whenRemovingFromFavourites() {
-        objectUnderTest.removeFromFavourites(aMovie);
+        objectUnderTest.toggleFavourite(aMovie);
     }
 
     private void thenResultIsSuccess() throws Exception {
