@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_xx_small">
+
+    <ImageView
+        android:id="@+id/video_thumbnail"
+
+        android:layout_width="192dp"
+        android:layout_height="96dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/video_description"
+        android:scaleType="centerCrop" />
+
+    <ImageButton
+        android:id="@+id/video_play"
+        android:layout_width="@dimen/floating_button_size"
+        android:layout_height="@dimen/floating_button_size"
+        android:background="@drawable/ic_play_circle"
+        android:contentDescription="@string/video_play"
+        android:tint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

@@ -13,10 +13,10 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import pl.karollisiewicz.cinema.app.data.source.db.MovieDao;
-import pl.karollisiewicz.cinema.domain.MovieId;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
+import pl.karollisiewicz.cinema.domain.movie.MovieId;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.common.react.Schedulers;
 import retrofit2.HttpException;
@@ -33,14 +33,14 @@ public final class MovieWebRepository implements MovieRepository {
 
     private final MovieService movieService;
     private final MovieDao movieDao;
-    private final VideoWebService videoService;
+    private final VideoService videoService;
     private final Schedulers schedulers;
     private final Logger logger;
 
     @Inject
     public MovieWebRepository(@NonNull final MovieService movieService,
                               @NonNull final MovieDao movieDao,
-                              @NonNull final VideoWebService videoService,
+                              @NonNull final VideoService videoService,
                               @NonNull final Schedulers schedulers,
                               @NonNull final Logger logger) {
         this.movieService = movieService;
@@ -51,7 +51,7 @@ public final class MovieWebRepository implements MovieRepository {
     }
 
     @Override
-    public Single<List<pl.karollisiewicz.cinema.domain.Movie>> fetchBy(@NonNull Criterion criterion) {
+    public Single<List<pl.karollisiewicz.cinema.domain.movie.Movie>> fetchBy(@NonNull Criterion criterion) {
         return Single.zip(
                 getMoviesMatchingCriterion(criterion)
                         .toObservable()
@@ -76,8 +76,8 @@ public final class MovieWebRepository implements MovieRepository {
     }
 
     @NonNull
-    private List<pl.karollisiewicz.cinema.domain.Movie> markFavourites(List<pl.karollisiewicz.cinema.domain.Movie> movies, Collection<pl.karollisiewicz.cinema.app.data.source.web.Movie> favourites) {
-        for (pl.karollisiewicz.cinema.domain.Movie movie : movies)
+    private List<pl.karollisiewicz.cinema.domain.movie.Movie> markFavourites(List<pl.karollisiewicz.cinema.domain.movie.Movie> movies, Collection<pl.karollisiewicz.cinema.app.data.source.web.Movie> favourites) {
+        for (pl.karollisiewicz.cinema.domain.movie.Movie movie : movies)
             for (pl.karollisiewicz.cinema.app.data.source.web.Movie favourite : favourites)
                 if (movie.getId().equals(MovieId.of(favourite.getId())))
                     movie.favourite();
@@ -88,7 +88,7 @@ public final class MovieWebRepository implements MovieRepository {
         logger.error(MovieWebRepository.class, throwable);
     }
 
-    private SingleSource<? extends List<pl.karollisiewicz.cinema.domain.Movie>> mapError(Throwable throwable) {
+    private SingleSource<? extends List<pl.karollisiewicz.cinema.domain.movie.Movie>> mapError(Throwable throwable) {
         if (throwable instanceof UnknownHostException || throwable instanceof TimeoutException)
             return Single.error(new CommunicationException(throwable));
         else if (throwable instanceof HttpException && ((HttpException) throwable).code() == CODE_UNAUTHORIZED)
@@ -97,7 +97,7 @@ public final class MovieWebRepository implements MovieRepository {
     }
 
     @Override
-    public Single<pl.karollisiewicz.cinema.domain.Movie> save(@NonNull pl.karollisiewicz.cinema.domain.Movie movie) {
+    public Single<pl.karollisiewicz.cinema.domain.movie.Movie> save(@NonNull pl.karollisiewicz.cinema.domain.movie.Movie movie) {
         return movieDao.save(MovieMapper.toDto(movie))
                 .doOnError(this::logError)
                 .map(MovieMapper::toDomain)

@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
-import pl.karollisiewicz.cinema.domain.Movie;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
 
 import static java.util.Collections.emptyList;
 
@@ -87,8 +87,8 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
 
             Picasso.with(posterImage.getContext())
                     .load(movie.getPosterUrl())
-                    .placeholder(R.drawable.ic_videocam)
-                    .error(R.drawable.ic_videocam)
+                    .placeholder(R.drawable.ic_camera)
+                    .error(R.drawable.ic_camera)
                     .into(posterImage);
         }
     }

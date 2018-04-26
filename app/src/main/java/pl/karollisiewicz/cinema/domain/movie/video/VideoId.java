@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.domain;
+package pl.karollisiewicz.cinema.domain.movie.video;
 
 import android.support.annotation.NonNull;
 

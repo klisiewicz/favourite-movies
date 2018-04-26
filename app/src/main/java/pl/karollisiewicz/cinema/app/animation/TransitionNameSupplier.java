@@ -4,7 +4,7 @@ package pl.karollisiewicz.cinema.app.animation;
 import android.support.annotation.Nullable;
 
 import io.reactivex.functions.Function;
-import pl.karollisiewicz.cinema.domain.Movie;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
 
 /**
  * This class is capable of providing a common transition name.

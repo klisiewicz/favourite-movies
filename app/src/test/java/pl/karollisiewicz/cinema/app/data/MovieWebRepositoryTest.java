@@ -18,12 +18,12 @@ import pl.karollisiewicz.cinema.app.data.source.web.Movie;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieService;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieWebRepository;
 import pl.karollisiewicz.cinema.app.data.source.web.Movies;
-import pl.karollisiewicz.cinema.app.data.source.web.VideoWebService;
+import pl.karollisiewicz.cinema.app.data.source.web.VideoService;
 import pl.karollisiewicz.cinema.app.data.source.web.Videos;
 import pl.karollisiewicz.cinema.app.react.TestSchedulers;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -48,7 +48,7 @@ import static pl.karollisiewicz.cinema.app.MovieMatcher.wasReleasedOn;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.aMovie;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.aVideo;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.favouriteMovie;
-import static pl.karollisiewicz.cinema.domain.MovieRepository.Criterion.POPULARITY;
+import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.POPULARITY;
 
 public class MovieWebRepositoryTest {
     private MovieRepository objectUnderTest;
@@ -60,9 +60,9 @@ public class MovieWebRepositoryTest {
     private MovieDao movieDao;
 
     @Mock
-    private VideoWebService videoService;
+    private VideoService videoService;
 
-    private List<pl.karollisiewicz.cinema.domain.Movie> popularMovies;
+    private List<pl.karollisiewicz.cinema.domain.movie.Movie> popularMovies;
 
     private Movie aMovie = aMovie();
 
@@ -178,7 +178,7 @@ public class MovieWebRepositoryTest {
 
     private void thenMovieIsReturned() {
         assertThat(popularMovies, hasSize(1));
-        final pl.karollisiewicz.cinema.domain.Movie popularMovie = popularMovies.get(0);
+        final pl.karollisiewicz.cinema.domain.movie.Movie popularMovie = popularMovies.get(0);
         assertThat(popularMovie, allOf(asList(
                 isTitled(aMovie.getTitle()),
                 isRated(aMovie.getVoteAverage()),

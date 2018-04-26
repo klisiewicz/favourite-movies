@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 
@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
-import pl.karollisiewicz.cinema.domain.Movie;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.ui.Resource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +25,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static pl.karollisiewicz.cinema.app.livedata.LiveDataTestUtil.getValue;
-import static pl.karollisiewicz.cinema.domain.MovieRepository.Criterion.POPULARITY;
+import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.POPULARITY;
 import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
 import static pl.karollisiewicz.common.ui.Resource.Status.LOADING;
 import static pl.karollisiewicz.common.ui.Resource.Status.SUCCESS;

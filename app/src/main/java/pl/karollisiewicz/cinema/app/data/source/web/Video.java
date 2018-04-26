@@ -9,6 +9,8 @@ public class Video implements Serializable {
     private String site;
     private Integer size;
     private String type;
+    private String url;
+    private String thumbnailUrl;
 
     public String getId() {
         return id;
@@ -61,6 +63,24 @@ public class Video implements Serializable {
 
     public Video setType(String type) {
         this.type = type;
+        return this;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Video setUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public Video setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
         return this;
     }
 }

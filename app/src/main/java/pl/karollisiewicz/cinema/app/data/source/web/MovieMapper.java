@@ -13,13 +13,13 @@ final class MovieMapper {
     }
 
     @NonNull
-    static pl.karollisiewicz.cinema.domain.Movie toDomain(@NonNull final Movie movie) {
+    static pl.karollisiewicz.cinema.domain.movie.Movie toDomain(@NonNull final Movie movie) {
         return toDomain(movie, emptyList());
     }
 
     @NonNull
-    static pl.karollisiewicz.cinema.domain.Movie toDomain(@NonNull final Movie movie, @NonNull final Collection<Video> videos) {
-        return new pl.karollisiewicz.cinema.domain.Movie.Builder(movie.getId())
+    static pl.karollisiewicz.cinema.domain.movie.Movie toDomain(@NonNull final Movie movie, @NonNull final Collection<Video> videos) {
+        return new pl.karollisiewicz.cinema.domain.movie.Movie.Builder(movie.getId())
                 .setTitle(movie.getTitle())
                 .setOverview(movie.getOverview())
                 .setRating(movie.getVoteAverage())
@@ -34,7 +34,7 @@ final class MovieMapper {
     }
 
     @NonNull
-    static Movie toDto(@NonNull final pl.karollisiewicz.cinema.domain.Movie movie) {
+    static Movie toDto(@NonNull final pl.karollisiewicz.cinema.domain.movie.Movie movie) {
         final Movie mov = new Movie();
         mov.setBackdropPath(movie.getBackdropUrl());
         mov.setId(Long.valueOf(movie.getId().getValue()));

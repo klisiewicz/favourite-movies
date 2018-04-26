@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 
 import android.app.ActivityOptions;
@@ -27,10 +27,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 import pl.karollisiewicz.cinema.R;
-import pl.karollisiewicz.cinema.domain.Movie;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
 

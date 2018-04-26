@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

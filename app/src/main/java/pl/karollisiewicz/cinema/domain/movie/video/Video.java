@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.domain;
+package pl.karollisiewicz.cinema.domain.movie.video;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,18 +8,16 @@ import java.io.Serializable;
 public final class Video implements Serializable {
     private static final long serialVersionUID = -608520751973739291L;
     private final VideoId id;
-    private final String key;
+    private final String url;
+    private final String thumbnailUrl;
     private final String name;
-    private final String site;
-    private final Quality quality;
     private final Type type;
 
     private Video(@NonNull final Builder builder) {
         id = VideoId.of(builder.id);
-        key = builder.key;
+        url = builder.url;
+        thumbnailUrl = builder.thumbnailUrl;
         name = builder.name;
-        site = builder.site;
-        quality = builder.quality;
         type = builder.type;
     }
 
@@ -28,21 +26,16 @@ public final class Video implements Serializable {
         return id;
     }
 
-    public String getKey() {
-        return key;
+    public String getUrl() {
+        return url;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    @Nullable
-    public Quality getQuality() {
-        return quality;
     }
 
     @Nullable
@@ -54,16 +47,11 @@ public final class Video implements Serializable {
         TRAILER, TEASER, CLIP, FEATURETTE
     }
 
-    public enum Quality {
-        SD, HALF_HD, FULL_HD, ULTRA_HD
-    }
-
     public static final class Builder {
         private String id;
-        private String key;
+        private String url;
+        private String thumbnailUrl;
         private String name;
-        private String site;
-        private Quality quality;
         private Type type;
 
         public Builder setId(String id) {
@@ -71,23 +59,18 @@ public final class Video implements Serializable {
             return this;
         }
 
-        public Builder setKey(String key) {
-            this.key = key;
+        public Builder setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder setThumbnailUrl(String thumbnailUrl) {
+            this.thumbnailUrl = thumbnailUrl;
             return this;
         }
 
         public Builder setName(String name) {
             this.name = name;
-            return this;
-        }
-
-        public Builder setSite(String site) {
-            this.site = site;
-            return this;
-        }
-
-        public Builder setQuality(Quality quality) {
-            this.quality = quality;
             return this;
         }
 

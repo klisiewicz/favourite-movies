@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 
@@ -11,8 +11,8 @@ import org.mockito.Mock;
 import java.sql.SQLException;
 
 import io.reactivex.Single;
-import pl.karollisiewicz.cinema.domain.Movie;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.ui.Resource;
 
 import static org.hamcrest.MatcherAssert.assertThat;

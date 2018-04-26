@@ -4,7 +4,7 @@ import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 
-import pl.karollisiewicz.cinema.domain.Movie;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 

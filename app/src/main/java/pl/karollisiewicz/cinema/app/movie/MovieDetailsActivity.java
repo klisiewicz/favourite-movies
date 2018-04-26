@@ -1,16 +1,19 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +35,13 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
-import pl.karollisiewicz.cinema.domain.Movie;
+import pl.karollisiewicz.cinema.app.movie.video.VideosAdapter;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
+import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 import static android.view.View.GONE;
 
 public final class MovieDetailsActivity extends AppCompatActivity {
@@ -67,14 +72,20 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
-    @Inject
     Locale locale;
 
     @Inject
     SnackbarPresenter snackbarPresenter;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+
     private MovieDetailsViewModel viewModel;
+
+    @BindView(R.id.videos_list)
+    RecyclerView videoList;
+
+    private VideosAdapter videosAdapter;
 
     public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
                              @NonNull final Movie movie) {
@@ -91,19 +102,11 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         AndroidInjection.inject(this);
 
         final Movie movie = getMovieFromIntent();
+
         setupActionBar(movie.getTitle());
+        setupRecyclerView();
+        setupViewModel(movie);
         populateViewWith(movie);
-
-        viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(MovieDetailsViewModel.class);
-
-        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
-        viewModel.getMessage().observe(this, messageResourceId ->
-                snackbarPresenter.show(make(container, getString(messageResourceId), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
-                )
-        );
 
         floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite(movie));
     }
@@ -125,6 +128,29 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void setupRecyclerView() {
+        videosAdapter = new VideosAdapter();
+        videosAdapter.setVideoClickListener(video -> {
+            final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getUrl()));
+            if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);
+        });
+        videoList.setHasFixedSize(true);
+        videoList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+    }
+
+    private void setupViewModel(Movie movie) {
+        viewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(MovieDetailsViewModel.class);
+
+        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
+        viewModel.getMessage().observe(this, messageResourceId ->
+                snackbarPresenter.show(make(container, getString(messageResourceId), LENGTH_LONG)
+                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
+                )
+        );
+    }
+
     private void populateViewWith(Movie movie) {
         final String formattedDate = getFormattedDate(movie.getReleaseDate());
         releaseDateText.setText(formattedDate);
@@ -132,6 +158,9 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         overviewText.setText(movie.getOverview());
         posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
         floatingActionButton.setImageResource(movie.isFavourite() ? R.drawable.ic_favourite : R.drawable.ic_favourite_border);
+
+        videosAdapter.setItems(movie.getVideos());
+        videoList.setAdapter(videosAdapter);
 
         Picasso.with(this)
                 .load(movie.getBackdropUrl())

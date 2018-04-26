@@ -21,7 +21,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pl.karollisiewicz.cinema.BuildConfig;
 import pl.karollisiewicz.common.log.Logger;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -43,30 +42,32 @@ public final class WebModule {
 
     @Provides
     @Singleton
-    MovieImageProvider getImageProvider() {
-        return new MovieImageProvider() {
-            @Override
-            public String getPosterUrl(String resourceUrl) {
-                return String.format("%s%s", BuildConfig.POSTER_URL, resourceUrl);
-            }
-
-            @Override
-            public String getBackdropUrl(String resourceUrl) {
-                return String.format("%s%s", BuildConfig.BACKDROP_URL, resourceUrl);
-            }
-        };
-    }
-
-    @Provides
-    @Singleton
-    public VideoWebService getVideoService(Retrofit retrofit) {
-        return retrofit.create(VideoWebService.class);
+    MovieImageProvider getMovieImageProvider() {
+        return new BuildConfigMovieImageProvider();
     }
 
     @Provides
     @Singleton
     public MovieWebService getMovieWebService(Retrofit retrofit) {
         return retrofit.create(MovieWebService.class);
+    }
+
+    @Provides
+    @Singleton
+    public VideoService getVideoService(VideoWebService videoWebService, VideoImageProvider imageProvider) {
+        return new VideoImageDecoratorService(videoWebService, imageProvider);
+    }
+
+    @Provides
+    @Singleton
+    VideoImageProvider getVideoImageProvider() {
+        return new BuildConfigVideoImageProvider();
+    }
+
+    @Provides
+    @Singleton
+    public VideoWebService getVideoWebService(Retrofit retrofit) {
+        return retrofit.create(VideoWebService.class);
     }
 
     @Provides

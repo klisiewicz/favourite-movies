@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app;
+package pl.karollisiewicz.cinema.app.movie;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import pl.karollisiewicz.cinema.R;
-import pl.karollisiewicz.cinema.domain.Movie;
-import pl.karollisiewicz.cinema.domain.MovieRepository;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.react.RxViewModel;
 import pl.karollisiewicz.common.ui.Resource;
 

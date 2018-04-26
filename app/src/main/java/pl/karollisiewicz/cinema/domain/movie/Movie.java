@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.domain;
+package pl.karollisiewicz.cinema.domain.movie;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import org.joda.time.LocalDate;
 
 import java.io.Serializable;
 import java.util.Collection;
+
+import pl.karollisiewicz.cinema.domain.movie.video.Video;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
@@ -67,7 +69,7 @@ public final class Movie implements Serializable {
         return releaseDate;
     }
 
-    public Iterable<Video> getVideos() {
+    public Collection<Video> getVideos() {
         return videos;
     }
 
