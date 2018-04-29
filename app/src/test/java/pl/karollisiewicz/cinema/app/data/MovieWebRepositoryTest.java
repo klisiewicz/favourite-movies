@@ -14,7 +14,6 @@ import okhttp3.internal.http.RealResponseBody;
 import okio.Buffer;
 import pl.karollisiewicz.cinema.app.ConsoleLogger;
 import pl.karollisiewicz.cinema.app.data.source.db.MovieDao;
-import pl.karollisiewicz.cinema.app.data.source.web.Movie;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieService;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieWebRepository;
 import pl.karollisiewicz.cinema.app.data.source.web.Movies;
@@ -23,24 +22,21 @@ import pl.karollisiewicz.cinema.app.data.source.web.Videos;
 import pl.karollisiewicz.cinema.app.react.TestSchedulers;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
+import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieId;
 import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static pl.karollisiewicz.cinema.app.MovieMatcher.favourite;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.hasBackDropUrl;
-import static pl.karollisiewicz.cinema.app.MovieMatcher.hasOverview;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.hasPosterUrl;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.isRated;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.isTitled;
@@ -62,9 +58,7 @@ public class MovieWebRepositoryTest {
     @Mock
     private VideoService videoService;
 
-    private List<pl.karollisiewicz.cinema.domain.movie.Movie> popularMovies;
-
-    private Movie aMovie = aMovie();
+    private List<Movie> popularMovies;
 
     private Exception exception;
 
@@ -107,33 +101,9 @@ public class MovieWebRepositoryTest {
         thenCommunicationErrorIsReturned();
     }
 
-    @Test
-    public void whenFetchingMoviesThatAreFavourite_ThenItShouldBeMarkedAsFavourite() {
-        givenServiceReturningMovies();
-        givenFavouriteMovies();
-        givenNoVideos();
-
-        whenFetchingPopularMovies();
-
-        thenMovieIsReturned();
-        andMovieIsFavourite();
-    }
-
-    @Test
-    public void whenFetchingMoviesHavingTrailers_ReturnedMovieHasVideos() {
-        givenServiceReturningMovies();
-        givenNoFavouriteMovies();
-        givenServiceReturningVideos();
-
-        whenFetchingPopularMovies();
-
-        thenMovieIsReturned();
-        andMovieHasVideos();
-    }
-
     private void givenServiceReturningMovies() {
         when(movieService.fetchPopular()).thenReturn(
-                Single.just(new Movies(Collections.singletonList(aMovie)))
+                Single.just(new Movies(Collections.singletonList(aMovie())))
         );
     }
 
@@ -152,7 +122,7 @@ public class MovieWebRepositoryTest {
     }
 
     private void givenServiceReturningVideos() {
-        when(videoService.fetchBy(aMovie.getId())).thenReturn(Single.just(
+        when(videoService.fetchBy(aMovie().getId())).thenReturn(Single.just(
                 new Videos(Collections.singletonList(aVideo()))
         ));
     }
@@ -176,25 +146,24 @@ public class MovieWebRepositoryTest {
         }
     }
 
+    private void whenFetchingMovieById() {
+        try {
+            objectUnderTest.fetchBy(MovieId.of(1L));
+        } catch (Exception e) {
+            this.exception = e;
+        }
+    }
+
     private void thenMovieIsReturned() {
         assertThat(popularMovies, hasSize(1));
-        final pl.karollisiewicz.cinema.domain.movie.Movie popularMovie = popularMovies.get(0);
+        final Movie popularMovie = popularMovies.get(0);
         assertThat(popularMovie, allOf(asList(
-                isTitled(aMovie.getTitle()),
-                isRated(aMovie.getVoteAverage()),
-                hasOverview(aMovie.getOverview()),
-                hasPosterUrl(aMovie.getPosterPath()),
-                hasBackDropUrl(aMovie.getBackdropPath()),
+                isTitled("Title"),
+                isRated(6.66),
+                hasPosterUrl("poster.jpg"),
+                hasBackDropUrl("backdrop.jpg"),
                 wasReleasedOn(new LocalDate(2017, 1, 27))
         )));
-    }
-
-    private void andMovieIsFavourite() {
-        assertThat(popularMovies.get(0), is(favourite()));
-    }
-
-    private void andMovieHasVideos() {
-        assertThat(popularMovies.get(0).getVideos(), is(not(emptyIterable())));
     }
 
     private void thenUnauthorizedErrorIsReturned() {

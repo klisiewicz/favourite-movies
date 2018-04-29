@@ -12,7 +12,6 @@ import pl.karollisiewicz.cinema.app.data.source.web.Movie;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.FAVOURITE;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.ID;
-import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.OVERVIEW;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.POSTER_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.RELEASE_DATE;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.TITLE;
@@ -33,7 +32,6 @@ final class MovieCursor {
         final Movie movie = new Movie();
         movie.setId(getId());
         movie.setTitle(getTitle());
-        movie.setOverview(getOverview());
         movie.setPosterPath(getPosterPath());
         movie.setBackdropPath(getBackdropPath());
         movie.setVoteAverage(getVoteAverage());
@@ -48,10 +46,6 @@ final class MovieCursor {
 
     private String getTitle() {
         return cursor.getString(cursor.getColumnIndex(TITLE.getName()));
-    }
-
-    private String getOverview() {
-        return cursor.getString(cursor.getColumnIndex(OVERVIEW.getName()));
     }
 
     private String getPosterPath() {

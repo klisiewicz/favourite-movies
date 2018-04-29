@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
@@ -12,7 +13,9 @@ import io.reactivex.Single;
 public interface MovieRepository {
     Single<List<Movie>> fetchBy(@NonNull Criterion criterion);
 
-    Single<Movie> save(@NonNull Movie movie);
+    Maybe<MovieDetails> fetchBy(@NonNull MovieId movieId);
+
+    Single<MovieDetails> save(@NonNull MovieDetails movie);
 
     enum Criterion {
         POPULARITY, RATING, FAVOURITE

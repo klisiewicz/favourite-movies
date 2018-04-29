@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.ID;
-import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.OVERVIEW;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.POSTER_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.RELEASE_DATE;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.TITLE;
@@ -194,7 +193,6 @@ public class MovieContentProviderAdapterTest {
         );
         when(cursor.getInt(ID.ordinal())).thenReturn(1);
         when(cursor.getString(TITLE.ordinal())).thenReturn("Title");
-        when(cursor.getString(OVERVIEW.ordinal())).thenReturn("Overview");
         when(cursor.getString(POSTER_PATH.ordinal())).thenReturn("poster.jpg");
         when(cursor.getString(BACKDROP_PATH.ordinal())).thenReturn("backdrop.jpg");
         when(cursor.getDouble(VOTE_AVERAGE.ordinal())).thenReturn(6.66);

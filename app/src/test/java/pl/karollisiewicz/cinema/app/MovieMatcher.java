@@ -5,6 +5,7 @@ import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 
 import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -49,15 +50,6 @@ public final class MovieMatcher {
         };
     }
 
-    public static Matcher<Movie> hasOverview(final String overview) {
-        return new FeatureMatcher<Movie, String>(equalTo(overview), "overview", "overview") {
-            @Override
-            protected String featureValueOf(final Movie actual) {
-                return actual.getOverview();
-            }
-        };
-    }
-
     public static Matcher<Movie> hasPosterUrl(final String posterUrl) {
         return new FeatureMatcher<Movie, String>(equalTo(posterUrl), "posterUrl", "posterUrl") {
             @Override
@@ -76,11 +68,20 @@ public final class MovieMatcher {
         };
     }
 
-    public static Matcher<Movie> favourite() {
-        return new FeatureMatcher<Movie, Boolean>(equalTo(true), "favourite", "favourite") {
+    public static Matcher<MovieDetails> favourite() {
+        return new FeatureMatcher<MovieDetails, Boolean>(equalTo(true), "favourite", "favourite") {
             @Override
-            protected Boolean featureValueOf(final Movie actual) {
+            protected Boolean featureValueOf(final MovieDetails actual) {
                 return actual.isFavourite();
+            }
+        };
+    }
+
+    public static Matcher<MovieDetails> hasOverview(final String overview) {
+        return new FeatureMatcher<MovieDetails, String>(equalTo(overview), "overview", "overview") {
+            @Override
+            protected String featureValueOf(final MovieDetails actual) {
+                return actual.getOverview();
             }
         };
     }

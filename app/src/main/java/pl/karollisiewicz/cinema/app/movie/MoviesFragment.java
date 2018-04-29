@@ -118,17 +118,13 @@ public final class MoviesFragment extends Fragment {
         moviesViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesViewModel.class);
+
+        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void setupRefreshLayout() {
         refreshLayout.setOnRefreshListener(() ->
                 moviesViewModel.getMovies(criterion));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        moviesViewModel.getMovies(criterion).observe(this, this::show);
     }
 
     private void show(@Nullable final Resource<List<Movie>> resource) {
@@ -157,7 +153,9 @@ public final class MoviesFragment extends Fragment {
     }
 
     private void showMessage(@StringRes int messageId) {
-        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
+        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG)
+                .setAction(R.string.action_retry, v -> moviesViewModel.getMovies(criterion))
+        );
     }
 
     public static MoviesFragment newPopularInstance() {

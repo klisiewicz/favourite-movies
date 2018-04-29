@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
  * Favourite movies database contract.
  */
 public final class MovieContract {
-    public static final String AUTHORITY = "pl.karollisiewicz.movie";
+    public static final String AUTHORITY = "pl.karollisiewicz.cinema";
     public static final Uri BASE_CONTENT_URI = Uri.parse(String.format("%s%s", "content://", AUTHORITY));
     public static final String MOVIES_PATH = "movies";
 
@@ -23,7 +23,6 @@ public final class MovieContract {
         enum Column {
             ID(MovieEntry._ID, "INTEGER PRIMARY KEY"),
             TITLE("title", "TEXT", "NOT NULL"),
-            OVERVIEW("overview", "TEXT"),
             POSTER_PATH("poster_path", "TEXT"),
             BACKDROP_PATH("backdrop_path", "TEXT"),
             RELEASE_DATE("release_date", "LONG"),

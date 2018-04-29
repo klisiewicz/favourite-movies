@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 
 /**
- * Movie service responsible for updating values of {@link Movie#backdropPath} and {@link Movie#posterPath} with the values given by the
+ * MovieDetails service responsible for updating values of {@link Movie#backdropPath} and {@link Movie#posterPath} with the values given by the
  * {@link MovieImageProvider}.
  */
 public final class MovieImageDecoratorService implements MovieService {
@@ -24,6 +24,12 @@ public final class MovieImageDecoratorService implements MovieService {
 
         this.movieService = movieService;
         this.movieImageProvider = movieImageProvider;
+    }
+
+    @Override
+    public Single<Movie> fetchById(long movieId) {
+        return movieService.fetchById(movieId)
+                .map(this::updateUrls);
     }
 
     @Override

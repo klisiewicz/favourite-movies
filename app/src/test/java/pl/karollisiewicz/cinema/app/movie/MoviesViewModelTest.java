@@ -92,7 +92,7 @@ public class MoviesViewModelTest {
         when(repository.fetchBy(POPULARITY)).thenReturn(Single.never());
     }
 
-    private void whenFetchingMovies() throws InterruptedException {
+    private void whenFetchingMovies() throws Exception {
         result = getValue(objectUnderTest.getMovies(POPULARITY));
     }
 

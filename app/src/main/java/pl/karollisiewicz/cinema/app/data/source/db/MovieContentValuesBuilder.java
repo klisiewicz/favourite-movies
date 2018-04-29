@@ -8,7 +8,6 @@ import pl.karollisiewicz.cinema.app.data.source.web.Movie;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.BACKDROP_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.FAVOURITE;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.ID;
-import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.OVERVIEW;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.POSTER_PATH;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.RELEASE_DATE;
 import static pl.karollisiewicz.cinema.app.data.source.db.MovieContract.MovieEntry.Column.TITLE;
@@ -27,7 +26,6 @@ final class MovieContentValuesBuilder {
         final ContentValues contentValues = new ContentValues();
         contentValues.put(getName(ID), movie.getId());
         contentValues.put(getName(TITLE), movie.getTitle());
-        contentValues.put(getName(OVERVIEW), movie.getOverview());
         contentValues.put(getName(POSTER_PATH), movie.getPosterPath());
         contentValues.put(getName(BACKDROP_PATH), movie.getBackdropPath());
         contentValues.put(getName(VOTE_AVERAGE), movie.getVoteAverage());

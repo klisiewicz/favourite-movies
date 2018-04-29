@@ -7,7 +7,7 @@ import org.joda.time.LocalDate;
 import java.io.Serializable;
 
 /**
- * Entity that represents a Movie in the themoviedb.org service.
+ * Entity that represents a MovieDetails in the themoviedb.org service.
  */
 public class Movie implements Serializable {
     private static final long serialVersionUID = 3607619591129857589L;

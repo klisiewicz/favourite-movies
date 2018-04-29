@@ -10,8 +10,10 @@ import org.mockito.Mock;
 
 import java.sql.SQLException;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
-import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
+import pl.karollisiewicz.cinema.domain.movie.MovieId;
 import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.ui.Resource;
 
@@ -35,11 +37,11 @@ public class MovieDetailsViewModelTest {
     @Mock
     private MovieRepository repository;
 
-    private final Movie aMovie = new Movie.Builder(1L)
+    private final MovieDetails aMovie = MovieDetails.Builder.withId(1)
             .setTitle("A title")
             .build();
 
-    private Resource<Movie> result;
+    private Resource<MovieDetails> result;
 
     @Before
     public void beforeEach() {
@@ -50,9 +52,11 @@ public class MovieDetailsViewModelTest {
 
     @Test
     public void whenAddingToFavourites_ResultIsPassedToLiveData() throws Exception {
+        givenRepositoryReturningAMovie();
         givenRepositoryThatSavesSuccessfully();
+        givenViewModelHoldingMovie();
 
-        whenAddingToFavourites();
+        whenTogglingFavourites();
 
         thenResultIsSuccess();
         andMovieIsFavourite();
@@ -60,46 +64,59 @@ public class MovieDetailsViewModelTest {
 
     @Test
     public void whenAddingToFavouritesFails_MappedErrorIsPassedToLiveData() throws Exception {
+        givenRepositoryReturningAMovie();
         givenRepositoryThatFailsToSave();
+        givenViewModelHoldingMovie();
 
-        whenAddingToFavourites();
+        whenTogglingFavourites();
 
         thenResultIsError();
     }
 
     @Test
     public void whenRemovingFavourites_ResultIsPassedToLiveData() throws Exception {
+        givenRepositoryReturningFavouriteMovie();
         givenRepositoryThatSavesSuccessfully();
+        givenViewModelHoldingMovie();
 
-        whenRemovingFromFavourites();
+        whenTogglingFavourites();
 
         thenResultIsSuccess();
         andMovieIsNotFavourite();
     }
 
+    private void givenRepositoryReturningAMovie() {
+        when(repository.fetchBy(any(MovieId.class))).thenReturn(Maybe.just(aMovie));
+    }
+
+    private void givenRepositoryReturningFavouriteMovie() {
+        aMovie.favourite();
+        givenRepositoryReturningAMovie();
+    }
+
     private void givenRepositoryThatSavesSuccessfully() {
-        when(repository.save(any(Movie.class))).thenReturn(Single.just(aMovie));
+        when(repository.save(any(MovieDetails.class))).thenReturn(Single.just(aMovie));
     }
 
     private void givenRepositoryThatFailsToSave() {
-        when(repository.save(any(Movie.class))).thenReturn(Single.error(new SQLException()));
+        when(repository.save(any(MovieDetails.class))).thenReturn(Single.error(new SQLException()));
     }
 
-    private void whenAddingToFavourites() {
-        objectUnderTest.toggleFavourite(aMovie);
+    private void givenViewModelHoldingMovie() {
+        objectUnderTest.getMovieDetails(MovieId.of(1L));
     }
 
-    private void whenRemovingFromFavourites() {
-        objectUnderTest.toggleFavourite(aMovie);
+    private void whenTogglingFavourites() {
+        objectUnderTest.toggleFavourite();
     }
 
     private void thenResultIsSuccess() throws Exception {
-        result = getValue(objectUnderTest.getMovie());
+        result = getValue(objectUnderTest.getMovieDetails(aMovie.getId()));
         assertThat(result.getStatus(), is(SUCCESS));
     }
 
     private void thenResultIsError() throws Exception {
-        result = getValue(objectUnderTest.getMovie());
+        result = getValue(objectUnderTest.getMovieDetails(aMovie.getId()));
         assertThat(result.getStatus(), is(ERROR));
     }
 

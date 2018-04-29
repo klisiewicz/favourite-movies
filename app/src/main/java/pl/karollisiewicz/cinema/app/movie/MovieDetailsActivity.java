@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,16 +37,23 @@ import dagger.android.AndroidInjection;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.cinema.app.movie.video.VideosAdapter;
+import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
+import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
+import pl.karollisiewicz.cinema.domain.movie.MovieId;
+import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 import static android.view.View.GONE;
+import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
+import static pl.karollisiewicz.common.ui.Resource.Status.SUCCESS;
 
 public final class MovieDetailsActivity extends AppCompatActivity {
-    private static final String MOVIE_KEY = "MovieDetailsActivity.Movie";
+    private static final String MOVIE_KEY = "MovieDetailsActivity.MovieDetails";
 
     @BindView(R.id.container_layout)
     ViewGroup container;
@@ -105,10 +113,10 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
         setupActionBar(movie.getTitle());
         setupRecyclerView();
-        setupViewModel(movie);
+        setupViewModel(movie.getId());
         populateViewWith(movie);
 
-        floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite(movie));
+        floatingActionButton.setOnClickListener(v -> viewModel.toggleFavourite());
     }
 
     private Movie getMovieFromIntent() {
@@ -138,20 +146,43 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         videoList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
     }
 
-    private void setupViewModel(Movie movie) {
+    private void setupViewModel(@NonNull final MovieId id) {
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MovieDetailsViewModel.class);
 
-        viewModel.getMovie().observe(this, movieResource -> populateViewWith(movie));
+        viewModel.getMovieDetails(id).observe(this, this::show);
         viewModel.getMessage().observe(this, messageResourceId ->
                 snackbarPresenter.show(make(container, getString(messageResourceId), LENGTH_LONG)
-                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite(movie))
+                        .setAction(R.string.action_undo, v -> viewModel.toggleFavourite())
                 )
         );
     }
 
-    private void populateViewWith(Movie movie) {
+    private void show(@Nullable final Resource<MovieDetails> resource) {
+        if (resource == null) return;
+
+        if (resource.getStatus() == ERROR)
+            showError(resource.getError());
+        else if (resource.getStatus() == SUCCESS && resource.getData() != null)
+            populateViewWith(resource.getData());
+    }
+
+    private void showError(Throwable throwable) {
+        if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
+        else if (throwable instanceof AuthorizationException) showMessage(R.string.error_authorization);
+        else showMessage(R.string.error_unknown);
+    }
+
+    private void showMessage(@StringRes int messageId) {
+        snackbarPresenter.show(make(container, getString(messageId), LENGTH_LONG));
+    }
+
+    private void populateViewWith(final Movie movie) {
+        populateViewWith(MovieDetails.Builder.from(movie).build());
+    }
+
+    private void populateViewWith(final MovieDetails movie) {
         final String formattedDate = getFormattedDate(movie.getReleaseDate());
         releaseDateText.setText(formattedDate);
         averageRateText.setText(String.valueOf(movie.getRating()));

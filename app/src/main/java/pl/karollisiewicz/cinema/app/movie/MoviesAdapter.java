@@ -19,11 +19,12 @@ import butterknife.ButterKnife;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
+import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 
 import static java.util.Collections.emptyList;
 
 /**
- * An {@link android.support.v7.widget.RecyclerView.Adapter} for {@link Movie}
+ * An {@link android.support.v7.widget.RecyclerView.Adapter} for {@link MovieDetails}
  */
 public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     private List<Movie> movies = new ArrayList<>();

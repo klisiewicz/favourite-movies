@@ -16,6 +16,7 @@
     <string name="favourite_added">Dodano do ulubionych</string>
     <string name="favourite_removed">Usunięto z ulubionych</string>
     <string name="action_undo">Cofnij</string>
+    <string name="action_retry">Ponów</string>
     <string name="error_communication">Nieudane pobieranie filmów</string>
     <string name="error_authorization">Nieudane uwierzytelnianie</string>
     <string name="error_unknown">Nieznany błąd</string>

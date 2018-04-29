@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_xx_small">
+    android:layout_marginEnd="@dimen/spacing_small"
+    android:layout_marginStart="@dimen/spacing_small">
 
     <ImageView
         android:id="@+id/video_thumbnail"
-
-        android:layout_width="192dp"
-        android:layout_height="96dp"
+        android:layout_width="256dp"
+        android:layout_height="128dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/video_description"
         android:scaleType="centerCrop" />
@@ -20,7 +20,7 @@
         android:layout_height="@dimen/floating_button_size"
         android:background="@drawable/ic_play_circle"
         android:contentDescription="@string/video_play"
-        android:tint="@color/colorAccent"
+        android:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
