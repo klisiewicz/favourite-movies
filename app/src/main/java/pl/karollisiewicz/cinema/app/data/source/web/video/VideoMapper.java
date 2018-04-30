@@ -25,7 +25,6 @@ public class VideoMapper {
     @NonNull
     public static Video toDto(@NonNull pl.karollisiewicz.cinema.domain.movie.video.Video video) {
         final Video vid = new Video();
-        vid.setId(video.getId().getValue());
         vid.setName(video.getName());
         vid.setUrl(video.getUrl());
         vid.setThumbnailUrl(video.getThumbnailUrl());

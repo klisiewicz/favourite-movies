@@ -21,6 +21,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.karollisiewicz.cinema.app.data.source.web.review.ReviewService;
 import pl.karollisiewicz.cinema.app.data.source.web.video.BuildConfigVideoImageProvider;
 import pl.karollisiewicz.cinema.app.data.source.web.video.VideoImageDecoratorService;
 import pl.karollisiewicz.cinema.app.data.source.web.video.VideoImageProvider;
@@ -73,6 +74,12 @@ public final class WebModule {
     @Singleton
     public VideoWebService getVideoWebService(Retrofit retrofit) {
         return retrofit.create(VideoWebService.class);
+    }
+
+    @Provides
+    @Singleton
+    public ReviewService getReviewService(Retrofit retrofit) {
+        return retrofit.create(ReviewService.class);
     }
 
     @Provides

@@ -10,5 +10,5 @@ import retrofit2.http.Path;
 public interface VideoWebService {
 
     @GET("movie/{movie_id}/videos")
-    Single<Videos> fetchBy(@Path("movie_id") long movieId);
+    Single<Videos> fetchBy(@Path("movie_id") String movieId);
 }

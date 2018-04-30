@@ -17,6 +17,8 @@ import pl.karollisiewicz.cinema.app.data.source.db.MovieDao;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieService;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieWebRepository;
 import pl.karollisiewicz.cinema.app.data.source.web.Movies;
+import pl.karollisiewicz.cinema.app.data.source.web.review.ReviewService;
+import pl.karollisiewicz.cinema.app.data.source.web.review.Reviews;
 import pl.karollisiewicz.cinema.app.data.source.web.video.VideoService;
 import pl.karollisiewicz.cinema.app.data.source.web.video.Videos;
 import pl.karollisiewicz.cinema.app.react.TestSchedulers;
@@ -33,7 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.hasBackDropUrl;
@@ -42,6 +44,7 @@ import static pl.karollisiewicz.cinema.app.MovieMatcher.isRated;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.isTitled;
 import static pl.karollisiewicz.cinema.app.MovieMatcher.wasReleasedOn;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.aMovie;
+import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.aReview;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.aVideo;
 import static pl.karollisiewicz.cinema.app.data.source.MovieFactory.favouriteMovie;
 import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.POPULARITY;
@@ -58,6 +61,9 @@ public class MovieWebRepositoryTest {
     @Mock
     private VideoService videoService;
 
+    @Mock
+    private ReviewService reviewService;
+
     private List<Movie> popularMovies;
 
     private Exception exception;
@@ -65,7 +71,9 @@ public class MovieWebRepositoryTest {
     @Before
     public void beforeEach() {
         initMocks(this);
-        objectUnderTest = new MovieWebRepository(movieService, movieDao, videoService, new TestSchedulers(), new ConsoleLogger());
+        objectUnderTest = new MovieWebRepository(movieService, movieDao, videoService, reviewService,
+                new TestSchedulers(), new ConsoleLogger()
+        );
     }
 
     @Test
@@ -118,12 +126,18 @@ public class MovieWebRepositoryTest {
     }
 
     private void givenNoVideos() {
-        when(videoService.fetchBy(anyInt())).thenReturn(Single.never());
+        when(videoService.fetchBy(anyString())).thenReturn(Single.never());
     }
 
     private void givenServiceReturningVideos() {
-        when(videoService.fetchBy(aMovie().getId())).thenReturn(Single.just(
+        when(videoService.fetchBy(anyString())).thenReturn(Single.just(
                 new Videos(Collections.singletonList(aVideo()))
+        ));
+    }
+
+    private void givenServiceReturningReviews() {
+        when(reviewService.fetchBy(anyString())).thenReturn(Single.just(
+                new Reviews(Collections.singletonList(aReview()))
         ));
     }
 

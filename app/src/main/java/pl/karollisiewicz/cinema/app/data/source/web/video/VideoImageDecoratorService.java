@@ -18,7 +18,7 @@ public final class VideoImageDecoratorService implements VideoService {
     }
 
     @Override
-    public Single<Videos> fetchBy(long movieId) {
+    public Single<Videos> fetchBy(String movieId) {
         return videoWebService
                 .fetchBy(movieId)
                 .toObservable()

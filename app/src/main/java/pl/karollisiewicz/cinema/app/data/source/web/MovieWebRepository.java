@@ -13,6 +13,9 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import pl.karollisiewicz.cinema.app.data.source.db.MovieDao;
+import pl.karollisiewicz.cinema.app.data.source.web.review.ReviewMapper;
+import pl.karollisiewicz.cinema.app.data.source.web.review.ReviewService;
+import pl.karollisiewicz.cinema.app.data.source.web.review.Reviews;
 import pl.karollisiewicz.cinema.app.data.source.web.video.VideoMapper;
 import pl.karollisiewicz.cinema.app.data.source.web.video.VideoService;
 import pl.karollisiewicz.cinema.app.data.source.web.video.Videos;
@@ -22,6 +25,7 @@ import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 import pl.karollisiewicz.cinema.domain.movie.MovieId;
 import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
+import pl.karollisiewicz.cinema.domain.movie.review.Review;
 import pl.karollisiewicz.cinema.domain.movie.video.Video;
 import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.common.react.Schedulers;
@@ -40,6 +44,7 @@ public final class MovieWebRepository implements MovieRepository {
     private final MovieService movieService;
     private final MovieDao movieDao;
     private final VideoService videoService;
+    private final ReviewService reviewService;
     private final Schedulers schedulers;
     private final Logger logger;
 
@@ -47,11 +52,13 @@ public final class MovieWebRepository implements MovieRepository {
     public MovieWebRepository(@NonNull final MovieService movieService,
                               @NonNull final MovieDao movieDao,
                               @NonNull final VideoService videoService,
+                              @NonNull final ReviewService reviewService,
                               @NonNull final Schedulers schedulers,
                               @NonNull final Logger logger) {
         this.movieService = movieService;
         this.movieDao = movieDao;
         this.videoService = videoService;
+        this.reviewService = reviewService;
         this.schedulers = schedulers;
         this.logger = logger;
     }
@@ -94,26 +101,36 @@ public final class MovieWebRepository implements MovieRepository {
 
     @Override
     public Maybe<MovieDetails> fetchBy(@NonNull MovieId movieId) {
-        final long id = Long.parseLong(movieId.getValue());
-        final Single<MovieDetails> movieObservable = movieService.fetchById(id)
+        final Single<MovieDetails> movieObservable = movieService.fetchById(movieId.getValue())
                 .map(MovieMapper::toMovieDetails);
 
-        final Single<MovieDetails> favouriteObservable = movieDao.fetchById(id)
+        final Single<MovieDetails> favouriteObservable = movieDao.fetchById(Long.parseLong(movieId.getValue()))
                 .map(MovieMapper::toMovieDetails)
                 .switchIfEmpty(Single.just(MovieDetails.Builder.withId(-1L).build()));
 
         final Single<List<Video>> videosObservable = videoService
-                .fetchBy(id)
+                .fetchBy(movieId.getValue())
                 .toObservable()
                 .map(Videos::getVideos)
                 .flatMapIterable(list -> list)
                 .map(VideoMapper::toDomain)
                 .toList();
 
+        final Single<List<Review>> reviewsObservable = reviewService
+                .fetchBy(movieId.getValue())
+                .toObservable()
+                .map(Reviews::getReviews)
+                .flatMapIterable(list -> list)
+                .map(ReviewMapper::toDomain)
+                .toList();
+
         return Single.zip(
-                movieObservable, favouriteObservable, videosObservable, (movie, favourite, videos) -> {
+                movieObservable, favouriteObservable, videosObservable, reviewsObservable, (movie, favourite, videos, reviews) -> {
                     if (favourite != null && favourite.isFavourite()) movie.favourite();
-                    return MovieDetails.Builder.from(movie).setVideos(videos).build();
+                    return MovieDetails.Builder.from(movie)
+                            .setReviews(reviews)
+                            .setVideos(videos)
+                            .build();
                 }
         ).toMaybe()
                 .timeout(5, SECONDS)

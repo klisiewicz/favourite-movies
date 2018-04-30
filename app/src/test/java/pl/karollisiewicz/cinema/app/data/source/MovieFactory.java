@@ -3,6 +3,7 @@ package pl.karollisiewicz.cinema.app.data.source;
 import org.joda.time.LocalDate;
 
 import pl.karollisiewicz.cinema.app.data.source.web.Movie;
+import pl.karollisiewicz.cinema.app.data.source.web.review.Review;
 import pl.karollisiewicz.cinema.app.data.source.web.video.Video;
 
 public final class MovieFactory {
@@ -37,5 +38,14 @@ public final class MovieFactory {
         video.setSize(720);
         video.setType("Trailer");
         return video;
+    }
+
+    public static Review aReview() {
+        final Review review = new Review();
+        review.setAuthor("Frank Ochieng");
+        review.setContetn("Summertime 2016 has not been very kind to DC Comics-based personalities " +
+                "looking to shine consistently like their big screen Marvel Comics counterparts.");
+        review.setUrl("https://www.themoviedb.org/review/57a814dc9251415cfb00309a");
+        return review;
     }
 }

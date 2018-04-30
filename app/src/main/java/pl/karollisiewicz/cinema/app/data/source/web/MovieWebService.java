@@ -16,5 +16,5 @@ public interface MovieWebService {
     Single<Movies> fetchTopRated();
 
     @GET("movie/{movie_id}")
-    Single<Movie> fetchById(@Path("movie_id") long movieId);
+    Single<Movie> fetchById(@Path("movie_id") String movieId);
 }

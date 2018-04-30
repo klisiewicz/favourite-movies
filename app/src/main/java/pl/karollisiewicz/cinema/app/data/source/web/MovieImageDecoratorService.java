@@ -27,7 +27,7 @@ public final class MovieImageDecoratorService implements MovieService {
     }
 
     @Override
-    public Single<Movie> fetchById(long movieId) {
+    public Single<Movie> fetchById(String movieId) {
         return movieService.fetchById(movieId)
                 .map(this::updateUrls);
     }
