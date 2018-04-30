@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.movie.video;
+package pl.karollisiewicz.cinema.app.ui.movie.video;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

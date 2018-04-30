@@ -3,7 +3,7 @@ package pl.karollisiewicz.cinema.app.data.source;
 import org.joda.time.LocalDate;
 
 import pl.karollisiewicz.cinema.app.data.source.web.Movie;
-import pl.karollisiewicz.cinema.app.data.source.web.Video;
+import pl.karollisiewicz.cinema.app.data.source.web.video.Video;
 
 public final class MovieFactory {
     private MovieFactory() {

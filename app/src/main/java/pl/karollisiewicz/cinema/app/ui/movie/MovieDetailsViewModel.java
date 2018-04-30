@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.movie;
+package pl.karollisiewicz.cinema.app.ui.movie;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;

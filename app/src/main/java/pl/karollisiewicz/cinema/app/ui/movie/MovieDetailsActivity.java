@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.movie;
+package pl.karollisiewicz.cinema.app.ui.movie;
 
 import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
-import pl.karollisiewicz.cinema.app.movie.video.VideosAdapter;
+import pl.karollisiewicz.cinema.app.ui.movie.video.VideosAdapter;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
@@ -170,7 +170,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private void showError(Throwable throwable) {
         if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
-        else if (throwable instanceof AuthorizationException) showMessage(R.string.error_authorization);
+        else if (throwable instanceof AuthorizationException)
+            showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 
