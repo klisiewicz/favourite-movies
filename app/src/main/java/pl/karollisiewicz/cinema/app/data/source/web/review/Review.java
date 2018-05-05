@@ -6,7 +6,7 @@ public class Review implements Serializable {
     private static final long serialVersionUID = 1811043115020551645L;
     private String id;
     private String author;
-    private String contetn;
+    private String content;
     private String url;
 
     public String getId() {
@@ -25,12 +25,12 @@ public class Review implements Serializable {
         this.author = author;
     }
 
-    public String getContetn() {
-        return contetn;
+    public String getContent() {
+        return content;
     }
 
-    public void setContetn(String contetn) {
-        this.contetn = contetn;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getUrl() {

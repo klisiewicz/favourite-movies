@@ -10,7 +10,7 @@ public final class ReviewMapper {
     public static pl.karollisiewicz.cinema.domain.movie.review.Review toDomain(@NonNull final Review review) {
         return new pl.karollisiewicz.cinema.domain.movie.review.Review.Builder()
                 .setAuthor(review.getAuthor())
-                .setContent(review.getContetn())
+                .setContent(review.getContent())
                 .setUrl(review.getUrl())
                 .build();
     }

@@ -13,6 +13,9 @@
     <string name="videos">Videos</string>
     <string name="video_description">Video thumbnail</string>
     <string name="video_play">Play video</string>
+    <string name="reviews">Reviews</string>
+    <string name="reviews_all">View All</string>
+    <string name="reviews_number">(%1$d)</string>
     <string name="favourite_added">Added to favorites</string>
     <string name="favourite_removed">Removed from favorites</string>
     <string name="action_undo">Undo</string>

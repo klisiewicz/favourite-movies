@@ -54,4 +54,8 @@
         <item name="android:layout_marginTop">@dimen/spacing_small</item>
     </style>
 
+    <style name="FlatButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

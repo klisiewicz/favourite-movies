@@ -43,7 +43,7 @@ public final class MovieFactory {
     public static Review aReview() {
         final Review review = new Review();
         review.setAuthor("Frank Ochieng");
-        review.setContetn("Summertime 2016 has not been very kind to DC Comics-based personalities " +
+        review.setContent("Summertime 2016 has not been very kind to DC Comics-based personalities " +
                 "looking to shine consistently like their big screen Marvel Comics counterparts.");
         review.setUrl("https://www.themoviedb.org/review/57a814dc9251415cfb00309a");
         return review;

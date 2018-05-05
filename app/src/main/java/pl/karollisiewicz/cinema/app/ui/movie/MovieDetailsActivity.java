@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -42,6 +44,7 @@ import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 import pl.karollisiewicz.cinema.domain.movie.MovieId;
+import pl.karollisiewicz.cinema.domain.movie.review.Review;
 import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
 
@@ -49,6 +52,7 @@ import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
 import static pl.karollisiewicz.common.ui.Resource.Status.SUCCESS;
 
@@ -75,6 +79,18 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.overview_text)
     TextView overviewText;
+
+    @BindView(R.id.reviews_number_text)
+    TextView reviewsNumberText;
+
+    @BindView(R.id.review_author_text)
+    TextView reviewAuthor;
+
+    @BindView(R.id.review_text)
+    TextView reviewText;
+
+    @BindView(R.id.browse_reviews_button)
+    Button reviewsBrowse;
 
     @BindView(R.id.favourite_button)
     FloatingActionButton floatingActionButton;
@@ -165,7 +181,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         if (resource.getStatus() == ERROR)
             showError(resource.getError());
         else if (resource.getStatus() == SUCCESS && resource.getData() != null)
-            populateViewWith(resource.getData());
+            bind(resource.getData());
     }
 
     private void showError(Throwable throwable) {
@@ -180,10 +196,10 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void populateViewWith(final Movie movie) {
-        populateViewWith(MovieDetails.Builder.from(movie).build());
+        bind(MovieDetails.Builder.from(movie).build());
     }
 
-    private void populateViewWith(final MovieDetails movie) {
+    private void bind(final MovieDetails movie) {
         final String formattedDate = getFormattedDate(movie.getReleaseDate());
         releaseDateText.setText(formattedDate);
         averageRateText.setText(String.valueOf(movie.getRating()));
@@ -193,6 +209,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
         videosAdapter.setItems(movie.getVideos());
         videoList.setAdapter(videosAdapter);
+
+        bindReviews(movie.getReviews());
 
         Picasso.with(this)
                 .load(movie.getBackdropUrl())
@@ -205,6 +223,31 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private String getFormattedDate(@Nullable LocalDate date) {
         return date != null ? date.toString(DateTimeFormat.longDate().withLocale(locale)) : "";
+    }
+
+    private void bindReviews(@NonNull final Collection<Review> reviews) {
+        reviewsNumberText.setText(getString(R.string.reviews_number, reviews.size()));
+
+        if (!reviews.isEmpty()) {
+            bindReview(getFirstReview(reviews));
+            enableBrowseReviewsButtons();
+        }
+    }
+
+    private void bindReview(@NonNull final Review firstReview) {
+        reviewAuthor.setText(firstReview.getAuthor());
+        reviewText.setText(firstReview.getContent());
+    }
+
+    private void enableBrowseReviewsButtons() {
+        reviewsBrowse.setVisibility(VISIBLE);
+        reviewsBrowse.setOnClickListener(v -> {
+            // Do nothing
+        });
+    }
+
+    private static Review getFirstReview(@NonNull Collection<Review> reviews) {
+        return reviews.iterator().next();
     }
 
     @Override
