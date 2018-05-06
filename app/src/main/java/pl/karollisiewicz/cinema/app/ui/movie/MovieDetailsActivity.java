@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,14 +36,13 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
-import pl.karollisiewicz.cinema.app.ui.movie.review.ReviewsAdapter;
+import pl.karollisiewicz.cinema.app.ui.movie.review.ReviewsView;
 import pl.karollisiewicz.cinema.app.ui.movie.video.VideosAdapter;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 import pl.karollisiewicz.cinema.domain.movie.MovieId;
-import pl.karollisiewicz.cinema.domain.movie.review.Review;
 import pl.karollisiewicz.cinema.domain.movie.video.Video;
 import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
@@ -52,12 +50,10 @@ import pl.karollisiewicz.common.ui.SnackbarPresenter;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
 import static pl.karollisiewicz.common.ui.Resource.Status.SUCCESS;
 import static pl.karollisiewicz.common.ui.ViewUtil.hideView;
 import static pl.karollisiewicz.common.ui.ViewUtil.showView;
-import static pl.karollisiewicz.common.ui.ViewUtil.showViewWhen;
 
 public final class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "MovieDetailsActivity.MovieDetails";
@@ -80,18 +76,6 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.overview_text)
     TextView overviewText;
 
-    @BindView(R.id.reviews_number_text)
-    TextView reviewsNumberText;
-
-    @BindView(R.id.review_author_text)
-    TextView reviewAuthor;
-
-    @BindView(R.id.review_text)
-    TextView reviewText;
-
-    @BindView(R.id.browse_reviews_button)
-    Button reviewsShowAll;
-
     @BindView(R.id.favourite_button)
     FloatingActionButton floatingActionButton;
 
@@ -111,10 +95,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private VideosAdapter videosAdapter;
 
-    @BindView(R.id.reviews_list)
-    RecyclerView reviewsList;
-
-    private ReviewsAdapter reviewsAdapter;
+    @BindView(R.id.reviews_view)
+    ReviewsView reviews;
 
     public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
                              @NonNull final Movie movie) {
@@ -134,7 +116,6 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
         setupActionBar(movie.getTitle());
         setupVideosRecyclerView();
-        setupReviewsRecyclerView();
         setupViewModel(movie.getId());
         populateViewWith(movie);
 
@@ -166,12 +147,6 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         });
         videoList.setHasFixedSize(true);
         videoList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-    }
-
-    private void setupReviewsRecyclerView() {
-        reviewsAdapter = new ReviewsAdapter();
-        reviewsList.setHasFixedSize(true);
-        reviewsList.setLayoutManager(new LinearLayoutManager(this, VERTICAL, false));
     }
 
     private void setupViewModel(@NonNull final MovieId id) {
@@ -214,7 +189,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
         bindOverview(movie);
         bindVideos(movie.getVideos());
-        bindReviews(movie.getReviews());
+        reviews.bind(movie.getReviews());
         loadImages(movie);
     }
 
@@ -236,35 +211,6 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private String getFormattedDate(@Nullable LocalDate date) {
         return date != null ? date.toString(DateTimeFormat.longDate().withLocale(locale)) : "";
-    }
-
-    private void bindReviews(@NonNull final Collection<Review> reviews) {
-        reviewsNumberText.setText(getString(R.string.reviews_number, reviews.size()));
-
-        if (!reviews.isEmpty()) bindReview(getFirstReview(reviews));
-        showViewWhen(reviewsShowAll, isMoreReviewsToShow(reviews));
-        reviewsShowAll.setOnClickListener(v -> {
-            showView(reviewsList);
-            hideView(reviewsShowAll);
-            hideView(reviewAuthor);
-            hideView(reviewText);
-        });
-
-        reviewsAdapter.setItems(reviews);
-        reviewsList.setAdapter(reviewsAdapter);
-    }
-
-    private void bindReview(@NonNull final Review firstReview) {
-        reviewAuthor.setText(firstReview.getAuthor());
-        reviewText.setText(firstReview.getContent());
-    }
-
-    private static Review getFirstReview(@NonNull Collection<Review> reviews) {
-        return reviews.iterator().next();
-    }
-
-    private static boolean isMoreReviewsToShow(@NonNull Collection<Review> reviews) {
-        return reviews.size() > 1;
     }
 
     private void loadImages(@NonNull MovieDetails movie) {

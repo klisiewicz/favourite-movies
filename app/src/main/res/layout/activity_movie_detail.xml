@@ -92,11 +92,12 @@
                 android:id="@+id/reviews_card"
                 style="@style/AppCard">
 
-                <include
-                    layout="@layout/layout_movie_reviews"
+                <pl.karollisiewicz.cinema.app.ui.movie.review.ReviewsView
+                    android:id="@+id/reviews_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_small" />
+                    android:layout_margin="@dimen/spacing_small">
+                </pl.karollisiewicz.cinema.app.ui.movie.review.ReviewsView>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
