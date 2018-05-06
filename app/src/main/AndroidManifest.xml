@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="pl.karollisiewicz.cinema.app.MovieApplication"
+        android:name=".app.MovieApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="pl.karollisiewicz.cinema.app.ui.movie.MoviesActivity"
+            android:name=".app.ui.movie.MoviesActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,13 +23,13 @@
         </activity>
 
         <activity
-            android:name="pl.karollisiewicz.cinema.app.ui.movie.MovieDetailsActivity"
-            android:parentActivityName="pl.karollisiewicz.cinema.app.ui.movie.MoviesActivity" />
+            android:name=".app.ui.movie.MovieDetailsActivity"
+            android:parentActivityName=".app.ui.movie.MoviesActivity" />
 
         <provider
-            android:name="pl.karollisiewicz.cinema.app.data.source.db.MovieContentProvider"
+            android:name=".app.data.source.db.MovieContentProvider"
             android:authorities="pl.karollisiewicz.cinema"
             android:exported="false" />
-
     </application>
+
 </manifest>

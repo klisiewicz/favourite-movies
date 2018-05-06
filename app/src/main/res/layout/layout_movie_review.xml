@@ -25,6 +25,4 @@
         android:layout_marginStart="@dimen/spacing_medium"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         src:text="Summertime 2016 has not been very kind to DC Comics-based personalities looking to shine consistently like their big screen Marvel Comics counterparts." />
-
-
 </LinearLayout>

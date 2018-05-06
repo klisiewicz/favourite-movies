@@ -82,7 +82,6 @@ public final class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.Vide
         }
 
         void bind(@NonNull final Video video) {
-
             Picasso.with(thumbnail.getContext())
                     .load(video.getThumbnailUrl())
                     .placeholder(R.drawable.ic_camera)
