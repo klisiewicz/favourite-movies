@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public final class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.Re
 
     @NonNull
     private List<Review> reviews = new ArrayList<>();
+
+    @Nullable
+    private ReviewsView.ReviewClickListener reviewClickListener;
 
     @NonNull
     @Override
@@ -49,6 +53,10 @@ public final class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.Re
         notifyDataSetChanged();
     }
 
+    public void setReviewClickListener(@Nullable ReviewsView.ReviewClickListener reviewClickListener) {
+        this.reviewClickListener = reviewClickListener;
+    }
+
     final class ReviewViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.review_author_text)
@@ -57,14 +65,23 @@ public final class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.Re
         @BindView(R.id.review_text)
         TextView reviewText;
 
+        @BindView(R.id.review_read_all)
+        Button reviewReadAll;
+
         ReviewViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            reviewReadAll.setOnClickListener(v -> {
+                if (reviewClickListener != null)
+                    reviewClickListener.onReviewClick(reviews.get(getAdapterPosition()));
+            });
         }
 
         void bind(@NonNull final Review review) {
             reviewAuthor.setText(review.getAuthor());
             reviewText.setText(review.getContent());
+
         }
     }
 }

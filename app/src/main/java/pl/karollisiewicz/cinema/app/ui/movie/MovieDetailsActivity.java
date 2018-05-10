@@ -43,6 +43,7 @@ import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 import pl.karollisiewicz.cinema.domain.movie.MovieId;
+import pl.karollisiewicz.cinema.domain.movie.review.Review;
 import pl.karollisiewicz.cinema.domain.movie.video.Video;
 import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
@@ -115,7 +116,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         final Movie movie = getMovieFromIntent();
 
         setupActionBar(movie.getTitle());
-        setupVideosRecyclerView();
+        setupVideos();
+        setupReviews();
         setupViewModel(movie.getId());
         populateViewWith(movie);
 
@@ -139,14 +141,20 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setupVideosRecyclerView() {
+    private void setupVideos() {
         videosAdapter = new VideosAdapter();
-        videosAdapter.setVideoClickListener(video -> {
-            final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getUrl()));
-            if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);
-        });
+        videosAdapter.setVideoClickListener(video -> navigateTo(video.getUrl()));
         videoList.setHasFixedSize(true);
         videoList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+    }
+
+    private void setupReviews() {
+        reviews.setReviewClickListener(review -> navigateTo(review.getUrl()));
+    }
+
+    private void navigateTo(String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);
     }
 
     private void setupViewModel(@NonNull final MovieId id) {
@@ -171,8 +179,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private void showError(Throwable throwable) {
         if (throwable instanceof CommunicationException) showMessage(R.string.error_communication);
-        else if (throwable instanceof AuthorizationException)
-            showMessage(R.string.error_authorization);
+        else if (throwable instanceof AuthorizationException) showMessage(R.string.error_authorization);
         else showMessage(R.string.error_unknown);
     }
 
@@ -189,12 +196,11 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
         bindOverview(movie);
         bindVideos(movie.getVideos());
-        reviews.bind(movie.getReviews());
+        bindReviews(movie.getReviews());
         loadImages(movie);
     }
 
-
-    private void bindOverview(@NonNull MovieDetails movie) {
+    private void bindOverview(@NonNull final MovieDetails movie) {
         final String formattedDate = getFormattedDate(movie.getReleaseDate());
         releaseDateText.setText(formattedDate);
         averageRateText.setText(String.valueOf(movie.getRating()));
@@ -207,6 +213,10 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     private void bindVideos(@NonNull final Collection<Video> videos) {
         videosAdapter.setItems(videos);
         videoList.setAdapter(videosAdapter);
+    }
+
+    private void bindReviews(@NonNull final Collection<Review> reviews) {
+        this.reviews.bind(reviews);
     }
 
     private String getFormattedDate(@Nullable LocalDate date) {

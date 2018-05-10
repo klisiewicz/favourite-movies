@@ -26,29 +26,10 @@
         app:layout_constraintTop_toTopOf="@id/reviews_label"
         src:text="(23)" />
 
-    <include
-        android:id="@+id/review_layout"
-        layout="@layout/list_item_review"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/reviews_label" />
-
-    <Button
-        android:id="@+id/browse_reviews_button"
-        style="@style/AppFlatButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reviews_all"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/review_layout" />
-
     <pl.karollisiewicz.common.ui.StatefulRecyclerView
         android:id="@+id/reviews_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/reviews_label" />
 </android.support.constraint.ConstraintLayout>
