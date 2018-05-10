@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.data.source.web;
+package pl.karollisiewicz.cinema.app.data.source.web.video;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,12 +7,12 @@ import java.util.Arrays;
 
 import io.reactivex.Observable;
 
-class VideoMapper {
+public class VideoMapper {
     private VideoMapper() {
     }
 
     @NonNull
-    static pl.karollisiewicz.cinema.domain.movie.video.Video toDomain(@NonNull final Video video) {
+    public static pl.karollisiewicz.cinema.domain.movie.video.Video toDomain(@NonNull final Video video) {
         return new pl.karollisiewicz.cinema.domain.movie.video.Video.Builder()
                 .setId(video.getId())
                 .setName(video.getName())
@@ -23,9 +23,8 @@ class VideoMapper {
     }
 
     @NonNull
-    static Video toDto(@NonNull pl.karollisiewicz.cinema.domain.movie.video.Video video) {
+    public static Video toDto(@NonNull pl.karollisiewicz.cinema.domain.movie.video.Video video) {
         final Video vid = new Video();
-        vid.setId(video.getId().getValue());
         vid.setName(video.getName());
         vid.setUrl(video.getUrl());
         vid.setThumbnailUrl(video.getThumbnailUrl());

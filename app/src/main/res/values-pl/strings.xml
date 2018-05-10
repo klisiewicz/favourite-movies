@@ -13,6 +13,9 @@
     <string name="videos">Wideo</string>
     <string name="video_description">Miniatura wideo</string>
     <string name="video_play">Odtwórz wideo</string>
+    <string name="reviews">Recenzje</string>
+    <string name="review_read_more">Czytaj więcej</string>
+    <string name="reviews_number">(%1$d)</string>
     <string name="favourite_added">Dodano do ulubionych</string>
     <string name="favourite_removed">Usunięto z ulubionych</string>
     <string name="action_undo">Cofnij</string>

@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import java.io.Serializable;
 import java.util.Collection;
 
+import pl.karollisiewicz.cinema.domain.movie.review.Review;
 import pl.karollisiewicz.cinema.domain.movie.video.Video;
 
 import static java.util.Collections.emptyList;
@@ -21,6 +22,7 @@ public final class MovieDetails implements Serializable {
     private final Movie movie;
     private final String overview;
     private final Collection<Video> videos;
+    private final Collection<Review> reviews;
     private boolean isFavourite;
 
     private MovieDetails(@NonNull final Builder builder) {
@@ -33,6 +35,7 @@ public final class MovieDetails implements Serializable {
                 .build();
         overview = builder.overview;
         videos = builder.videos != null ? unmodifiableCollection(builder.videos) : emptyList();
+        reviews = builder.reviews != null ? unmodifiableCollection(builder.reviews) : emptyList();
         isFavourite = builder.isFavourite;
     }
 
@@ -69,6 +72,10 @@ public final class MovieDetails implements Serializable {
         return videos;
     }
 
+    public Collection<Review> getReviews() {
+        return reviews;
+    }
+
     public void favourite() {
         isFavourite = true;
     }
@@ -90,6 +97,7 @@ public final class MovieDetails implements Serializable {
         private double rating;
         private LocalDate releaseDate;
         private Collection<Video> videos;
+        private Collection<Review> reviews;
         private boolean isFavourite;
 
         private Builder(String id) {
@@ -132,6 +140,11 @@ public final class MovieDetails implements Serializable {
 
         public Builder setFavourite(boolean isFavourite) {
             this.isFavourite = isFavourite;
+            return this;
+        }
+
+        public Builder setReviews(Collection<Review> reviews) {
+            this.reviews = reviews;
             return this;
         }
 

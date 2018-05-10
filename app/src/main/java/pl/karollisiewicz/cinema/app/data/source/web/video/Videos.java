@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.data.source.web;
+package pl.karollisiewicz.cinema.app.data.source.web.video;
 
 import android.support.annotation.NonNull;
 

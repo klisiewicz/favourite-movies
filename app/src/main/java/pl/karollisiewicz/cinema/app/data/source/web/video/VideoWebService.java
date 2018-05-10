@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.data.source.web;
+package pl.karollisiewicz.cinema.app.data.source.web.video;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
@@ -10,5 +10,5 @@ import retrofit2.http.Path;
 public interface VideoWebService {
 
     @GET("movie/{movie_id}/videos")
-    Single<Videos> fetchBy(@Path("movie_id") long movieId);
+    Single<Videos> fetchBy(@Path("movie_id") String movieId);
 }

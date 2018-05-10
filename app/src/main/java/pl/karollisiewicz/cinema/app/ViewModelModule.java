@@ -13,8 +13,8 @@ import dagger.Binds;
 import dagger.MapKey;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
-import pl.karollisiewicz.cinema.app.movie.MovieDetailsViewModel;
-import pl.karollisiewicz.cinema.app.movie.MoviesViewModel;
+import pl.karollisiewicz.cinema.app.ui.movie.MovieDetailsViewModel;
+import pl.karollisiewicz.cinema.app.ui.movie.MoviesViewModel;
 
 /**
  * Module for {@link android.arch.lifecycle.ViewModel} instances.

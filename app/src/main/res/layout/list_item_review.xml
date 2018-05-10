@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:src="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/review_author_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_xx_small"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:layout_constraintTop_toTopOf="parent"
+        src:text="Frank Ochieng" />
+
+    <TextView
+        android:id="@+id/review_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:ellipsize="end"
+        android:maxLength="180"
+        android:maxLines="3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintTop_toBottomOf="@id/review_author_text"
+        src:text="Summertime 2016 has not been very kind to DC Comics-based personalities looking to shine consistently like their big screen Marvel Comics counterparts." />
+
+    <Button
+        android:id="@+id/review_read_all"
+        android:text="@string/review_read_more"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        style="@style/AppFlatButton"
+        app:layout_constraintTop_toBottomOf="@id/review_text"
+        app:layout_constraintRight_toRightOf="@id/review_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="#dadada"
+        app:layout_constraintTop_toBottomOf="@id/review_read_all" />
+
+</android.support.constraint.ConstraintLayout>

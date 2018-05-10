@@ -7,23 +7,16 @@ import java.io.Serializable;
 
 public final class Video implements Serializable {
     private static final long serialVersionUID = -608520751973739291L;
-    private final VideoId id;
     private final String url;
     private final String thumbnailUrl;
     private final String name;
     private final Type type;
 
     private Video(@NonNull final Builder builder) {
-        id = VideoId.of(builder.id);
         url = builder.url;
         thumbnailUrl = builder.thumbnailUrl;
         name = builder.name;
         type = builder.type;
-    }
-
-    @NonNull
-    public VideoId getId() {
-        return id;
     }
 
     public String getUrl() {

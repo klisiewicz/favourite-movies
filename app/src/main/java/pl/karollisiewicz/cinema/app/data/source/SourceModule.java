@@ -10,8 +10,9 @@ import pl.karollisiewicz.cinema.app.data.source.db.DatabaseModule;
 import pl.karollisiewicz.cinema.app.data.source.db.MovieDao;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieService;
 import pl.karollisiewicz.cinema.app.data.source.web.MovieWebRepository;
-import pl.karollisiewicz.cinema.app.data.source.web.VideoService;
 import pl.karollisiewicz.cinema.app.data.source.web.WebModule;
+import pl.karollisiewicz.cinema.app.data.source.web.review.ReviewService;
+import pl.karollisiewicz.cinema.app.data.source.web.video.VideoService;
 import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.log.Logger;
 import pl.karollisiewicz.common.react.Schedulers;
@@ -28,8 +29,9 @@ public final class SourceModule {
             @NonNull final MovieService movieService,
             @NonNull final MovieDao movieDao,
             @NonNull final VideoService videoService,
+            @NonNull final ReviewService reviewService,
             @NonNull final Schedulers schedulers,
             @NonNull final Logger logger) {
-        return new MovieWebRepository(movieService, movieDao, videoService, schedulers, logger);
+        return new MovieWebRepository(movieService, movieDao, videoService, reviewService, schedulers, logger);
     }
 }

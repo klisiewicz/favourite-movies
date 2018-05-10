@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.data.source.web;
+package pl.karollisiewicz.cinema.app.data.source.web.video;
 
 import android.support.annotation.NonNull;
 
@@ -10,15 +10,15 @@ public final class VideoImageDecoratorService implements VideoService {
     @NonNull
     private final VideoImageProvider imageProvider;
 
-    VideoImageDecoratorService(@NonNull final VideoWebService videoWebService,
-                               @NonNull final VideoImageProvider imageProvider) {
+    public VideoImageDecoratorService(@NonNull final VideoWebService videoWebService,
+                                      @NonNull final VideoImageProvider imageProvider) {
 
         this.videoWebService = videoWebService;
         this.imageProvider = imageProvider;
     }
 
     @Override
-    public Single<Videos> fetchBy(long movieId) {
+    public Single<Videos> fetchBy(String movieId) {
         return videoWebService
                 .fetchBy(movieId)
                 .toObservable()

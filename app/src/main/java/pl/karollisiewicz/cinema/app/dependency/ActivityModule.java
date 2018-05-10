@@ -2,7 +2,7 @@ package pl.karollisiewicz.cinema.app.dependency;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
-import pl.karollisiewicz.cinema.app.movie.MovieDetailsActivity;
+import pl.karollisiewicz.cinema.app.ui.movie.MovieDetailsActivity;
 
 /**
  * Module for all activities within the app.

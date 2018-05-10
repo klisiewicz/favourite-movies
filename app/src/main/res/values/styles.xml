@@ -54,4 +54,10 @@
         <item name="android:layout_marginTop">@dimen/spacing_small</item>
     </style>
 
+    <style name="AppFlatButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:padding">@dimen/spacing_xx_small</item>
+    </style>
 </resources>

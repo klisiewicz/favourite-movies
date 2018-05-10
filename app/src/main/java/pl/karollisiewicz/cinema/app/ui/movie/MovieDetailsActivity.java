@@ -1,4 +1,4 @@
-package pl.karollisiewicz.cinema.app.movie;
+package pl.karollisiewicz.cinema.app.ui.movie;
 
 import android.app.ActivityOptions;
 import android.arch.lifecycle.ViewModelProvider;
@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -36,30 +36,31 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import pl.karollisiewicz.cinema.R;
 import pl.karollisiewicz.cinema.app.animation.TransitionNameSupplier;
-import pl.karollisiewicz.cinema.app.movie.video.VideosAdapter;
+import pl.karollisiewicz.cinema.app.ui.movie.review.ReviewsView;
+import pl.karollisiewicz.cinema.app.ui.movie.video.VideosAdapter;
 import pl.karollisiewicz.cinema.domain.exception.AuthorizationException;
 import pl.karollisiewicz.cinema.domain.exception.CommunicationException;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieDetails;
 import pl.karollisiewicz.cinema.domain.movie.MovieId;
+import pl.karollisiewicz.cinema.domain.movie.review.Review;
+import pl.karollisiewicz.cinema.domain.movie.video.Video;
 import pl.karollisiewicz.common.ui.Resource;
 import pl.karollisiewicz.common.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-import static android.view.View.GONE;
 import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
 import static pl.karollisiewicz.common.ui.Resource.Status.SUCCESS;
+import static pl.karollisiewicz.common.ui.ViewUtil.hideView;
+import static pl.karollisiewicz.common.ui.ViewUtil.showView;
 
 public final class MovieDetailsActivity extends AppCompatActivity {
     private static final String MOVIE_KEY = "MovieDetailsActivity.MovieDetails";
 
     @BindView(R.id.container_layout)
     ViewGroup container;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @BindView(R.id.backdrop_image)
     ImageView backdropImage;
@@ -95,6 +96,9 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     private VideosAdapter videosAdapter;
 
+    @BindView(R.id.reviews_view)
+    ReviewsView reviews;
+
     public static void start(@NonNull final Context context, @NonNull final ActivityOptions options,
                              @NonNull final Movie movie) {
         final Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -112,7 +116,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         final Movie movie = getMovieFromIntent();
 
         setupActionBar(movie.getTitle());
-        setupRecyclerView();
+        setupVideos();
+        setupReviews();
         setupViewModel(movie.getId());
         populateViewWith(movie);
 
@@ -128,7 +133,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void setupActionBar(final String title) {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(title);
@@ -136,14 +141,20 @@ public final class MovieDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setupRecyclerView() {
+    private void setupVideos() {
         videosAdapter = new VideosAdapter();
-        videosAdapter.setVideoClickListener(video -> {
-            final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getUrl()));
-            if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);
-        });
+        videosAdapter.setVideoClickListener(video -> navigateTo(video.getUrl()));
         videoList.setHasFixedSize(true);
         videoList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+    }
+
+    private void setupReviews() {
+        reviews.setReviewClickListener(review -> navigateTo(review.getUrl()));
+    }
+
+    private void navigateTo(String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);
     }
 
     private void setupViewModel(@NonNull final MovieId id) {
@@ -162,10 +173,8 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     private void show(@Nullable final Resource<MovieDetails> resource) {
         if (resource == null) return;
 
-        if (resource.getStatus() == ERROR)
-            showError(resource.getError());
-        else if (resource.getStatus() == SUCCESS && resource.getData() != null)
-            populateViewWith(resource.getData());
+        if (resource.getStatus() == ERROR) showError(resource.getError());
+        else if (resource.getStatus() == SUCCESS) bind(resource.getData());
     }
 
     private void showError(Throwable throwable) {
@@ -179,20 +188,42 @@ public final class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void populateViewWith(final Movie movie) {
-        populateViewWith(MovieDetails.Builder.from(movie).build());
+        bind(MovieDetails.Builder.from(movie).build());
     }
 
-    private void populateViewWith(final MovieDetails movie) {
+    private void bind(@Nullable final MovieDetails movie) {
+        if (movie == null) return;
+
+        bindOverview(movie);
+        bindVideos(movie.getVideos());
+        bindReviews(movie.getReviews());
+        loadImages(movie);
+    }
+
+    private void bindOverview(@NonNull final MovieDetails movie) {
         final String formattedDate = getFormattedDate(movie.getReleaseDate());
         releaseDateText.setText(formattedDate);
         averageRateText.setText(String.valueOf(movie.getRating()));
         overviewText.setText(movie.getOverview());
         posterImage.setTransitionName(TransitionNameSupplier.getInstance().apply(movie));
         floatingActionButton.setImageResource(movie.isFavourite() ? R.drawable.ic_favourite : R.drawable.ic_favourite_border);
+        showView(floatingActionButton);
+    }
 
-        videosAdapter.setItems(movie.getVideos());
+    private void bindVideos(@NonNull final Collection<Video> videos) {
+        videosAdapter.setItems(videos);
         videoList.setAdapter(videosAdapter);
+    }
 
+    private void bindReviews(@NonNull final Collection<Review> reviews) {
+        this.reviews.bind(reviews);
+    }
+
+    private String getFormattedDate(@Nullable LocalDate date) {
+        return date != null ? date.toString(DateTimeFormat.longDate().withLocale(locale)) : "";
+    }
+
+    private void loadImages(@NonNull MovieDetails movie) {
         Picasso.with(this)
                 .load(movie.getBackdropUrl())
                 .into(backdropImage);
@@ -202,14 +233,9 @@ public final class MovieDetailsActivity extends AppCompatActivity {
                 .into(posterImage);
     }
 
-    private String getFormattedDate(@Nullable LocalDate date) {
-        return date != null ? date.toString(DateTimeFormat.longDate().withLocale(locale)) : "";
-    }
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -223,7 +249,7 @@ public final class MovieDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        floatingActionButton.setVisibility(GONE);
+        hideView(floatingActionButton);
         super.onBackPressed();
     }
 }
