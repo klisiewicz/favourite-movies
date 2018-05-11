@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import java.util.Collection;
 
 import io.reactivex.observers.TestObserver;
+import io.reactivex.subscribers.TestSubscriber;
 import pl.karollisiewicz.cinema.app.data.source.web.Movie;
 
 import static java.util.Collections.emptyList;
@@ -41,7 +42,7 @@ public class MovieContentProviderAdapterTest {
     private MovieContentValuesProvider contentValuesProvider;
 
     private final TestObserver<Movie> singleMovieObserver = new TestObserver<>();
-    private final TestObserver<Collection<Movie>> moviesObserver = new TestObserver<>();
+    private final TestSubscriber<Collection<Movie>> moviesObserver = new TestSubscriber<>();
 
     private Movie movie;
 
@@ -187,9 +188,9 @@ public class MovieContentProviderAdapterTest {
                 .thenReturn(false);
 
         when(cursor.getColumnIndex(any(String.class))).thenAnswer(invocation -> {
-            final String argument = invocation.getArgument(0);
-            return "_id".equals(argument) ? 0 : MovieContract.MovieEntry.Column.valueOf(argument.toUpperCase()).ordinal();
-            }
+                    final String argument = invocation.getArgument(0);
+                    return "_id".equals(argument) ? 0 : MovieContract.MovieEntry.Column.valueOf(argument.toUpperCase()).ordinal();
+                }
         );
         when(cursor.getInt(ID.ordinal())).thenReturn(1);
         when(cursor.getString(TITLE.ordinal())).thenReturn("Title");
@@ -264,13 +265,16 @@ public class MovieContentProviderAdapterTest {
     private void assertMovieIsValid(Movie movie) {
         assertThat(movie.getId(), is(1L));
         assertThat(movie.getTitle(), is("Title"));
-        assertThat(movie.getOverview(), is("Overview"));
         assertThat(movie.getPosterPath(), is("poster.jpg"));
         assertThat(movie.getBackdropPath(), is("backdrop.jpg"));
         assertThat(movie.getVoteAverage(), is(6.66));
         assertThat(movie.getReleaseDate().getYear(), is(2017));
         assertThat(movie.getReleaseDate().getMonthOfYear(), is(11));
         assertThat(movie.getReleaseDate().getDayOfMonth(), is(22));
+    }
+
+    private static <T> T getFirstValue(TestSubscriber<T> testSubscriber) {
+        return testSubscriber.values().get(0);
     }
 
     private static <T> T getFirstValue(TestObserver<T> testObserver) {
