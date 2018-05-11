@@ -28,8 +28,9 @@ public final class MoviesActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
-        PagerAdapter adapter = new MoviesPagerAdapter(this, getSupportFragmentManager());
+        final PagerAdapter adapter = new MoviesPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+//        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
     }
 }

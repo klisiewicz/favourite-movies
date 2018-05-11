@@ -2,6 +2,7 @@ package pl.karollisiewicz.cinema.app.data.source;
 
 import android.support.annotation.NonNull;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -26,7 +27,7 @@ public final class SourceModule {
     @Provides
     @Singleton
     MovieRepository getMovieRepository(
-            @NonNull final MovieService movieService,
+            @Named("MovieCacheService") @NonNull final MovieService movieService,
             @NonNull final MovieDao movieDao,
             @NonNull final VideoService videoService,
             @NonNull final ReviewService reviewService,

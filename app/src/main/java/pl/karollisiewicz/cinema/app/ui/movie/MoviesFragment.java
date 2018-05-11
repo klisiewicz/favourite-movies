@@ -127,6 +127,12 @@ public final class MoviesFragment extends Fragment {
                 moviesViewModel.getMovies(criterion));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        moviesViewModel.getMovies(criterion);
+    }
+
     private void show(@Nullable final Resource<List<Movie>> resource) {
         if (resource == null) return;
 

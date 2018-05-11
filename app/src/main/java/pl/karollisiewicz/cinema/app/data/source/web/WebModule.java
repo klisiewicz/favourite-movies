@@ -42,6 +42,14 @@ public final class WebModule {
 
     @Provides
     @Singleton
+    @Named("MovieCacheService")
+    public MovieService getMovieCacheService(@Named("MovieImageDecoratorService") MovieService movieService) {
+        return new MovieCacheService(movieService);
+    }
+
+    @Provides
+    @Singleton
+    @Named("MovieImageDecoratorService")
     public MovieService getMovieService(MovieWebService movieWebService, MovieImageProvider imageProvider) {
         return new MovieImageDecoratorService(movieWebService, imageProvider);
     }
