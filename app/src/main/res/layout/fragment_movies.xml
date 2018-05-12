@@ -4,7 +4,7 @@
     android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pl.karollisiewicz.movie.app.MoviesActivity">
+    tools:context="pl.karollisiewicz.cinema.app.ui.movie.MoviesActivity">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <pl.karollisiewicz.ui.StatefulRecyclerView
+        <pl.karollisiewicz.common.ui.StatefulRecyclerView
             android:id="@+id/movies_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

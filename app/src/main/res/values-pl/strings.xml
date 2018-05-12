@@ -2,6 +2,7 @@
     <string name="app_name">Filmy</string>
     <string name="category_popular">Popularne</string>
     <string name="category_top_rated">Najwyżej ocenione</string>
+    <string name="category_favourite">Ulubione</string>
     <string name="poster_description">Plakat filmu</string>
     <string name="description_backdrop">Kurtyna filmu</string>
     <string name="description_favourite">Dodaj do ulubionych</string>
@@ -9,6 +10,16 @@
     <string name="release_date">Data wydania</string>
     <string name="share">Udostępnij</string>
     <string name="overview">Streszczenie</string>
+    <string name="videos">Wideo</string>
+    <string name="video_description">Miniatura wideo</string>
+    <string name="video_play">Odtwórz wideo</string>
+    <string name="reviews">Recenzje</string>
+    <string name="review_read_more">Czytaj więcej</string>
+    <string name="reviews_number">(%1$d)</string>
+    <string name="favourite_added">Dodano do ulubionych</string>
+    <string name="favourite_removed">Usunięto z ulubionych</string>
+    <string name="action_undo">Cofnij</string>
+    <string name="action_retry">Ponów</string>
     <string name="error_communication">Nieudane pobieranie filmów</string>
     <string name="error_authorization">Nieudane uwierzytelnianie</string>
     <string name="error_unknown">Nieznany błąd</string>

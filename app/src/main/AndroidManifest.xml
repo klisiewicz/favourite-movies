@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pl.karollisiewicz.movie">
+    package="pl.karollisiewicz.cinema">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".app.MoviesActivity"
+            android:name=".app.ui.movie.MoviesActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +23,13 @@
         </activity>
 
         <activity
-            android:name=".app.MovieDetailsActivity"
-            android:parentActivityName=".app.MoviesActivity" />
+            android:name=".app.ui.movie.MovieDetailsActivity"
+            android:parentActivityName=".app.ui.movie.MoviesActivity" />
+
+        <provider
+            android:name=".app.data.source.db.MovieContentProvider"
+            android:authorities="pl.karollisiewicz.cinema"
+            android:exported="false" />
     </application>
+
 </manifest>

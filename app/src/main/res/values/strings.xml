@@ -2,6 +2,7 @@
     <string name="app_name">Movies</string>
     <string name="category_popular">Popular</string>
     <string name="category_top_rated">Top rated</string>
+    <string name="category_favourite">Favorite</string>
     <string name="poster_description">Movie poster</string>
     <string name="description_backdrop">Movie backdrop</string>
     <string name="description_favourite">Add to favourites</string>
@@ -9,6 +10,16 @@
     <string name="release_date">Release date</string>
     <string name="share">Share</string>
     <string name="overview">Synopsis</string>
+    <string name="videos">Videos</string>
+    <string name="video_description">Video thumbnail</string>
+    <string name="video_play">Play video</string>
+    <string name="reviews">Reviews</string>
+    <string name="review_read_more">Read more</string>
+    <string name="reviews_number">(%1$d)</string>
+    <string name="favourite_added">Added to favorites</string>
+    <string name="favourite_removed">Removed from favorites</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_retry">Retry</string>
     <string name="error_communication">Failed to fetch movies</string>
     <string name="error_authorization">Unable to authorize</string>
     <string name="error_unknown">Unknown error</string>
