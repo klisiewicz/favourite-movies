@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import pl.karollisiewicz.cinema.app.data.source.web.Movie;
@@ -39,8 +40,8 @@ public final class MovieContentProviderAdapter implements MovieDao {
     }
 
     @Override
-    public Single<Collection<Movie>> fetchAll() {
-        return Single.fromCallable(() -> fetch(null, null));
+    public Flowable<Collection<Movie>> fetchAll() {
+        return Flowable.fromCallable(() -> fetch(null, null));
     }
 
     @NonNull
@@ -52,8 +53,8 @@ public final class MovieContentProviderAdapter implements MovieDao {
     }
 
     @Override
-    public Single<Collection<Movie>> fetchFavourites() {
-        return Single.fromCallable(() -> fetch(getName(FAVOURITE) + "=?", new String[]{"1"}));
+    public Flowable<Collection<Movie>> fetchFavourites() {
+        return Flowable.fromCallable(() -> fetch(getName(FAVOURITE) + "=?", new String[]{"1"}));
     }
 
     @NonNull
@@ -103,8 +104,7 @@ public final class MovieContentProviderAdapter implements MovieDao {
 
         if (cursor == null || cursor.getCount() == 0) {
             contentResolver.insert(uriProvider.getAll(), contentValues);
-        }
-        else {
+        } else {
             contentResolver.update(uriProvider.getForId(movie.getId()), contentValues, null, null);
             cursor.close();
         }

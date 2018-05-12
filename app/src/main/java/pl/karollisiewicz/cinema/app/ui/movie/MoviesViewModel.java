@@ -25,7 +25,6 @@ public final class MoviesViewModel extends RxViewModel {
         this.movieRepository = movieRepository;
     }
 
-
     @NonNull
     LiveData<Resource<List<Movie>>> getMovies(MovieRepository.Criterion criterion) {
         add(movieRepository.fetchBy(criterion)

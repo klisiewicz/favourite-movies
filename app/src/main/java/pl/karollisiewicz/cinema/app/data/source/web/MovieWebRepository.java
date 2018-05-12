@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
@@ -32,6 +33,9 @@ import pl.karollisiewicz.common.react.Schedulers;
 import retrofit2.HttpException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.FAVOURITE;
+import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.POPULARITY;
+import static pl.karollisiewicz.cinema.domain.movie.MovieRepository.Criterion.RATING;
 import static pl.karollisiewicz.common.react.Transformers.applySchedulersToMaybe;
 import static pl.karollisiewicz.common.react.Transformers.applySchedulersToSingle;
 
@@ -64,9 +68,8 @@ public final class MovieWebRepository implements MovieRepository {
     }
 
     @Override
-    public Single<List<Movie>> fetchBy(@NonNull Criterion criterion) {
+    public Flowable<List<Movie>> fetchBy(@NonNull Criterion criterion) {
         return getMoviesMatchingCriterion(criterion)
-                .toObservable()
                 .map(Movies::getMovies)
                 .flatMapIterable(list -> list)
                 .map(MovieMapper::toMovie)
@@ -74,17 +77,15 @@ public final class MovieWebRepository implements MovieRepository {
                 .timeout(5, SECONDS)
                 .doOnError(this::logError)
                 .onErrorResumeNext(this::mapError)
-                .compose(applySchedulersToSingle(schedulers));
+                .compose(applySchedulersToSingle(schedulers))
+                .toFlowable();
     }
 
-    private Single<Movies> getMoviesMatchingCriterion(@NonNull final Criterion criterion) {
-        if (Criterion.POPULARITY == criterion)
-            return movieService.fetchPopular();
-        else if (Criterion.RATING == criterion)
-            return movieService.fetchTopRated();
-        else if (Criterion.FAVOURITE == criterion)
-            return movieDao.fetchFavourites().map(movies -> new Movies(new ArrayList<>(movies)));
-        else return Single.never();
+    private Flowable<Movies> getMoviesMatchingCriterion(@NonNull final Criterion criterion) {
+        if (POPULARITY == criterion) return movieService.fetchPopular().toFlowable();
+        else if (RATING == criterion) return movieService.fetchTopRated().toFlowable();
+        else if (FAVOURITE == criterion) return movieDao.fetchFavourites().map(movies -> new Movies(new ArrayList<>(movies)));
+        else return Flowable.empty();
     }
 
     private void logError(Throwable throwable) {

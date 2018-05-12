@@ -36,7 +36,6 @@ import pl.karollisiewicz.common.ui.SnackbarPresenter;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.support.design.widget.Snackbar.make;
-import static java.util.Collections.emptyList;
 import static pl.karollisiewicz.common.ui.Resource.Status.ERROR;
 import static pl.karollisiewicz.common.ui.Resource.Status.LOADING;
 
@@ -107,7 +106,6 @@ public final class MoviesFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getColumnNumbers()));
-        recyclerView.setAdapter(adapter);
     }
 
     private int getColumnNumbers() {
@@ -127,6 +125,12 @@ public final class MoviesFragment extends Fragment {
                 moviesViewModel.getMovies(criterion));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        moviesViewModel.getMovies(criterion);
+    }
+
     private void show(@Nullable final Resource<List<Movie>> resource) {
         if (resource == null) return;
 
@@ -143,7 +147,8 @@ public final class MoviesFragment extends Fragment {
     }
 
     private void populateView(@Nullable List<Movie> movies) {
-        adapter.setItems(movies != null ? movies : emptyList());
+        adapter.setItems(movies);
+        recyclerView.setAdapter(adapter);
     }
 
     private void showError(Throwable throwable) {

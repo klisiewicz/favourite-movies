@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import okhttp3.internal.http.RealResponseBody;
 import okio.Buffer;
@@ -116,13 +117,13 @@ public class MovieWebRepositoryTest {
     }
 
     private void givenFavouriteMovies() {
-        when(movieDao.fetchAll()).thenReturn(Single.just(Collections.singletonList(favouriteMovie())));
-        when(movieDao.fetchFavourites()).thenReturn(Single.just(Collections.singletonList(favouriteMovie())));
+        when(movieDao.fetchAll()).thenReturn(Flowable.just(Collections.singletonList(favouriteMovie())));
+        when(movieDao.fetchFavourites()).thenReturn(Flowable.just(Collections.singletonList(favouriteMovie())));
     }
 
     private void givenNoFavouriteMovies() {
-        when(movieDao.fetchFavourites()).thenReturn(Single.just(Collections.emptyList()));
-        when(movieDao.fetchAll()).thenReturn(Single.just(Collections.emptyList()));
+        when(movieDao.fetchFavourites()).thenReturn(Flowable.just(Collections.emptyList()));
+        when(movieDao.fetchAll()).thenReturn(Flowable.just(Collections.emptyList()));
     }
 
     private void givenNoVideos() {
@@ -154,7 +155,7 @@ public class MovieWebRepositoryTest {
 
     private void whenFetchingPopularMovies() {
         try {
-            popularMovies = objectUnderTest.fetchBy(POPULARITY).blockingGet();
+            popularMovies = objectUnderTest.fetchBy(POPULARITY).blockingFirst();
         } catch (Exception e) {
             this.exception = e;
         }

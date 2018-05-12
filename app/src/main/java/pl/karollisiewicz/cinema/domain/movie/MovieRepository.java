@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -11,7 +12,7 @@ import io.reactivex.Single;
  * A repository for fetching movies.
  */
 public interface MovieRepository {
-    Single<List<Movie>> fetchBy(@NonNull Criterion criterion);
+    Flowable<List<Movie>> fetchBy(@NonNull Criterion criterion);
 
     Maybe<MovieDetails> fetchBy(@NonNull MovieId movieId);
 

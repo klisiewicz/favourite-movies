@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.Single;
+import io.reactivex.Flowable;
 import pl.karollisiewicz.cinema.domain.movie.Movie;
 import pl.karollisiewicz.cinema.domain.movie.MovieRepository;
 import pl.karollisiewicz.common.ui.Resource;
@@ -81,15 +81,15 @@ public class MoviesViewModelTest {
     }
 
     private void givenRepositoryReturningAMovie() {
-        when(repository.fetchBy(POPULARITY)).thenReturn(Single.just(Collections.singletonList(aMovie)));
+        when(repository.fetchBy(POPULARITY)).thenReturn(Flowable.just(Collections.singletonList(aMovie)));
     }
 
     private void givenRepositoryReturningAnError() {
-        when(repository.fetchBy(POPULARITY)).thenReturn(Single.error(SecurityException::new));
+        when(repository.fetchBy(POPULARITY)).thenReturn(Flowable.error(SecurityException::new));
     }
 
     private void givenRepositoryReturningNothing() {
-        when(repository.fetchBy(POPULARITY)).thenReturn(Single.never());
+        when(repository.fetchBy(POPULARITY)).thenReturn(Flowable.never());
     }
 
     private void whenFetchingMovies() throws Exception {
