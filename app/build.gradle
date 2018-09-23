@@ -17,7 +17,7 @@ android {
         buildConfigField "String", "BACKDROP_URL", '"http://image.tmdb.org/t/p/w780/"'
         buildConfigField "String", "YOUTUBE_URL", '"https://www.youtube.com/watch?v="'
         buildConfigField "String", "YOUTUBE_THUMBNAIL_URL", '"https://img.youtube.com/vi/"'
-        buildConfigField "String", "API_KEY", '"19691af481159697c9488a6ffb5008b9"'
+        buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
     }
 
     buildTypes {
