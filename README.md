@@ -4,6 +4,12 @@ Application allowing users to discover the most popular movies playing. It was m
 
 Code quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/55ff05d2d70f465b973c2c91de37ef27)](https://www.codacy.com/app/klisiewicz/popular-movies?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=klisiewicz/popular-movies&amp;utm_campaign=Badge_Grade)
 
+## Screenshots
+
+![Movie list](/screenshots/movie-list.png "Movie list")
+![Movie details](/screenshots/movie-detail-collapsed.png "Movie details")
+![Movie details](/screenshots/movie-detail-expanded.png "Movie details")
+
 ### Prerequisites
 
 Application utilizes [The Movie DB](https://www.themoviedb.org) API. You must provide your own API key in the `build.gradle` `file:
@@ -22,4 +28,4 @@ buildConfigField "String", "API_KEY", '"@TODO: enter your api key here"'
 
 ## Authors
 
-* [Karol Lisiewicz](https://github.com/klisiewicz)
+* [Karol Lisiewicz](https://www.linkedin.com/in/karol-lisiewicz/)
